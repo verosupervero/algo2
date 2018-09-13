@@ -65,6 +65,13 @@ void* pila_desapilar(pila_t *pila);
 //
 // Para la implementación de las pruebas se debe emplear la función
 // print_test(), como se ha visto en TPs anteriores.
-void pruebas_pila_alumno(void);
+void pruebas_pila_crear(void);
+void pruebas_apilamiento(void);
+void pruebas_volumen(void);
+void pruebas_apilamiento_null(void);
+void pruebas_pila_nueva_igual_desapilada(void);
+void pruebas_pila_nueva_desapilar(void);
+void pruebas_pila_nueva_es_vacia(void);
+void pruebas_pila_desapilada_desapilar(void);
 
 #endif // PILA_H

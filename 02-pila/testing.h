@@ -10,7 +10,7 @@
 //    print_test("La pila fue creada", p != NULL);
 //    print_test("La pila está vacía", pila_esta_vacia(p));
 #define print_test(mensaje, result) do { \
-    real_print_test(mensaje, result, __FILE__, __LINE__, #result); \
+    real_print_test(mensaje, result, __FUNCTION__, __LINE__, #result); \
   } while (0)
 
 // Función auxiliar para print_test(). No debería ser usada directamente.
