@@ -13,16 +13,11 @@
  * *****************************************************************/
 bool pruebas_apilar_volumen(pila_t * pila, void* valor,int volumen){
 
-  bool apilado;
-
   if(pila==NULL)
     return false;
 
-  for(int i=0;i<volumen;i++){
-    apilado= pila_apilar(pila, valor);
-    if(apilado==false)
-      return false;
-  }
+  for(int i=0;i<volumen;i++)
+    pila_apilar(pila, valor);
 
   return true;
 }
@@ -43,51 +38,81 @@ bool pruebas_desapilar_volumen(pila_t * pila, int volumen){
 //print_test("Pila apilar NULL:", pruebas_apilar(pila,NULL)==true);
 
 //print_test("Pila desapilar volumen NULLS:", pruebas_desapilar_volumen(pila,VOLUMEN_CHICO+VOLUMEN_MEDIO-1)==true);
-void pruebas_pila_vacia_es_nueva(pila_t * pila){
-  print_test("Pila desapilar volumen enteros:", pruebas_desapilar_volumen(pila,VOLUMEN_CHICO+VOLUMEN_MEDIO)==true);
+void pruebas_pila_vacia_es_nueva(void){
+  pila_t* pila;
+  pila = pila_crear();
+  char c= 'v';
+
+  printf("INICIO DE PRUEBAS DE PILA VACIA == PILA NUEVA\n");
+
+  print_test("Pila apilar char:", pila_apilar(pila,&c)==true);
+  print_test("Pila desapilar char:", pila_desapilar(pila)==NULL);
   print_test("Pila ahora vacía:",pila_esta_vacia(pila)==true );
   print_test("Pila no se puede ver tope:",pila_ver_tope(pila)==NULL );
 }
 
-void pruebas_puntero_null(pila_t * pila){
-  printf("INICIO DE PRUEBAS DE APILAR NULLS\n");
+void pruebas_puntero_null(void){
+  pila_t* pila;
+  pila = pila_crear();
+
+  printf("INICIO DE PRUEBAS DE APILAR NULL\n");
+
   print_test("Pila apilar NULL:", pila_apilar(pila,NULL)==true);
   print_test("Pila desapilar NULL:", pila_desapilar(pila)==NULL);
+  pila_destruir(pila);
+  print_test("Pila de null destruida:", pila_esta_vacia(pila)==true  && pila_ver_tope(pila)==NULL);
 }
 
-void pruebas_apilar_enteros(pila_t * pila){
+void pruebas_apilar_enteros(void){
+  pila_t* pila;
+  pila = pila_crear();
+
   printf("INICIO DE PRUEBAS DE APILAR ENTEROS\n");
+
   int i=1; //busco apilar un mismo elemento en la pila para probar porque es sencillo
-  print_test("Pila apilar volumen chico de enteros:", pruebas_apilar_volumen(pila,&i,VOLUMEN_CHICO)==true);
-  print_test("Pila apilar volumen chico + medio de enteros:", pruebas_apilar_volumen(pila,NULL,VOLUMEN_MEDIO)==true);
+  print_test("Pila apilar volumen medio de enteros:", pruebas_apilar_volumen(pila,&i,VOLUMEN_MEDIO)==true);
   print_test("Pila apilada no es vacía:", pila_esta_vacia(pila)==false );
   print_test("Pila apilada se puede ver tope:", pila_ver_tope(pila)!=NULL);
+  pila_destruir(pila);
+  print_test("Pila apilada destruida:", true);
 }
 
-void pruebas_pila_nueva(pila_t * pila){
+void pruebas_pila_nueva(void){
+
+  pila_t* pila;
+  pila = pila_crear();
+
+  printf("INICIO DE PRUEBAS DE PILA NUEVA\n");
+
   print_test("Pila nueva creada:", pila!=NULL);
   print_test("Pila nueva es vacía:",pila_esta_vacia(pila)==true );
   print_test("Pila nueva ver tope:",pila_ver_tope(pila)==NULL );
   pila_destruir(pila);
-  print_test("Pila nueva destruida:", pila_esta_vacia(pila)==true  && pila_ver_tope(pila)==NULL);
+  print_test("Pila nueva destruida:", true);
 
 }
-
+/*
 void pruebas_volumen(pila_t * pila){
+  pila_t* pila;
+  pila = pila_crear();
   char c='a';
+
+  printf("INICIO DE PRUEBAS DE VOLUMEN\n");
+
+
   print_test("Pila apilar volumen grande de caracteres:", pruebas_apilar_volumen(pila,&c,VOLUMEN_GRANDE)==true);
   print_test("Pila apilada no es vacía:", pila_esta_vacia(pila)==false );
   print_test("Pila apilada se puede ver tope:", pila_ver_tope(pila)!=NULL);
-  print_test("Pila desapilar volumen enteros:", pruebas_desapilar_volumen(pila,VOLUMEN_CHICO+VOLUMEN_MEDIO)==true);
-}
+  print_test("Pila desapilar volumen enteros:", pruebas_desapilar_volumen(pila,VOLUMEN_GRANDE)==true);
+  pila_destruir(pila);
+  print_test("Pila de enteros grande destruida:", pila_esta_vacia(pila)==true  && pila_ver_tope(pila)==NULL);
+}*/
 void pruebas_pila_alumno(void) {
-    pila_t* pila;
-    pila = pila_crear();
-    pruebas_pila_nueva(pila);
-    pila = pila_crear();
-    pruebas_apilar_enteros(pila);
-    pruebas_puntero_null(pila);
-    pruebas_pila_vacia_es_nueva(pila);
-    pruebas_volumen(pila);
+
+  //pruebas_pila_nueva();
+  pruebas_apilar_enteros();
+  //  pruebas_puntero_null();
+  //pruebas_pila_vacia_es_nueva();
+  //  pruebas_volumen(pila);
 
 }
