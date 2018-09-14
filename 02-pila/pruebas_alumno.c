@@ -13,10 +13,7 @@
  *                   PRUEBAS UNITARIAS ALUMNO
  * *****************************************************************/
 
-
-//print_test("Pila apilar NULL:", pruebas_apilar(pila,NULL)==true);
-
-//print_test("Pila desapilar volumen NULLS:", pruebas_desapilar_volumen(pila,VOLUMEN_CHICO+VOLUMEN_MEDIO-1)==true);
+/* Prueba: si un vector desapilado se comporta como uno nuevo */
 void pruebas_pila_vacia_es_nueva(void){
   pila_t* pila;
   pila = pila_crear();
@@ -33,6 +30,7 @@ void pruebas_pila_vacia_es_nueva(void){
   print_test("Pila de null destruida:",true);
 }
 
+/* Prueba de apilado de punteros a NULL */
 void pruebas_puntero_null(void){
   pila_t* pila;
   pila = pila_crear();
@@ -45,6 +43,7 @@ void pruebas_puntero_null(void){
   print_test("Pila de null destruida:",true);
 }
 
+/* Prueba de apilado */
 void pruebas_apilar_enteros(size_t volumen,char * nombre_volumen){
   pila_t* pila;
   pila = pila_crear();
@@ -82,8 +81,8 @@ void pruebas_apilar_enteros(size_t volumen,char * nombre_volumen){
   print_test("Pila apilada destruida:", true);
 }
 
+/* Pruebas sobre una pila nueva */
 void pruebas_pila_nueva(void){
-
   pila_t* pila;
   pila = pila_crear();
 
@@ -98,8 +97,8 @@ void pruebas_pila_nueva(void){
 
 }
 
+/* Ejecuto las pruebas */
 void pruebas_pila_alumno(void) {
-
   pruebas_pila_nueva();
   pruebas_apilar_enteros(VOLUMEN_CHICO, "Volumen chico");
   pruebas_apilar_enteros(VOLUMEN_MEDIO,"Volumen medio");
