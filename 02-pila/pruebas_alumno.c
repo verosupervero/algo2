@@ -69,13 +69,15 @@ void pruebas_apilar_enteros(size_t volumen,char * nombre_volumen){
   bool valores_ok = true;
   bool topes_ok=true;
     for(int i= (int)volumen-1;i>=0;i--){
-      aux = pila_desapilar(pila);
+      topes_ok &= (*((int*)pila_ver_tope(pila))==i);
+	  aux = pila_desapilar(pila);
       valores_ok &= (*aux==i);
-      topes_ok &= (pila_ver_tope(pila)==aux);
       free(aux);
     }
 
-  print_test("Pila desapilada correctamente:", valores_ok && topes_ok && pila_esta_vacia(pila)==true  );
+  print_test("Pila desapilada correctamente (valores):", valores_ok);
+  print_test("Pila desapilada correctamente (topes):", topes_ok);
+  print_test("Pila desapilada correctamente (pila vacia):", pila_esta_vacia(pila));
   pila_destruir(pila);
   print_test("Pila apilada destruida:", true);
 }
