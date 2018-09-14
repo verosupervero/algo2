@@ -2,7 +2,6 @@
 #include "testing.h"
 #include <stddef.h>
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 
 #define VOLUMEN_GRANDE          1000000
@@ -17,10 +16,9 @@ bool pruebas_apilar_vector_numeros_aleatorios(pila_t * pila, size_t volumen){
 
   if(pila==NULL)
     return false;
-  int * vector= malloc(volumen*sizeof(int));
-
+ int vector[volumen];
   for(int i=0;i<volumen;i++){
-    vector[i]=rand();
+    vector[i]=i;
     pila_apilar(pila, &vector[i]);
   }
 
