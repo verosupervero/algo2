@@ -100,11 +100,11 @@ void pruebas_pila_nueva(void){
 
 void pruebas_pila_alumno(void) {
 
-  //pruebas_pila_nueva();
+  pruebas_pila_nueva();
   pruebas_apilar_enteros(VOLUMEN_CHICO, "Volumen chico");
-  //pruebas_apilar_enteros(VOLUMEN_MEDIO,"Volumen medio");
-  //pruebas_apilar_enteros(VOLUMEN_GRANDE,"Volumen grande");
-  //pruebas_puntero_null();
-  //pruebas_pila_vacia_es_nueva();
+  pruebas_apilar_enteros(VOLUMEN_MEDIO,"Volumen medio");
+  pruebas_apilar_enteros(VOLUMEN_GRANDE,"Volumen grande");
+  pruebas_puntero_null();
+  pruebas_pila_vacia_es_nueva();
 
 }
