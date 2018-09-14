@@ -1,122 +1,93 @@
 #include "pila.h"
 #include "testing.h"
 #include <stddef.h>
+#include <stdio.h>
+
+#define VOLUMEN_GRANDE    1000000
+#define VOLUMEN_CHICO      10
+#define VOLUMEN_MEDIO     1000
+#define CAPACIDAD_INICIAL       128
 
 /* ******************************************************************
  *                   PRUEBAS UNITARIAS ALUMNO
  * *****************************************************************/
+bool pruebas_apilar_volumen(pila_t * pila, void* valor,int volumen){
 
+  bool apilado;
 
-///////////// CREAR PILA //////////////
-void pruebas_pila_crear() {
-    pila_t* pila = pila_crear();
+  if(pila==NULL)
+    return false;
 
-    pila_destruir(pila);
+  for(int i=0;i<volumen;i++){
+    apilado= pila_apilar(pila, valor);
+    if(apilado==false)
+      return false;
+  }
+
+  return true;
 }
 
+bool pruebas_desapilar_volumen(pila_t * pila, int volumen){
 
-///////////// APILAMIENTO //////////////
-// Se puedan apilar elementos, que al desapilarlos se mantenga el invariante de pila.
-void pruebas_apilamiento(void){
+  void * desapilado;
 
+  if(pila==NULL)
+    return false;
+
+  for(int i=0;i<volumen;i++){
+    desapilado= pila_desapilar(pila);
+  }
+  return (desapilado==NULL);
 }
 
-///////////// VOLUMEN //////////////
-// Se pueden apilar muchos elementos
-void pruebas_volumen(void){
+//print_test("Pila apilar NULL:", pruebas_apilar(pila,NULL)==true);
 
+//print_test("Pila desapilar volumen NULLS:", pruebas_desapilar_volumen(pila,VOLUMEN_CHICO+VOLUMEN_MEDIO-1)==true);
+void pruebas_pila_vacia_es_nueva(pila_t * pila){
+  print_test("Pila desapilar volumen enteros:", pruebas_desapilar_volumen(pila,VOLUMEN_CHICO+VOLUMEN_MEDIO)==true);
+  print_test("Pila ahora vacía:",pila_esta_vacia(pila)==true );
+  print_test("Pila no se puede ver tope:",pila_ver_tope(pila)==NULL );
 }
 
-///////////// APILAMIENTO NULL //////////////
-// El apilamiento del elemento NULL es válido.
+void pruebas_puntero_null(pila_t * pila){
+  printf("INICIO DE PRUEBAS DE APILAR NULLS\n");
+  print_test("Pila apilar NULL:", pila_apilar(pila,NULL)==true);
+  print_test("Pila desapilar NULL:", pila_desapilar(pila)==NULL);
+}
 
-//aca pongo las funciones
-void apilamiento_null_medio(void){
-  int a = 1, b = 2, c = 3;
-  int *a_ret, *b_ret, *c_ret, *null_ret;
+void pruebas_apilar_enteros(pila_t * pila){
+  printf("INICIO DE PRUEBAS DE APILAR ENTEROS\n");
+  int i=1; //busco apilar un mismo elemento en la pila para probar porque es sencillo
+  print_test("Pila apilar volumen chico de enteros:", pruebas_apilar_volumen(pila,&i,VOLUMEN_CHICO)==true);
+  print_test("Pila apilar volumen chico + medio de enteros:", pruebas_apilar_volumen(pila,NULL,VOLUMEN_MEDIO)==true);
+  print_test("Pila apilada no es vacía:", pila_esta_vacia(pila)==false );
+  print_test("Pila apilada se puede ver tope:", pila_ver_tope(pila)!=NULL);
+}
 
-  pila_t * pila = pila_crear();
-
-  pila_apilar(pila, &a);
-  pila_apilar(pila, &b);
-  pila_apilar(pila, NULL);
-  pila_apilar(pila, &c);
-
-  // Desapilo
-  c_ret = pila_desapilar(pila);
-  null_ret = pila_desapilar(pila);
-  b_ret = pila_desapilar(pila);
-  a_ret = pila_desapilar(pila);
-
-  print_test("Desapilar NULL en medio", c_ret!=NULL && *c_ret == c && null_ret == NULL && b_ret!=NULL && *b_ret == b && a_ret!=NULL && *a_ret );
+void pruebas_pila_nueva(pila_t * pila){
+  print_test("Pila nueva creada:", pila!=NULL);
+  print_test("Pila nueva es vacía:",pila_esta_vacia(pila)==true );
+  print_test("Pila nueva ver tope:",pila_ver_tope(pila)==NULL );
   pila_destruir(pila);
-}
-
-void apilamiento_null_arriba(void){
-  int a = 1;
-  int *a_ret, *null_ret;
-
-  pila_t * pila = pila_crear();
-
-  pila_apilar(pila, &a);
-  pila_apilar(pila, NULL);
-
-  // Desapilo
-  null_ret = pila_desapilar(pila);
-  a_ret = pila_desapilar(pila);
-
-  print_test("Desapilar NULL arriba", null_ret == NULL && a_ret!=NULL && *a_ret );
-  pila_destruir(pila);
-}
-
-void apilamiento_null_abajo(void){
-  int a = 1;
-  int *a_ret, *null_ret;
-
-  pila_t * pila = pila_crear();
-
-  pila_apilar(pila, NULL);
-  pila_apilar(pila, &a);
-
-  // Desapilo
-  a_ret = pila_desapilar(pila);
-  null_ret = pila_desapilar(pila);
-
-  print_test("Desapilar NULL abajo", null_ret == NULL && a_ret!=NULL && *a_ret );
-  pila_destruir(pila);
-}
-
-
-void pruebas_apilamiento_null(){
-  // y aca abajo las llamo
-  apilamiento_null_medio();
-  apilamiento_null_arriba();
-  apilamiento_null_abajo();
-}
-
-///////////// APILAMIENTO NULL //////////////
-// El apilamiento del elemento NULL es válido.
-
-//aca pongo las funciones
-
-void pruebas_pila_nueva_igual_desapilada(void){
-// y aca abajo las llamo
-}
-
-///////////// APILAMIENTO NULL //////////////
-// El apilamiento del elemento NULL es válido.
-void pruebas_pila_nueva_desapilar(void){
+  print_test("Pila nueva destruida:", pila_esta_vacia(pila)==true  && pila_ver_tope(pila)==NULL);
 
 }
 
-///////////// APILAMIENTO NULL //////////////
-// El apilamiento del elemento NULL es válido.
-void pruebas_pila_nueva_es_vacia(void){
-
+void pruebas_volumen(pila_t * pila){
+  char c='a';
+  print_test("Pila apilar volumen grande de caracteres:", pruebas_apilar_volumen(pila,&c,VOLUMEN_GRANDE)==true);
+  print_test("Pila apilada no es vacía:", pila_esta_vacia(pila)==false );
+  print_test("Pila apilada se puede ver tope:", pila_ver_tope(pila)!=NULL);
+  print_test("Pila desapilar volumen enteros:", pruebas_desapilar_volumen(pila,VOLUMEN_CHICO+VOLUMEN_MEDIO)==true);
 }
-
-///////////// APILAMIENTO NULL //////////////
-// El apilamiento del elemento NULL es válido.
-void pruebas_pila_desapilada_desapilar(void){
+void pruebas_pila_alumno(void) {
+    pila_t* pila;
+    pila = pila_crear();
+    pruebas_pila_nueva(pila);
+    pila = pila_crear();
+    pruebas_apilar_enteros(pila);
+    pruebas_puntero_null(pila);
+    pruebas_pila_vacia_es_nueva(pila);
+    pruebas_volumen(pila);
 
 }

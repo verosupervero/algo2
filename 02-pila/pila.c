@@ -48,7 +48,8 @@ void pila_destruir(pila_t *pila){
 // Devuelve verdadero o falso, según si la pila tiene o no elementos apilados.
 // Pre: la pila fue creada.
 bool pila_esta_vacia(const pila_t *pila){
-  if(pila==NULL) return true;
+  if(pila==NULL)
+    return true;
   return pila->cantidad==0;
 }
 
@@ -56,12 +57,16 @@ bool pila_esta_vacia(const pila_t *pila){
 // Pre: la pila fue creada.
 // Post: se agregó un nuevo elemento a la pila, valor es el nuevo tope.
 bool pila_apilar(pila_t *pila, void* valor){
-  if(pila==NULL)  return false;
+  if(pila==NULL)
+      return false;
 
   if(pila->cantidad==pila->capacidad){
     void * datos_auxiliar;
     datos_auxiliar = realloc(pila->datos,pila->capacidad*FACTOR_DIMENSIONAR_PILA*sizeof(void*));
-    if(datos_auxiliar==NULL) return false;
+
+    if(datos_auxiliar==NULL)
+      return false;
+
     pila->datos=datos_auxiliar;
     pila->capacidad*=FACTOR_DIMENSIONAR_PILA;
   }
@@ -77,7 +82,8 @@ bool pila_apilar(pila_t *pila, void* valor){
 // Post: se devolvió el valor del tope de la pila, cuando la pila no está
 // vacía, NULL en caso contrario.
 void* pila_ver_tope(const pila_t *pila){
-  if(pila_esta_vacia(pila)) return NULL;
+  if(pila_esta_vacia(pila))
+      return NULL;
   return pila->datos[pila->cantidad-1];
 }
 
@@ -93,4 +99,5 @@ void* pila_desapilar(pila_t *pila){
     pila->cantidad--;
   return tope;
 }
+
 // ...
