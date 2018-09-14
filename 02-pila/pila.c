@@ -38,8 +38,8 @@ pila_t* pila_crear(void){
 // Post: se eliminaron todos los elementos de la pila.
 void pila_destruir(pila_t *pila){
   if(pila==NULL) return;
-  for(int i=0;i<(pila->cantidad);i++)
-    free(pila->datos[i]);
+  //for(int i=0;i<(pila->cantidad);i++)
+  //  free(pila->datos[i]);
   free(pila->datos);
   free(pila);
 }
@@ -94,7 +94,7 @@ void* pila_ver_tope(const pila_t *pila){
 // Post: si la pila no estaba vacía, se devuelve el valor del tope anterior
 // y la pila contiene un elemento menos.
 void* pila_desapilar(pila_t *pila){
-  void * tope=pila_ver_tope(pila);
+  void * tope = pila_ver_tope(pila);
   if (pila->cantidad>0)
     pila->cantidad--;
   return tope;

@@ -2,22 +2,27 @@
 #include "testing.h"
 #include <stddef.h>
 #include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 
-#define VOLUMEN_GRANDE    1000000
-#define VOLUMEN_CHICO      10
-#define VOLUMEN_MEDIO     1000
+#define VOLUMEN_GRANDE          1000000
+#define VOLUMEN_CHICO           10
+#define VOLUMEN_MEDIO           1000
 #define CAPACIDAD_INICIAL       128
 
 /* ******************************************************************
  *                   PRUEBAS UNITARIAS ALUMNO
  * *****************************************************************/
-bool pruebas_apilar_volumen(pila_t * pila, void* valor,int volumen){
+bool pruebas_apilar_vector_numeros_aleatorios(pila_t * pila, size_t volumen){
 
   if(pila==NULL)
     return false;
+  int * vector= malloc(volumen*sizeof(int));
 
-  for(int i=0;i<volumen;i++)
-    pila_apilar(pila, valor);
+  for(int i=0;i<volumen;i++){
+    vector[i]=rand();
+    pila_apilar(pila, &vector[i]);
+  }
 
   return true;
 }
@@ -46,9 +51,11 @@ void pruebas_pila_vacia_es_nueva(void){
   printf("INICIO DE PRUEBAS DE PILA VACIA == PILA NUEVA\n");
 
   print_test("Pila apilar char:", pila_apilar(pila,&c)==true);
-  print_test("Pila desapilar char:", pila_desapilar(pila)==NULL);
+  print_test("Pila desapilar char:", pila_desapilar(pila)!=NULL);
   print_test("Pila ahora vacía:",pila_esta_vacia(pila)==true );
   print_test("Pila no se puede ver tope:",pila_ver_tope(pila)==NULL );
+  pila_destruir(pila);
+  print_test("Pila de null destruida:",true);
 }
 
 void pruebas_puntero_null(void){
@@ -60,7 +67,7 @@ void pruebas_puntero_null(void){
   print_test("Pila apilar NULL:", pila_apilar(pila,NULL)==true);
   print_test("Pila desapilar NULL:", pila_desapilar(pila)==NULL);
   pila_destruir(pila);
-  print_test("Pila de null destruida:", pila_esta_vacia(pila)==true  && pila_ver_tope(pila)==NULL);
+  print_test("Pila de null destruida:",true);
 }
 
 void pruebas_apilar_enteros(void){
@@ -69,11 +76,9 @@ void pruebas_apilar_enteros(void){
 
   printf("INICIO DE PRUEBAS DE APILAR ENTEROS\n");
 
-  int i=1; //busco apilar un mismo elemento en la pila para probar porque es sencillo
-  print_test("Pila apilar volumen medio de enteros:", pruebas_apilar_volumen(pila,&i,VOLUMEN_MEDIO)==true);
+  print_test("Pila apilar volumen medio de enteros:", pruebas_apilar_vector_numeros_aleatorios(pila,VOLUMEN_MEDIO)==true);
   print_test("Pila apilada no es vacía:", pila_esta_vacia(pila)==false );
   print_test("Pila apilada se puede ver tope:", pila_ver_tope(pila)!=NULL);
-  pila_destruir(pila);
   print_test("Pila apilada destruida:", true);
 }
 
@@ -111,7 +116,7 @@ void pruebas_pila_alumno(void) {
 
   //pruebas_pila_nueva();
   pruebas_apilar_enteros();
-  //  pruebas_puntero_null();
+  // pruebas_puntero_null();
   //pruebas_pila_vacia_es_nueva();
   //  pruebas_volumen(pila);
 
