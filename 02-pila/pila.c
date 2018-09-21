@@ -38,8 +38,6 @@ pila_t* pila_crear(void){
 // Post: se eliminaron todos los elementos de la pila.
 void pila_destruir(pila_t *pila){
   if(pila==NULL) return;
-  //for(int i=0;i<(pila->cantidad);i++)
-  //  free(pila->datos[i]);
   free(pila->datos);
   free(pila);
 }
