@@ -21,10 +21,10 @@ struct cola{
 
 
 nodo_t* nodo_crear(void* valor){
-	nodo_t* nodo = malloc(sizeof(nodo_t));
-	if (nodo==NULL)
-		return NULL;
-	nodo->dato= valor;
+  nodo_t* nodo = malloc(sizeof(nodo_t));
+  if (nodo==NULL)
+    return NULL;
+  nodo->dato= valor;
   nodo->proximo_nodo= NULL;
   return nodo;
 }
@@ -71,14 +71,12 @@ void cola_destruir(cola_t *cola, void destruir_dato(void*)){
       destruir_dato(dato_actual);
   }
   free(cola);
-  return;
 }
 
 // Devuelve verdadero o falso, según si la cola tiene o no elementos encolados.
 // Pre: la cola fue creada.
 bool cola_esta_vacia(const cola_t *cola){
-  printf("%s : %d \n","primer y ult nodo son null?",cola->primer_nodo==NULL && cola->ultimo_nodo==NULL );
-  return (cola->primer_nodo==NULL && cola->ultimo_nodo==NULL);
+  return (cola->primer_nodo==NULL) && (cola->ultimo_nodo==NULL); 
 }
 
 // Agrega un nuevo elemento a la cola. Devuelve falso en caso de error.
@@ -119,13 +117,17 @@ void* cola_ver_primero(const cola_t *cola){
 // Post: se devolvió el valor del primer elemento anterior, la cola
 // contiene un elemento menos, si la cola no estaba vacía.
 void* cola_desencolar(cola_t *cola){
-
-  if(cola_esta_vacia(cola)==true)
+  if(cola_esta_vacia(cola))
     return NULL;
 
   void * nuevo_primer_nodo= cola->primer_nodo->proximo_nodo;
   void * valor= nodo_eliminar(cola->primer_nodo);
   cola->primer_nodo= nuevo_primer_nodo;
-  printf("llegue a desencolar algo\n");
+  
+  // Si la cola queda vacía, ultimo nodo debe ser NULL
+  if (nuevo_primer_nodo == NULL){
+    cola->ultimo_nodo = NULL;  
+  }
+  
   return valor;
 }
