@@ -97,7 +97,7 @@ void prueba_destruir_dinamico(size_t volumen){
   
   printf("INICIO DE PRUEBA DE DESTRUIR COLA CON ELEMENTOS DINAMICOS\n");
   
-  for(size_t i=0;i<volumen;i++){
+  for(int i=0;i<volumen;i++){
     valor = malloc(sizeof(int));
     if(valor==NULL){
       fprintf(stderr, "Out of memory\n");
@@ -119,7 +119,7 @@ void prueba_destruir_estatico(){
   
   printf("INICIO DE PRUEBA DE DESTRUIR COLA CON ELEMENTOS ESTATICOS\n");
   
-  for(size_t i=0;i<10000;i++){
+  for(int i=0;i<10000;i++){
     valor[i] = i;
     cola_encolar(cola, valor);
   }
