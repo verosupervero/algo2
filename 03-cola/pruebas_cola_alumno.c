@@ -72,13 +72,13 @@ void pruebas_encolar_enteros(size_t volumen,char * nombre_volumen){
     for(int i=0;i<volumen;i++){
       valor= (int *) cola_ver_primero(cola);
       topes_ok &= (*valor==i);
-	    valor_encontrado = cola_desencolar(cola);
+      valor_encontrado = cola_desencolar(cola);
       //int* primero_nuevo= (int *) cola_ver_primero(cola);
       //if(primero_nuevo!=NULL)
         //printf(" este es el primero nuevo %d \n",*primero_nuevo );
       valores_ok &= (*valor_encontrado==i);
-      printf(" este es el valor que se desencolo : %d vs i: %d\n ",*valor_encontrado,i );
-      printf(" --------\n ");
+      //printf(" este es el valor que se desencolo : %d vs i: %d\n ",*valor_encontrado,i );
+      //printf(" --------\n ");
       free(valor_encontrado);
     }
 
@@ -87,6 +87,45 @@ void pruebas_encolar_enteros(size_t volumen,char * nombre_volumen){
   print_test("Cola desencolar correctamente (cola vacia):", cola_esta_vacia(cola)==true);
   cola_destruir(cola,NULL);
   print_test("Cola encolada destruida:", true);
+}
+
+void prueba_destruir_dinamico(size_t volumen){
+  cola_t* cola;
+  cola = cola_crear();
+  
+  int* valor;
+  
+  printf("INICIO DE PRUEBA DE DESTRUIR COLA CON ELEMENTOS DINAMICOS\n");
+  
+  for(size_t i=0;i<volumen;i++){
+    valor = malloc(sizeof(int));
+    if(valor==NULL){
+      fprintf(stderr, "Out of memory\n");
+      return ;
+    }
+    *valor = i;
+    cola_encolar(cola, valor);
+  }
+  
+  cola_destruir(cola, &free);
+  print_test("Cola destruida:", true);
+}
+
+void prueba_destruir_estatico(){
+  cola_t* cola;
+  cola = cola_crear();
+  
+  int valor[10000];
+  
+  printf("INICIO DE PRUEBA DE DESTRUIR COLA CON ELEMENTOS ESTATICOS\n");
+  
+  for(size_t i=0;i<10000;i++){
+    valor[i] = i;
+    cola_encolar(cola, valor);
+  }
+  
+  cola_destruir(cola, NULL);
+  print_test("Cola destruida:", true);
 }
 
 void pruebas_cola_nueva(void){
@@ -107,11 +146,13 @@ void pruebas_cola_nueva(void){
 
 void pruebas_cola_alumno(void) {
 
-  //pruebas_cola_nueva();
-  //pruebas_encolar_enteros(VOLUMEN_CHICO, "Volumen chico");
-  //pruebas_encolar_enteros(VOLUMEN_MEDIO,"Volumen medio");
-  //pruebas_encolar_enteros(VOLUMEN_GRANDE,"Volumen grande");
+  pruebas_cola_nueva();
+  pruebas_encolar_enteros(VOLUMEN_CHICO, "Volumen chico");
+  pruebas_encolar_enteros(VOLUMEN_MEDIO,"Volumen medio");
+  pruebas_encolar_enteros(VOLUMEN_GRANDE,"Volumen grande");
+  prueba_destruir_dinamico(VOLUMEN_GRANDE);
+  prueba_destruir_estatico();
   pruebas_puntero_null();
-  //pruebas_cola_vacia_es_nueva();
+  pruebas_cola_vacia_es_nueva();
 
 }
