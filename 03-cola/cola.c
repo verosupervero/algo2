@@ -20,14 +20,6 @@ struct cola{
 };
 
 
-nodo_t* nodo_crear(void* valor){
-  nodo_t* nodo = malloc(sizeof(nodo_t));
-  if (nodo==NULL)
-    return NULL;
-  nodo->dato= valor;
-  nodo->proximo_nodo= NULL;
-  return nodo;
-}
 /* ******************************************************************
  *                FUNCIONES AUXILIARES TDA_NODO
  * *****************************************************************/
@@ -40,6 +32,16 @@ void * nodo_eliminar(nodo_t * nodo){
   free(nodo);
   return valor;
 }
+
+nodo_t* nodo_crear(void* valor){
+  nodo_t* nodo = malloc(sizeof(nodo_t));
+  if (nodo==NULL)
+    return NULL;
+  nodo->dato= valor;
+  nodo->proximo_nodo= NULL;
+  return nodo;
+}
+
 /* ******************************************************************
  *                    PRIMITIVAS DE LA COLA
  * *****************************************************************/
