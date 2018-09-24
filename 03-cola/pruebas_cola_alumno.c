@@ -92,12 +92,12 @@ void pruebas_encolar_enteros(size_t volumen,char * nombre_volumen){
 void prueba_destruir_dinamico(size_t volumen){
   cola_t* cola;
   cola = cola_crear();
-  
+
   int* valor;
-  
+
   printf("INICIO DE PRUEBA DE DESTRUIR COLA CON ELEMENTOS DINAMICOS\n");
-  
-  for(size_t i=0;i<volumen;i++){
+
+  for(int i=0;i<volumen;i++){
     valor = malloc(sizeof(int));
     if(valor==NULL){
       fprintf(stderr, "Out of memory\n");
@@ -106,7 +106,7 @@ void prueba_destruir_dinamico(size_t volumen){
     *valor = i;
     cola_encolar(cola, valor);
   }
-  
+
   cola_destruir(cola, &free);
   print_test("Cola destruida:", true);
 }
@@ -114,16 +114,16 @@ void prueba_destruir_dinamico(size_t volumen){
 void prueba_destruir_estatico(){
   cola_t* cola;
   cola = cola_crear();
-  
+
   int valor[10000];
-  
+
   printf("INICIO DE PRUEBA DE DESTRUIR COLA CON ELEMENTOS ESTATICOS\n");
-  
-  for(size_t i=0;i<10000;i++){
+
+  for(int i=0;i<10000;i++){
     valor[i] = i;
     cola_encolar(cola, valor);
   }
-  
+
   cola_destruir(cola, NULL);
   print_test("Cola destruida:", true);
 }
