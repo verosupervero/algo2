@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define CAPACIDAD_INICIAL       128
-#define FACTOR_DIMENSIONAR_PILA   2
+#define CAPACIDAD_INICIAL               128
+#define FACTOR_AUMENTAR_CAPACIDAD_PILA   2
+#define FACTOR_DISMINUIR_CAPACIDAD_PILA  2
+#define FACTOR_ACHICAR_PILA              4
 
 /* Definición del struct pila proporcionado por la cátedra.
  */
@@ -13,10 +15,24 @@ struct pila {
     size_t capacidad;  // Capacidad del arreglo 'datos'.
 };
 
+// Redimensiona la pila.
+// Pre: la pila fue creada.
+// Post: se redimensionó la pila con el factor de redimensión pasado.
+bool _pila_redimensionar (pila_t* pila, size_t nueva_capacidad){
+  void * datos_auxiliar;
+  datos_auxiliar = realloc(pila->datos, nueva_capacidad*sizeof(void*));
+
+  if(datos_auxiliar==NULL)
+    return false;
+
+  pila->datos=datos_auxiliar;
+  pila->capacidad= nueva_capacidad;
+  return true;
+}
+
 /* *****************************************************************
  *                    PRIMITIVAS DE LA PILA
  * *****************************************************************/
-
 
 // Crea una pila.
 // Post: devuelve una nueva pila vacía.
@@ -37,7 +53,6 @@ pila_t* pila_crear(void){
 // Pre: la pila fue creada.
 // Post: se eliminaron todos los elementos de la pila.
 void pila_destruir(pila_t *pila){
-  if(pila==NULL) return;
   free(pila->datos);
   free(pila);
 }
@@ -46,8 +61,6 @@ void pila_destruir(pila_t *pila){
 // Devuelve verdadero o falso, según si la pila tiene o no elementos apilados.
 // Pre: la pila fue creada.
 bool pila_esta_vacia(const pila_t *pila){
-  if(pila==NULL)
-    return true;
   return pila->cantidad==0;
 }
 
@@ -55,18 +68,10 @@ bool pila_esta_vacia(const pila_t *pila){
 // Pre: la pila fue creada.
 // Post: se agregó un nuevo elemento a la pila, valor es el nuevo tope.
 bool pila_apilar(pila_t *pila, void* valor){
-  if(pila==NULL)
-      return false;
 
   if(pila->cantidad==pila->capacidad){
-    void * datos_auxiliar;
-    datos_auxiliar = realloc(pila->datos,pila->capacidad*FACTOR_DIMENSIONAR_PILA*sizeof(void*));
-
-    if(datos_auxiliar==NULL)
+    if(!_pila_redimensionar(pila, pila->capacidad*FACTOR_AUMENTAR_CAPACIDAD_PILA))
       return false;
-
-    pila->datos=datos_auxiliar;
-    pila->capacidad*=FACTOR_DIMENSIONAR_PILA;
   }
 
   pila->datos[pila->cantidad]=valor;
@@ -95,6 +100,12 @@ void* pila_desapilar(pila_t *pila){
   void * tope = pila_ver_tope(pila);
   if (pila->cantidad>0)
     pila->cantidad--;
+
+  if(pila->cantidad < pila->capacidad/FACTOR_ACHICAR_PILA){
+    if(!_pila_redimensionar(pila, pila->capacidad/FACTOR_DISMINUIR_CAPACIDAD_PILA))
+        return false;
+  }
+
   return tope;
 }
 
