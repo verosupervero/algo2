@@ -96,11 +96,7 @@ void prueba_destruir_dinamico(size_t volumen){
   int* valor;
 
   printf("INICIO DE PRUEBA DE DESTRUIR COLA CON ELEMENTOS DINAMICOS\n");
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> b6eccc91e48315f6b69db8c4e1366d8857648431
   for(int i=0;i<volumen;i++){
     valor = malloc(sizeof(int));
     if(valor==NULL){
@@ -122,11 +118,7 @@ void prueba_destruir_estatico(){
   int valor[10000];
 
   printf("INICIO DE PRUEBA DE DESTRUIR COLA CON ELEMENTOS ESTATICOS\n");
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> b6eccc91e48315f6b69db8c4e1366d8857648431
   for(int i=0;i<10000;i++){
     valor[i] = i;
     cola_encolar(cola, valor);
