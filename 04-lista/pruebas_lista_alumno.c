@@ -12,11 +12,6 @@
 /* ******************************************************************
  *                   PRUEBAS UNITARIAS ALUMNO
  * *****************************************************************/
-
-
-//print_test("Lista insertar_ultimo NULL:", pruebas_insertar_ultimo(lista,NULL)==true);
-
-//print_test("Lista borrar_ultimo volumen NULLS:", pruebas_borrar_ultimo_volumen(lista,VOLUMEN_CHICO+VOLUMEN_MEDIO-1)==true);
 void pruebas_lista_vacia_es_nueva(void){
   lista_t* lista;
   lista = lista_crear();
@@ -80,12 +75,7 @@ void pruebas_insertar_ultimo_enteros(size_t volumen,char * nombre_volumen){
       valor= (int *) lista_ver_primero(lista);
       topes_ok &= (*valor==i);
       valor_encontrado = lista_borrar_primero(lista);
-      //int* primero_nuevo= (int *) lista_ver_primero(lista);
-      //if(primero_nuevo!=NULL)
-        //printf(" este es el primero nuevo %d \n",*primero_nuevo );
       valores_ok &= (*valor_encontrado==i);
-      //printf(" este es el valor que se desencolo : %d vs i: %d\n ",*valor_encontrado,i );
-      //printf(" --------\n ");
       free(valor_encontrado);
     }
 
@@ -99,10 +89,10 @@ void pruebas_insertar_ultimo_enteros(size_t volumen,char * nombre_volumen){
 void prueba_destruir_dinamico(size_t volumen){
   lista_t* lista;
   lista = lista_crear();
-
   int* valor;
 
   printf("INICIO DE PRUEBA DE DESTRUIR LISTA CON ELEMENTOS DINAMICOS\n");
+  printf("Creando elementos... \n");
 
   for(int i=0;i<volumen;i++){
     valor = malloc(sizeof(int));
@@ -113,53 +103,46 @@ void prueba_destruir_dinamico(size_t volumen){
     *valor = i;
     lista_insertar_ultimo(lista, valor);
   }
-
+  print_test("Lista tiene todos los elementos:", lista_largo(lista)==volumen);
   lista_destruir(lista, &free);
   print_test("Lista destruida:", true);
 }
 
-void prueba_destruir_estatico(){
+void prueba_destruir_estatico(size_t volumen){
   lista_t* lista;
   lista = lista_crear();
-
-  int valor[10000];
+  int valor[volumen];
 
   printf("INICIO DE PRUEBA DE DESTRUIR LISTA CON ELEMENTOS ESTATICOS\n");
+  printf("Creando elementos... \n");
 
-  for(int i=0;i<10000;i++){
+  for(int i=0;i<volumen;i++){
     valor[i] = i;
     lista_insertar_ultimo(lista, valor);
   }
-
   lista_destruir(lista, NULL);
   print_test("Lista destruida:", true);
 }
 
 void pruebas_lista_nueva(void){
-
   lista_t* lista;
   lista = lista_crear();
-
   printf("INICIO DE PRUEBAS DE LISTA NUEVA\n");
-
   print_test("Lista nueva creada:", lista!=NULL);
   print_test("Lista nueva es vacía:",lista_esta_vacia(lista)==true );
   print_test("Lista nueva ver primero:",lista_ver_primero(lista)==NULL );
   print_test("Lista nueva ver ultimo:",lista_ver_ultimo(lista)==NULL );
   lista_destruir(lista,NULL);
   print_test("Lista nueva destruida:", true);
-
 }
 
 void pruebas_lista_alumno(void) {
-
   pruebas_lista_nueva();
   pruebas_insertar_ultimo_enteros(VOLUMEN_CHICO, "Volumen chico");
   pruebas_insertar_ultimo_enteros(VOLUMEN_MEDIO,"Volumen medio");
   pruebas_insertar_ultimo_enteros(VOLUMEN_GRANDE,"Volumen grande");
   prueba_destruir_dinamico(VOLUMEN_GRANDE);
-  prueba_destruir_estatico();
+  prueba_destruir_estatico(VOLUMEN_GRANDE);
   pruebas_puntero_null();
   pruebas_lista_vacia_es_nueva();
-
 }

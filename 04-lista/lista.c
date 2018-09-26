@@ -71,7 +71,6 @@ void lista_destruir(lista_t *lista, void destruir_dato(void*)){
     dato_actual= lista_borrar_primero(lista);
     if(destruir_dato!=NULL)
       destruir_dato(dato_actual);
-    lista->largo--;
   }
   free(lista);
 }
@@ -79,7 +78,7 @@ void lista_destruir(lista_t *lista, void destruir_dato(void*)){
 // Devuelve verdadero o falso, según si la lista tiene o no elementos enlistados.
 // Pre: la lista fue creada.
 bool lista_esta_vacia(const lista_t *lista){
-  return (lista->primer_nodo==NULL) && (lista->ultimo_nodo==NULL);
+  return !lista->largo;
 }
 
 
