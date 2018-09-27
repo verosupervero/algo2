@@ -124,7 +124,8 @@ void prueba_destruir_estatico(size_t volumen){
 
   for(int i=0;i<volumen;i++){
     valor[i] = i;
-    lista_insertar_ultimo(lista, valor);
+    lista_insertar_ultimo(lista, &valor[i]);
+    //fprintf(stderr,"\t cargado: %d\n", *((int*)lista_ver_ultimo(lista))  );
   }
   lista_destruir(lista, NULL);
   print_test("Lista destruida:", true);
@@ -176,7 +177,7 @@ void pruebas_lista_nueva(void){
    printf("Llenando la lista...\n");
    for(int i=0;i<volumen;i++){
      valor[i] = i;
-     lista_insertar_ultimo(lista, valor);
+     lista_insertar_ultimo(lista, &valor[i]);
 	 fprintf(stderr,"\t cargado: %d\n", *((int*)lista_ver_ultimo(lista))  );
    }
    printf("INICIO DE PRUEBAS DE ITERAR UNA LISTA RELLENA\n");
@@ -201,14 +202,14 @@ void pruebas_lista_nueva(void){
  }
 
 void pruebas_lista_alumno(void) {
-  //pruebas_lista_nueva();
-  //pruebas_insertar_ultimo_enteros(VOLUMEN_CHICO, "Volumen chico");
-  //pruebas_insertar_ultimo_enteros(VOLUMEN_MEDIO,"Volumen medio");
-  //pruebas_insertar_ultimo_enteros(VOLUMEN_GRANDE,"Volumen grande");
-  //prueba_destruir_dinamico(VOLUMEN_GRANDE);
-  //prueba_destruir_estatico(VOLUMEN_GRANDE);
-  //pruebas_puntero_null();
-  //pruebas_lista_vacia_es_nueva();
-  //pruebas_iterar_lista_nueva();
-  pruebas_iterar_lista_rellena(VOLUMEN_CHICO);
+  /*pruebas_lista_nueva();
+  pruebas_insertar_ultimo_enteros(VOLUMEN_CHICO, "Volumen chico");
+  pruebas_insertar_ultimo_enteros(VOLUMEN_MEDIO,"Volumen medio");
+  pruebas_insertar_ultimo_enteros(VOLUMEN_GRANDE,"Volumen grande");
+  prueba_destruir_dinamico(VOLUMEN_GRANDE);
+  prueba_destruir_estatico(VOLUMEN_CHICO);
+  pruebas_puntero_null();
+  pruebas_lista_vacia_es_nueva();
+  pruebas_iterar_lista_nueva();
+  */pruebas_iterar_lista_rellena(VOLUMEN_CHICO);
 }
