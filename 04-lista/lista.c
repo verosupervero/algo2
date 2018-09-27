@@ -20,6 +20,10 @@ struct lista{
   size_t largo;
 };
 
+struct lista_iter{
+  nodo_t * nodo_actual;
+  nodo_t * nodo_anterior;
+};
 
 /* ******************************************************************
  *                FUNCIONES AUXILIARES TDA_NODO
@@ -173,3 +177,100 @@ void* lista_borrar_primero(lista_t *lista){
 size_t lista_largo(const lista_t *lista){
   return lista->largo;
 }
+
+/* ******************************************************************
+ *                    PRIMITIVAS DEL ITERADOR EXTERNO
+ * *****************************************************************/
+
+ // Crea un iterador.
+ // Post: devuelve un nuevo iterador vacío.
+lista_iter_t *lista_iter_crear(lista_t *lista){
+  lista_iter_t * lista_iter=malloc(sizeof(lista_iter_t));
+  if(lista_iter==NULL)
+    return NULL;
+
+  lista_iter->nodo_anterior= NULL;
+  lista_iter->nodo_actual= lista->primer_nodo;
+  return lista_iter;
+}
+
+// El iterador avanza una posición en la lista.
+// Pre: El iterador fue creado.
+// Post: se devolvió true si pudo avanzar o false si llego al final de la lista.
+bool lista_iter_avanzar(lista_iter_t *iter){
+  if(lista_iter_al_final(iter)==true)
+    return false;
+
+  nodo_t * nuevo_actual=    iter-> nodo_actual->proximo_nodo;
+  nodo_t * nuevo_anterior=  iter-> nodo_actual;
+
+  iter->nodo_actual= nuevo_actual;
+  iter->nodo_anterior= nuevo_anterior;
+  return true;
+}
+
+// Obtiene el valor del dato al que apunta el iterador.
+// Pre: El iterador fue creado.
+// Post: Devolvió el valor del dato al que apunta el iterador o NULL si la lista
+// estaba vacía o si el iterador apuntaba al final de la lista
+void * lista_iter_ver_actual(const lista_iter_t *iter){
+  if (lista_iter_al_final(iter))
+      return NULL;
+  return iter->nodo_actual->dato;
+}
+
+// Constata si el iterador apunta al final de la lista.
+// Pre: La lista fue creada
+// Post: Devolvió true si llegó al final de la lista, false en caso contrario.
+bool lista_iter_al_final(const lista_iter_t *iter){
+  return !iter->nodo_actual;
+}
+
+// Destruye el iterador.
+// Pre: El iterador fue creado.
+// Post: Se destruyó el iterador.
+void lista_iter_destruir(lista_iter_t *iter){
+  free(iter);
+}
+
+// Inserta un elemento en la lista en la posición actual
+// Pre: El iterador fue creado.
+// Post: Devolvió true si se insertó el elemento en la lista, false en caso contrario.
+bool lista_iter_insertar(lista_iter_t *iter, void *dato){
+
+  nodo_t* nuevo_nodo = nodo_crear(dato);
+  if(nuevo_nodo==NULL)
+    return false;
+
+  nuevo_nodo->proximo_nodo= iter->nodo_actual;
+  iter->nodo_actual=nuevo_nodo;
+
+  if(iter->nodo_anterior!=NULL){
+    iter->nodo_anterior->proximo_nodo= iter->nodo_actual;
+  }
+  return true;
+}
+
+// Borra un elemento en la lista en la posición actual
+// Pre: El iterador fue creado.
+// Post: Devolvió el dato o NULL en caso de que el iterador apunte a NULL.
+void * lista_iter_borrar(lista_iter_t *iter){
+  nodo_t * nodo_a_borrar=iter->nodo_actual;
+  if(nodo_a_borrar==NULL)
+    return NULL;
+  iter->nodo_actual=iter->nodo_actual->proximo_nodo;
+  if(iter->nodo_anterior!=NULL){
+    iter->nodo_anterior->proximo_nodo=iter->nodo_actual;
+  }
+  void * valor_nodo_borrado= nodo_eliminar(nodo_a_borrar);
+  return valor_nodo_borrado;
+}
+
+/* ******************************************************************
+ *                    PRIMITIVAS DEL ITERADOR INTERNO
+ * *****************************************************************/
+
+// Itera una posicion en la lista. Visitar recibe el dato y un puntero extra.
+// Devuelve true si se debe seguir iterando, false en caso contrario.
+// Pre: La lista fue creada.
+void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra);

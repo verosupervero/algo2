@@ -12,6 +12,7 @@
 /* La lista está planteada como una lista de punteros genéricos. */
 struct lista;
 typedef struct lista lista_t;
+typedef struct lista_iter lista_iter_t;
 
 
 /* ******************************************************************
@@ -70,19 +71,51 @@ void* lista_borrar_primero (lista_t *lista);
 size_t lista_largo(const lista_t *lista);
 
 /* ******************************************************************
- *                    PRIMITIVAS DEL ITERADOR
+ *                    PRIMITIVAS DEL ITERADOR EXTERNO
  * *****************************************************************/
 
-
-typedef struct lista_iter lista_iter_t;
-
+ // Crea un iterador.
+ // Post: devuelve un nuevo iterador vacío.
 lista_iter_t *lista_iter_crear(lista_t *lista);
+
+// El iterador avanza una posición en la lista.
+// Pre: El iterador fue creado.
+// Post: se devolvió true si pudo avanzar o false si llego al final de la lista.
 bool lista_iter_avanzar(lista_iter_t *iter);
+
+// Obtiene el valor del dato al que apunta el iterador.
+// Pre: El iterador fue creado.
+// Post: Devolvió el valor del dato al que apunta el iterador o NULL si la lista
+// estaba vacía o si el iterador apuntaba al final de la lista
 void *lista_iter_ver_actual(const lista_iter_t *iter);
+
+// Constata si el iterador apunta al final de la lista.
+// Pre: La lista fue creada
+// Post: Devolvió true si llegó al final de la lista, false en caso contrario.
 bool lista_iter_al_final(const lista_iter_t *iter);
+
+// Destruye el iterador.
+// Pre: El iterador fue creado.
+// Post: Se destruyó el iterador.
 void lista_iter_destruir(lista_iter_t *iter);
+
+// Inserta un elemento en la lista
+// Pre: El iterador fue creado.
+// Post: Devolvió true si se insertó el elemento en la lista, false en caso contrario.
 bool lista_iter_insertar(lista_iter_t *iter, void *dato);
+
+// Borra un elemento en la lista
+// Pre: El iterador fue creado.
+// Post: Devolvió true si se insertó el elemento en la lista, false en caso contrario.
 void *lista_iter_borrar(lista_iter_t *iter);
+
+/* ******************************************************************
+ *                    PRIMITIVAS DEL ITERADOR INTERNO
+ * *****************************************************************/
+
+// Itera una posicion en la lista. Visitar recibe el dato y un puntero extra.
+// Devuelve true si se debe seguir iterando, false en caso contrario.
+// Pre: La lista fue creada.
 void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra);
 
 /* *****************************************************************
