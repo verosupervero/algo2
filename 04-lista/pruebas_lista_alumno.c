@@ -148,7 +148,6 @@ void pruebas_lista_nueva(void){
  void pruebas_iterar_lista_nueva(void){
    lista_t* lista;
    lista_iter_t * iter;
-   //int a=5;
 
    lista = lista_crear();
    iter= lista_iter_crear(lista);
@@ -167,7 +166,37 @@ void pruebas_lista_nueva(void){
    print_test("Iterador destruido:", true);
  }
 
+ void pruebas_iterar_lista_rellena(size_t volumen){
+   lista_t* lista;
+   lista_iter_t * iter;
+   lista = lista_crear();
+   iter= lista_iter_crear(lista);
+   int valor[volumen];
 
+   printf("Llenando la lista...\n");
+   for(int i=0;i<volumen;i++){
+     valor[i] = i;
+     lista_insertar_ultimo(lista, valor);
+   }
+   printf("INICIO DE PRUEBAS DE ITERAR UNA LISTA RELLENA\n");
+   print_test("Lista nueva creada:", lista!=NULL);
+   print_test("Puede avanzar iterador en lista:", lista_iter_avanzar(iter)==true);
+
+   int * valor_actual= (int *) lista_iter_ver_actual(iter);
+   int valor_elegido= 1;
+
+   print_test("Iterador en la lista tiene datos (y es el esperado):",* valor_actual==valor_elegido );
+
+   print_test("Iterador de lista no está al final:", lista_iter_al_final(iter)==true);
+   print_test("El iterador en la lista puede borrar elementos:", lista_iter_borrar(iter)==&valor[1]);
+   print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&valor_elegido)==true);
+
+   lista_iter_destruir(iter);
+
+   lista_destruir(lista,NULL);
+   print_test("Lista nueva destruida:", true);
+   print_test("Iterador destruido:", true);
+ }
 
 void pruebas_lista_alumno(void) {
   //pruebas_lista_nueva();
@@ -178,5 +207,6 @@ void pruebas_lista_alumno(void) {
   //prueba_destruir_estatico(VOLUMEN_GRANDE);
   //pruebas_puntero_null();
   //pruebas_lista_vacia_es_nueva();
-  pruebas_iterar_lista_nueva();
+  //pruebas_iterar_lista_nueva();
+  pruebas_iterar_lista_rellena(VOLUMEN_CHICO);
 }
