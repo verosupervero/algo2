@@ -82,7 +82,10 @@ void lista_destruir(lista_t *lista, void destruir_dato(void*)){
 // Devuelve verdadero o falso, según si la lista tiene o no elementos enlistados.
 // Pre: la lista fue creada.
 bool lista_esta_vacia(const lista_t *lista){
-  return !lista->largo;
+  if(lista->largo == 0){
+    fprintf(stderr, "lista vacia\n");
+  }
+  return lista->largo == 0;
 }
 
 
@@ -143,7 +146,7 @@ void* lista_ver_primero(const lista_t *lista){
 // Pre: la lista fue creada.
 // Post: se devolvió el último elemento de la lista, cuando no está vacía.
 void* lista_ver_ultimo(const lista_t *lista){
-  if(lista_esta_vacia(lista)==true)
+  if(lista_esta_vacia(lista))
     return NULL;
   return lista->ultimo_nodo->dato;
 }
@@ -198,8 +201,11 @@ lista_iter_t *lista_iter_crear(lista_t *lista){
 // Pre: El iterador fue creado.
 // Post: se devolvió true si pudo avanzar o false si llego al final de la lista.
 bool lista_iter_avanzar(lista_iter_t *iter){
-  if(lista_iter_al_final(iter)==true)
+  fprintf(stderr, "lista_iter_avanzar\n");
+  if(lista_iter_al_final(iter)){
+	fprintf(stderr, "La lista está al final, ameo\n");
     return false;
+  }
 
   nodo_t * nuevo_actual=    iter-> nodo_actual->proximo_nodo;
   nodo_t * nuevo_anterior=  iter-> nodo_actual;
@@ -223,7 +229,11 @@ void * lista_iter_ver_actual(const lista_iter_t *iter){
 // Pre: La lista fue creada
 // Post: Devolvió true si llegó al final de la lista, false en caso contrario.
 bool lista_iter_al_final(const lista_iter_t *iter){
-  return !iter->nodo_actual;
+  if (iter == NULL){
+    fprintf(stderr, "Iterador nulo en lista_iter_al_final\n");
+	return false;
+  }
+  return iter->nodo_actual == NULL;
 }
 
 // Destruye el iterador.

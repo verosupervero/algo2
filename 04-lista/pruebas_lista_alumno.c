@@ -166,7 +166,7 @@ void pruebas_lista_nueva(void){
    print_test("Iterador destruido:", true);
  }
 
- void pruebas_iterar_lista_rellena(size_t volumen){
+ void pruebas_iterar_lista_rellena(size_t volumen){ //aqui
    lista_t* lista;
    lista_iter_t * iter;
    lista = lista_crear();
@@ -177,10 +177,12 @@ void pruebas_lista_nueva(void){
    for(int i=0;i<volumen;i++){
      valor[i] = i;
      lista_insertar_ultimo(lista, valor);
+	 fprintf(stderr,"\t cargado: %d\n", *((int*)lista_ver_ultimo(lista))  );
    }
    printf("INICIO DE PRUEBAS DE ITERAR UNA LISTA RELLENA\n");
    print_test("Lista nueva creada:", lista!=NULL);
-   print_test("Puede avanzar iterador en lista:", lista_iter_avanzar(iter)==true);
+   print_test("Cantidad de elementos correctos:", lista_largo(lista)==volumen);
+   print_test("Puede avanzar iterador en lista:", lista_iter_avanzar(iter));
 
    int * valor_actual= (int *) lista_iter_ver_actual(iter);
    int valor_elegido= 1;
