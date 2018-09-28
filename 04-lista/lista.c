@@ -82,9 +82,6 @@ void lista_destruir(lista_t *lista, void destruir_dato(void*)){
 // Devuelve verdadero o falso, según si la lista tiene o no elementos enlistados.
 // Pre: la lista fue creada.
 bool lista_esta_vacia(const lista_t *lista){
-  if(lista->largo == 0){
-    fprintf(stderr, "lista vacia\n");
-  }
   return lista->largo == 0;
 }
 
@@ -226,13 +223,9 @@ void * lista_iter_ver_actual(const lista_iter_t *iter){
 }
 
 // Constata si el iterador apunta al final de la lista.
-// Pre: La lista fue creada
+// Pre: La lista fue creada y el iterador fue creado
 // Post: Devolvió true si llegó al final de la lista, false en caso contrario.
 bool lista_iter_al_final(const lista_iter_t *iter){
-  if (iter == NULL){
-    fprintf(stderr, "Iterador nulo en lista_iter_al_final\n");
-	return false;
-  }
   return iter->nodo_actual == NULL;
 }
 
@@ -242,8 +235,7 @@ bool lista_iter_al_final(const lista_iter_t *iter){
 void lista_iter_destruir(lista_iter_t *iter){
   free(iter);
 }
-
-// Inserta un elemento en la lista en la posición actual
+/*// Inserta un elemento en la lista en la posición actual
 // Pre: El iterador fue creado.
 // Post: Devolvió true si se insertó el elemento en la lista, false en caso contrario.
 bool lista_iter_insertar(lista_iter_t *iter, void *dato){
@@ -258,6 +250,33 @@ bool lista_iter_insertar(lista_iter_t *iter, void *dato){
   if(iter->nodo_anterior!=NULL){
     iter->nodo_anterior->proximo_nodo= iter->nodo_actual;
   }
+  return true;
+}*/
+// Inserta un elemento en la lista en la posición actual
+// Pre: El iterador fue creado.
+// Post: Devolvió true si se insertó el elemento en la lista, false en caso contrario.
+bool lista_iter_insertar(lista_iter_t *iter, void *dato){
+
+
+
+  if(lista_esta_vacia(lista)){
+    lista_insertar_primero(lista,dato);
+    iter->nodo_actual=lista->primer_nodo;
+  }
+  else{
+    nodo_t* nuevo_nodo = nodo_crear(dato);
+    if(nuevo_nodo==NULL)
+      return false;
+    nuevo_nodo->proximo_nodo= iter->nodo_actual;
+    iter->nodo_actual=nuevo_nodo;
+
+    if(lista_iter_al_final(iter)){
+
+    }
+    iter->nodo_anterior->proximo_nodo= iter->nodo_actual; //nodo anterior no null
+
+  }
+
   return true;
 }
 
@@ -283,4 +302,10 @@ void * lista_iter_borrar(lista_iter_t *iter){
 // Itera una posicion en la lista. Visitar recibe el dato y un puntero extra.
 // Devuelve true si se debe seguir iterando, false en caso contrario.
 // Pre: La lista fue creada.
-void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra);
+void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
+  nodo_t * nodo=lista->primer_nodo;
+  while(nodo!=NULL){
+    visitar(nodo->dato,extra);
+    nodo=nodo->proximo_nodo;
+  }
+}
