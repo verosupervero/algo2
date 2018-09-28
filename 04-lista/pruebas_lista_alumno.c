@@ -10,9 +10,38 @@
 #define CAPACIDAD_INICIAL       128
 
 /* ******************************************************************
- *                   PRUEBAS UNITARIAS ALUMNO
+ *                   FUNCIONES AUXILIARES DE PRUEBAS
  * *****************************************************************/
+ bool imprimir_entero(void * dato,void* extra){
+   printf("*------*\n");
+   if(*( (int*)dato)>=10){
+     printf("|..%d..|\n",*( (int*)dato));
+   }
+   else{
+     printf("|..%d...|\n",*( (int*)dato));
+   }
+   printf("|......|\n");
+   printf("*------*\n");
+   printf("...|...\n");
+   printf("...v...\n");
+   return true;
+ }
 
+ bool imprimir_ingredientes(void * dato,void* extra){
+   if(extra==NULL){
+     printf("%s\n",*((char**)dato));
+   }
+   return true;
+ }
+
+ void imprimir_lista (size_t volumen, lista_t* lista, bool imprimir(void *dato, void *extra), void *extra){
+   if(volumen<=VOLUMEN_CHICO){
+     printf("Voy a probar el iterador interno, tenes que poder ver la lista...\n");
+     printf("NOTA: Si la lista es menor a 10 elementos (mucho scroll)\n");
+     lista_iterar (lista, imprimir,extra);
+     printf("..GND..\n\n");
+   }
+ }
 
  /* ******************************************************************
   *                    PRUEBAS DE LA LISTA
@@ -178,22 +207,6 @@ void pruebas_lista_nueva(void){
 
 }*/
 
-
-bool imprimir_entero(void * dato,void* extra){
-  printf("*------*\n");
-  printf("|..%d...|\n",*( (int*)dato));
-  printf("|......|\n");
-  printf("*------*\n");
-  printf("...|...\n");
-  printf("...v...\n");
-  return true;
-}
-
-bool imprimir_ingredientes(void * dato,void* extra){
-  printf("%s\n",*((char**)dato));
-  return true;
-}
-
  void pruebas_iterar_lista_rellena(size_t volumen, char * nombre_volumen){ //aqui
    lista_t* lista;
    lista_iter_t * iter;
@@ -205,12 +218,7 @@ bool imprimir_ingredientes(void * dato,void* extra){
      valor[i] = i;
      lista_insertar_ultimo(lista, &valor[i]);
    }
-   if(volumen<=VOLUMEN_CHICO){
-     printf("Voy a probar el iterador interno, tenes que poder ver la lista...\n");
-     printf("NOTA: Si la lista es menor a 10 elementos (mucho scroll)\n");
-     lista_iterar (lista, imprimir_entero,NULL);
-     printf("..GND..\n\n");
-   }
+   imprimir_lista (volumen,lista, imprimir_entero,NULL);
 
    printf("INICIO DE PRUEBAS DE ITERAR UNA LISTA RELLENA %s (%ld elementos)\n",nombre_volumen,volumen);
    iter= lista_iter_crear(lista);
@@ -221,22 +229,21 @@ bool imprimir_ingredientes(void * dato,void* extra){
 
    int * valor_actual= (int *) lista_iter_ver_actual(iter);
    int valor_elegido= 1;
+   int valor_a_insertar= 39;
    bool checkear_valor= *valor_actual==valor_elegido;
 
    print_test("Iterador en la lista tiene datos (y es el esperado):", checkear_valor );
    print_test("Iterador de lista no está al final:", lista_iter_al_final(iter)==false);
-   print_test("El iterador en la lista puede borrar elementos:", lista_iter_borrar(iter)==&valor[1]);
-   print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&valor_elegido)==true);
+   print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&valor_a_insertar)==true);
 
-   if(volumen<=VOLUMEN_CHICO){
-     printf("Veamos que se insertó el elemento...\n");
-     printf("NOTA: Si la lista es menor a 10 elementos (mucho scroll)\n");
-     lista_iterar (lista, imprimir_entero,NULL);
-     printf("..GND..\n\n");
-   }
+   printf("Veamos que se insertó el elemento...\n");
+   imprimir_lista (volumen,lista, imprimir_entero,NULL);
+
+
+   print_test("El iterador en la lista puede borrar elementos:", lista_iter_borrar(iter)==&valor_a_insertar);
+   imprimir_lista (volumen,lista, imprimir_entero,NULL);
 
    lista_iter_destruir(iter);
-
    lista_destruir(lista,NULL);
    print_test("Lista nueva destruida:", true);
    print_test("Iterador destruido:", true);
@@ -262,14 +269,49 @@ void pruebas_receta_de_bizcochuelo(void){
 
   iter= lista_iter_crear(lista);
   printf("¡Me olvidé de algo!\n\n");
-
   char* chocolate="Mucho chocolate";
 
   print_test("Verifico que el iterador apunta al ppio de la lista:", lista_iter_ver_actual(iter)==&ingredientes[0]);
   print_test("Pude poner lo que me olvidé:", lista_iter_insertar(iter,&chocolate)==true);
 
-  printf("Vamos a ver los ingredientes con el ingrediente nuevo\n");
+  printf("Vamos a ver los ingredientes con el ingrediente nuevo:\n\n\n");
   lista_iterar (lista, imprimir_ingredientes,NULL);
+  printf("Compré 3 de los ingredientes de la lista, debo sacarlos de ella:\n\n\n");
+  for(int i=0;i<3;i++){
+    print_test("El iterador en la lista puede borrar elementos:", lista_iter_borrar(iter)!=NULL);
+    printf("Imprimiendo lista borrando el [%d] ingrediente\n",i+1);
+    lista_iterar (lista, imprimir_ingredientes,NULL);
+    printf("\n");
+  }
+  printf("Compré el cacao, lo saco:\n\n\n");
+  print_test("El iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El iterador en la lista puede borrar el cacao:", lista_iter_borrar(iter)== &ingredientes[3]);
+  printf("\n Imprimiendo lista borrando el cacao\n");
+  lista_iterar (lista, imprimir_ingredientes,NULL);
+  printf("Compré el resto de los ingredientes de la lista, la destruyo junto con el iterador.\n\n\n");
+
+  lista_iter_destruir(iter);
+  lista_destruir(lista,NULL);
+}
+
+void pruebas_iterar_lista_borde(){
+  int a=1;
+  int b=2;
+  char c= 'c';
+  lista_t* lista;
+  lista_iter_t * iter;
+  lista = lista_crear();
+  iter= lista_iter_crear(lista);
+
+  print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&a)==true);
+  print_test("Verifico que el iterador apunta al ppio de la lista:", lista_iter_ver_actual(iter)==&a);
+  print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&b)==true);
+  print_test("Verifico que el iterador no apunta al ppio de la lista:", lista_iter_ver_actual(iter)!=&a);
+  print_test("El iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El iterador en la lista puede insertar elementos en el medio:", lista_iter_insertar(iter,&c)==true);
+  print_test("El iterador en la lista puede borrar elementos en el medio:",lista_iter_borrar(iter)==&c);
+  print_test("El iterador en la lista puede borrar el último elemento:",lista_iter_borrar(iter)==&b);
+  print_test("Verifico que el iterador apunta al final de la lista:", !lista_iter_al_final(iter));
 
   lista_iter_destruir(iter);
   lista_destruir(lista,NULL);
@@ -286,8 +328,9 @@ void pruebas_lista_alumno(void) {
   pruebas_puntero_null();
   pruebas_lista_vacia_es_nueva();
   pruebas_iterar_lista_nueva();
-  */pruebas_iterar_lista_rellena(VOLUMEN_MINI, "Volumen Mini");
+  pruebas_iterar_lista_rellena(VOLUMEN_MINI, "Volumen Mini");
   pruebas_iterar_lista_rellena(VOLUMEN_CHICO,"Volumen Chico");
   pruebas_iterar_lista_rellena(VOLUMEN_MEDIO,"Volumen Medio");
-  pruebas_receta_de_bizcochuelo();
+  pruebas_receta_de_bizcochuelo();*/
+  pruebas_iterar_lista_borde();
 }
