@@ -292,6 +292,25 @@ void * lista_iter_borrar(lista_iter_t *iter){
   return dato;
 }
 
+void detectar_iterador(lista_iter_t *iter){
+  nodo_t*  nodo=iter->lista->primer_nodo;
+  int i=0;
+  while (i<iter->lista->largo){
+    printf("|\n");
+    if(iter->nodo_actual==nodo){
+      printf("A");
+    }
+    else if(iter->nodo_anterior==nodo){
+      printf("B");
+    }
+    else{
+      printf("0");
+    }
+    i++;
+  }
+  printf("|");
+}
+
 /* ******************************************************************
  *                    PRIMITIVAS DEL ITERADOR INTERNO
  * *****************************************************************/
