@@ -255,7 +255,7 @@ void pruebas_receta_de_bizcochuelo(void){
   for(int i=0;i<5;i++){
     lista_insertar_ultimo(lista, &ingredientes[i]);
   }
-  printf("Vamos a ver los ingredientes");
+  printf("Vamos a ver los ingredientes\n");
   lista_iterar (lista, imprimir_ingredientes,NULL);
 
   iter= lista_iter_crear(lista);
@@ -293,6 +293,7 @@ void pruebas_iterar_lista_borde(){
   int c= 3;
   lista_t* lista;
   lista_iter_t * iter;
+  lista_iter_t * iter_2;
   lista = lista_crear();
   iter= lista_iter_crear(lista);
 
@@ -301,24 +302,73 @@ void pruebas_iterar_lista_borde(){
   print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&a)==true);
   imprimir_lista (lista_largo(lista),lista, imprimir_entero,NULL);
 
+  iter_2= lista_iter_crear(lista);
+  print_test("El elemento actual es a:",lista_iter_ver_actual(iter_2)==&a);
+  lista_iter_destruir(iter_2);
+
   print_test("El iterador en la lista puede borrar elementos en principio:",lista_iter_borrar(iter)==&a);
+  iter_2= lista_iter_crear(lista);
+  print_test("El elemento actual es NULL:",lista_iter_ver_actual(iter_2)==NULL);
+  lista_iter_destruir(iter_2);
+
   imprimir_lista (lista_largo(lista),lista, imprimir_entero,NULL);
   print_test(" Remover el último/primer elemento con el iterador cambia el último/primero de la lista:",lista_iter_ver_actual(iter)==NULL);
 
   print_test("El iterador en la lista puede volver a insertar elementos:", lista_iter_insertar(iter,&a)==true);
-  print_test("Verifico que el iterador apunta al ppio de la lista:", lista_iter_ver_actual(iter)==&a);
+
+  iter_2= lista_iter_crear(lista);
+  print_test("El elemento actual es 1:",lista_iter_ver_actual(iter_2)==&a);
+  lista_iter_destruir(iter_2);
+
+  print_test("Verifico que el primer iterador apunta al ppio de la lista:", lista_iter_ver_actual(iter)==&a);
   print_test("El iterador en la lista puede insertar elementos al inicio:", lista_iter_insertar(iter,&b)==true);
+
+  iter_2= lista_iter_crear(lista);
+  print_test("El elemento actual es 2:",lista_iter_ver_actual(iter_2)==&b);
+  print_test("El segundo iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El elemento actual es 1:",lista_iter_ver_actual(iter_2)==&a);
+  lista_iter_destruir(iter_2);
+
   imprimir_lista (lista_largo(lista),lista, imprimir_entero,NULL);
 
   print_test("Verifico que el iterador apunta al último elemento colocado:", lista_iter_ver_actual(iter)==&b);
   print_test("El iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+
   print_test("El iterador en la lista puede insertar elementos en el medio:", lista_iter_insertar(iter,&c)==true);
+
+  iter_2= lista_iter_crear(lista);
+  print_test("El elemento actual del segundo iterador es 2:",lista_iter_ver_actual(iter_2)==&b);
+  print_test("El segundo iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El elemento actual del segundo iterador  es 3:",lista_iter_ver_actual(iter_2)==&c);
+  print_test("El segundo iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El elemento actual del segundo iterador es 1:",lista_iter_ver_actual(iter_2)==&a);
+  print_test("El segundo iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El elemento actual es NULL:",lista_iter_ver_actual(iter_2)==NULL);
+  lista_iter_destruir(iter_2);
+
   imprimir_lista (lista_largo(lista),lista, imprimir_entero,NULL);
 
   print_test("El iterador en la lista puede borrar elementos en el medio:",lista_iter_borrar(iter)==&c);
+
+  iter_2= lista_iter_crear(lista);
+  print_test("El elemento actual del segundo iterador es 2:",lista_iter_ver_actual(iter_2)==&b);
+  print_test("El segundo iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El elemento actual del segundo iterador  es 1:",lista_iter_ver_actual(iter_2)==&a);
+  print_test("El segundo iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El elemento actual del segundo iterador es NULL:",lista_iter_ver_actual(iter_2)==NULL);
+  lista_iter_destruir(iter_2);
+
   imprimir_lista (lista_largo(lista),lista, imprimir_entero,NULL);
 
+
   print_test("El iterador en la lista puede borrar el último elemento:",lista_iter_borrar(iter)==&a);
+
+  iter_2= lista_iter_crear(lista);
+  print_test("El elemento actual del segundo iterador  es 2:",lista_iter_ver_actual(iter_2)==&b);
+  print_test("El segundo iterador en la lista puede avanzar en ella:", lista_iter_avanzar(iter)==true);
+  print_test("El elemento actual es 3:",lista_iter_ver_actual(iter_2)==NULL);
+  lista_iter_destruir(iter_2);
+
   imprimir_lista (lista_largo(lista),lista, imprimir_entero,NULL);
   print_test("Verifico que el iterador apunta al final de la lista:", lista_iter_al_final(iter)==true);
 
