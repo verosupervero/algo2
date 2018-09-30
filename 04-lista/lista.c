@@ -29,7 +29,9 @@ struct lista_iter{
 /* ******************************************************************
  *                FUNCIONES AUXILIARES TDA_NODO
  * *****************************************************************/
-
+ // Destruye un nodo.
+ //Pre: el nodo fue creado
+ // Post: Se destruyó el nodo y se devolvió un puntero al dato.
 void * nodo_eliminar(nodo_t * nodo){
   if(nodo==NULL)
     return NULL;
@@ -38,7 +40,8 @@ void * nodo_eliminar(nodo_t * nodo){
   free(nodo);
   return valor;
 }
-
+// Crea un nodo.
+// Post: devuelve un nuevo nodo con un puntero a un dato.
 nodo_t* nodo_crear(void* valor){
   nodo_t* nodo = malloc(sizeof(nodo_t));
   if (nodo==NULL)
@@ -200,10 +203,8 @@ lista_iter_t *lista_iter_crear(lista_t *lista){
 // Pre: El iterador fue creado.
 // Post: se devolvió true si pudo avanzar o false si llego al final de la lista.
 bool lista_iter_avanzar(lista_iter_t *iter){
-  if(lista_iter_al_final(iter)){
-	fprintf(stderr, "La lista está al final, ameo\n");
+  if(lista_iter_al_final(iter))
     return false;
-  }
 
   nodo_t * nuevo_actual=    iter-> nodo_actual->proximo_nodo;
   nodo_t * nuevo_anterior=  iter-> nodo_actual;
@@ -236,30 +237,12 @@ bool lista_iter_al_final(const lista_iter_t *iter){
 void lista_iter_destruir(lista_iter_t *iter){
   free(iter);
 }
-/*// Inserta un elemento en la lista en la posición actual
-// Pre: El iterador fue creado.
-// Post: Devolvió true si se insertó el elemento en la lista, false en caso contrario.
-bool lista_iter_insertar(lista_iter_t *iter, void *dato){
-
-  nodo_t* nuevo_nodo = nodo_crear(dato);
-  if(nuevo_nodo==NULL)
-    return false;
-
-  nuevo_nodo->proximo_nodo= iter->nodo_actual;
-  iter->nodo_actual=nuevo_nodo;
-
-  if(iter->nodo_anterior!=NULL){
-    iter->nodo_anterior->proximo_nodo= iter->nodo_actual;
-  }
-  return true;
-}*/
 // Inserta un elemento en la lista en la posición actual
 // Pre: El iterador fue creado.
 // Post: Devolvió true si se insertó el elemento en la lista, false en caso contrario.
 bool lista_iter_insertar(lista_iter_t *iter, void *dato){
 
   if(lista_esta_vacia(iter->lista) || iter->nodo_actual ==iter->lista->primer_nodo){
-    fprintf(stderr, "%s\n","LA LISTA ESTA VACIA \n" );
     if(!lista_insertar_primero(iter->lista,dato))
       return false;
     iter->nodo_actual=iter->lista->primer_nodo;
@@ -287,11 +270,9 @@ void * lista_iter_borrar(lista_iter_t *iter){
   nodo_t * nodo_a_borrar= iter->nodo_actual;
 
   if( nodo_a_borrar ==iter->lista->primer_nodo){
-
-      printf("soy el primer NODITO\n");
-      nodo_t * nodo_borrado= lista_borrar_primero(iter->lista);
+      nodo_a_borrar= lista_borrar_primero(iter->lista);
       iter->nodo_actual= iter->lista->primer_nodo;
-      return nodo_borrado;
+      return nodo_a_borrar;
   }
   else{
 
@@ -299,7 +280,6 @@ void * lista_iter_borrar(lista_iter_t *iter){
     iter->nodo_actual= iter->nodo_anterior->proximo_nodo;
 
     if(nodo_a_borrar == iter->lista->ultimo_nodo){
-      printf("soy el ultimo NODITO\n");
       iter->lista->ultimo_nodo = iter->nodo_anterior;
     }
 
