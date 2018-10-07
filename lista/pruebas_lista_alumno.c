@@ -216,12 +216,19 @@ void pruebas_lista_nueva(void){
    print_test("Cantidad de elementos correctos:", lista_largo(lista)==volumen);
    print_test("Puede avanzar iterador en lista:", lista_iter_avanzar(iter)==true);
 
+   /*PRUEBAS AL INSERTAR ELEMENTOS DE LA LISTA EN POSICION DADA*/
+
+
    printf("A ver los datos...\n");
 
    int * valor_actual= (int *) lista_iter_ver_actual(iter);
    int valor_elegido= 1;
    int valor_a_insertar= 39;
    bool checkear_valor= *valor_actual==valor_elegido;
+   int * ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
+
+   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
+
 
    print_test("Iterador en la lista tiene datos (y es el esperado):", checkear_valor );
    print_test("Iterador de lista no está al final:", lista_iter_al_final(iter)==false);
@@ -229,10 +236,32 @@ void pruebas_lista_nueva(void){
 
    printf("Veamos que se insertó el elemento...\n");
    imprimir_lista (volumen,lista, imprimir_entero,NULL);
+   ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
+   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
 
 
+   /*PRUEBAS AL BORRAR ELEMENTOS DE LA LISTA EN POSICION DADA*/
    print_test("El iterador en la lista puede borrar elementos:", lista_iter_borrar(iter)==&valor_a_insertar);
    imprimir_lista (volumen,lista, imprimir_entero,NULL);
+   ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
+   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
+
+   /*PRUEBAS AL BORRAR ELEMENTOS DE LA LISTA AL FINAL*/
+   print_test("Puede avanzar iterador en lista:", lista_iter_avanzar(iter)==true);
+   print_test("El iterador en la lista puede borrar elementos:", lista_iter_borrar(iter)==&valor[2]);
+   imprimir_lista (volumen,lista, imprimir_entero,NULL);
+   ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
+   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
+
+
+   /*PRUEBAS CON ITERADOR AL FINAL DE LA LISTA*/
+   print_test("Puede avanzar iterador en lista:", lista_iter_avanzar(iter)==false);
+   print_test("Iterador de lista está al final:", lista_iter_al_final(iter)==true);
+   print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&valor_a_insertar)==true);
+   imprimir_lista (volumen,lista, imprimir_entero,NULL);
+   ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
+   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
+
 
    lista_iter_destruir(iter);
    lista_destruir(lista,NULL);

@@ -251,11 +251,17 @@ bool lista_iter_insertar(lista_iter_t *iter, void *dato){
     nodo_t* nuevo_nodo = nodo_crear(dato);
     if(nuevo_nodo==NULL)
       return false;
+      
+    if(lista_iter_al_final(iter)){
+      iter->lista->ultimo_nodo=nuevo_nodo;
+    }
+
     nuevo_nodo->proximo_nodo= iter->nodo_actual;
 
     iter->nodo_anterior->proximo_nodo= nuevo_nodo;
     iter->nodo_actual=nuevo_nodo; //nodo anterior no null
     iter->lista->largo++;
+
   }
   return true;
 }
