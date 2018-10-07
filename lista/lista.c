@@ -251,7 +251,7 @@ bool lista_iter_insertar(lista_iter_t *iter, void *dato){
     nodo_t* nuevo_nodo = nodo_crear(dato);
     if(nuevo_nodo==NULL)
       return false;
-      
+
     if(lista_iter_al_final(iter)){
       iter->lista->ultimo_nodo=nuevo_nodo;
     }
@@ -305,7 +305,8 @@ void * lista_iter_borrar(lista_iter_t *iter){
 void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
   nodo_t * nodo=lista->primer_nodo;
   while(nodo!=NULL){
-    visitar(nodo->dato,extra);
+    if(!visitar(nodo->dato,extra))
+      return;
     nodo=nodo->proximo_nodo;
   }
 }

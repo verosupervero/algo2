@@ -254,9 +254,7 @@ void pruebas_lista_nueva(void){
    printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
 
 
-   /*PRUEBAS CON ITERADOR AL FINAL DE LA LISTA*/
-   print_test("Puede avanzar iterador en lista:", lista_iter_avanzar(iter)==false);
-   print_test("Iterador de lista está al final:", lista_iter_al_final(iter)==true);
+   /*PRUEBAS CON ITERADOR AL FINAL DE LA LISTA (SI ES VECTOR MINI)*/
    print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&valor_a_insertar)==true);
    imprimir_lista (volumen,lista, imprimir_entero,NULL);
    ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
