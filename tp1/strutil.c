@@ -63,8 +63,8 @@ char**	split	(const char * cadena,	char sep){
   char * particion;
   char ** vector;
 
-  if(!cadena || sep=='\0')
-    return NULL;
+	if(!cadena)
+		return NULL;
 
   /*Itero para ver cuántos separadores hay, es O(n)*/
   while(cadena[i]!='\0'){
@@ -72,7 +72,7 @@ char**	split	(const char * cadena,	char sep){
         cant_separadores++;
     i++;
   }
-  fprintf(stderr, "Hay %lu separadores\n", cant_separadores);
+  //fprintf(stderr, "Hay %lu separadores\n", cant_separadores);
 
   /*La cantidad de elementos del vector es la cantidad de separadores
   * mas un espacio para una casilla más un espacio para NULL*/
@@ -91,7 +91,7 @@ char**	split	(const char * cadena,	char sep){
   while(cadena[i]!='\0'){
     /*Itero hasta encontrar el primer separador*/
 		if(cadena[i]==sep){
-			fprintf(stderr,"separador en char #%lu\n", i);
+			//fprintf(stderr,"separador en char #%lu\n", i);
       /*La posición final de mi cadena es la posición anterior al separador*/
       pos_fin=i-1;
 
@@ -113,7 +113,7 @@ char**	split	(const char * cadena,	char sep){
   }
   /*El último str no lo encontró porque hay /0*/
   particion= str_extract(cadena,pos_ini,i-1); //O(largo)
-  fprintf(stderr,"-->%s\n",particion);
+  //fprintf(stderr,"-->%s\n",particion);
   if(!particion){
     free_strv(vector);
     return NULL;
@@ -140,27 +140,33 @@ char* join(char** strv, char sep){
 
   size_t i=0;
   while(strv[i]!=NULL){
-		fprintf(stderr, "%s\n",strv[i] );
+		//fprintf(stderr, "%s\n",strv[i] );
 	  i++;
   }
   size_t cant_palabras= i;
-	fprintf(stderr,"cant_palabras: %lu\n",cant_palabras);
-  size_t cant_separadores= i-1;
-	fprintf(stderr,"cant separadores: %lu\n",cant_separadores);
+	//fprintf(stderr,"cant_palabras: %lu\n",cant_palabras);
+
+	size_t cant_separadores=0;
+	if(i>0)
+  	cant_separadores= i-1;
+	//fprintf(stderr,"cant separadores: %lu\n",cant_separadores);
 	size_t tamanio_cadena=0;
 
   for(size_t j=0;j<cant_palabras;j++){
 	  tamanio_cadena += strlen(strv[j]);
-	  fprintf(stderr,"-->tamanio_cadena iteracion %lu: %lu\n",j, tamanio_cadena);
+	  //fprintf(stderr,"-->tamanio_cadena iteracion %lu: %lu\n",j, tamanio_cadena);
   }
 	tamanio_cadena +=cant_separadores;
-	fprintf(stderr,"tamanio_cadena: %lu\n",tamanio_cadena);
+	tamanio_cadena++; //va el \0
+	//fprintf(stderr,"tamanio_cadena: %lu\n",tamanio_cadena);
 
-  char * cadena=malloc(sizeof(char)*tamanio_cadena);
+  char * cadena=calloc(tamanio_cadena,sizeof(char));
+	//memset(cadena, 0, sizeof(char) * tamanio_cadena);
+
   if(cadena==NULL)
 		  return NULL;
 
-	fprintf(stderr, "%s\n","pude pedir memoria\n");
+	//fprintf(stderr, "%s\n","pude pedir memoria\n");
 
 	size_t inicio_subpalabra=0;
 	size_t tam_palabra=0;
@@ -171,10 +177,11 @@ char* join(char** strv, char sep){
 			return NULL;
 		}
 		inicio_subpalabra+=tam_palabra;
-		cadena[inicio_subpalabra]=sep;
+		if(k!=cant_palabras-1)
+			cadena[inicio_subpalabra]=sep;
 		inicio_subpalabra++;
   }
-	fprintf(stderr, "%s\n", cadena);
+	fprintf(stderr, "::%s::\n", "TENGO LA PALABRA");
 	return cadena;
 }
 
