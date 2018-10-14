@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "strutil.h"
 
 #define FACTOR_REDIMENSION            2
 #define TAMANIO_INICIAL              1000
@@ -18,7 +19,7 @@ char * str_dup(const char * cadena)
   if (!copia)
 	 return NULL;
 
-	for(i=0; copia[i]=cadena[i] ;i++);
+  for(i=0; (copia[i]=cadena[i]) ;i++);
   return copia;
 }
 
@@ -32,87 +33,96 @@ char * str_dup(const char * cadena)
  * malloc(), o si ‘sep’ es '\0'.
  */
 
-char * str_extract(char * cadena, size_t pos_ini,size_t pos_fin){
+char * str_extract(const char * cadena, size_t pos_ini,size_t pos_fin){
+  fprintf(stderr, "str_extract %lu %lu\n", pos_ini, pos_fin);
   if(!cadena)
     return NULL;
   size_t n=pos_fin-pos_ini+1;
   n++; //tiene que estar el \0
 
   /*Pido memoria para la subcadena*/
-  char * subcadena= malloc(sizeof(char)*(subcadena_tam));
+  char * subcadena= malloc(sizeof(char)*(n));
   if(!subcadena)
     return NULL;
 
   /*Agrego los caracteres a la subcadena*/
-  for(int i=pos_ini;i<=pos_fin;i++)
+  memcpy(subcadena, cadena+pos_ini, n-1);
+  /*for(size_t i=pos_ini;i<=pos_fin;i++)
     subcadena[i]=cadena[i];
-
+*/
   subcadena[n-1]='\0'; //agrego el '\0'
+
+  fprintf(stderr, ":::%s:::\n", subcadena);
   return subcadena;
 }
 
-char**	split	(char * cadena,	char sep){
-  int i=0;
+char**	split	(const char * cadena,	char sep){
+  size_t i=0;
   size_t n=0;
-  size_t n_contador=0;
+  size_t cant_separadores = 0;
   char * particion;
   char ** vector;
-  size_t pos_ini=0;
-  size_t pos_fin;
 
-  if(!str || sep=='\0')
+  if(!cadena || sep=='\0')
     return NULL;
 
   /*Itero para ver cuántos separadores hay, es O(n)*/
-  while(cadena[i]!='/0'){
+  while(cadena[i]!='\0'){
     if(cadena[i]==sep)
-        n++;
+        cant_separadores++;
     i++;
   }
+  fprintf(stderr, "Hay %lu separadores\n", cant_separadores);
+
   /*La cantidad de elementos del vector es la cantidad de separadores
   * mas un espacio para una casilla más un espacio para NULL*/
-  n=n+2;
+  n = cant_separadores+2;
 
   /*Creo el vector vacío para almacenar las cadenas y NULL*/
-  char ** vector = malloc(sizeof(char*)*(n+1));
+  vector = malloc(sizeof(char*)*n);
   if (!vector)
     return NULL;
 
   /*Relleno el vector con las cadenas*/
   i=0;
-  while(cadena[i]!='/0'){ //O(n^2) en el peor de los casos
+  size_t n_contador = 0;
+  size_t pos_ini=0;
+  size_t pos_fin=-1;
+  while(cadena[i]!='\0'){
     /*Itero hasta encontrar el primer separador*/
-    if(cadena[i]==sep){
+		if(cadena[i]==sep){
+			fprintf(stderr,"separador en char #%lu\n", i);
       /*La posición final de mi cadena es la posición anterior al separador*/
       pos_fin=i-1;
 
       /*Genero una particion de mi cadena*/
-      particion= str_extract(str,pos_ini,pos_fin); //es O(largo)
+      particion= str_extract(cadena,pos_ini,pos_fin); //es O(largo)
       if(!particion){
+		  	fprintf(stderr, "gone\n");
         free_strv(vector);
         return NULL;
       }
       /*Guardo la particion en el vector*/
-      vector[n_contador]=particion;
-
-      /*Aumento el contador de cadenas*/
-      n_contador++;
+	  	fprintf(stderr,"-->%s\n",particion);
+      vector[n_contador++]=particion;
 
       /*La cadena que sigue empieza al final de la otra*/
-      pos_ini= pos_fin+1;
+      pos_ini= pos_fin+2;
     }
+	i++;
   }
   /*El último str no lo encontró porque hay /0*/
-  particion= str_extract(str,pos_ini,pos_fin); //O(largo)
+  particion= str_extract(cadena,pos_ini,i-1); //O(largo)
+  fprintf(stderr,"-->%s\n",particion);
   if(!particion){
     free_strv(vector);
     return NULL;
   }
   /*Guardo la particion final en el vector*/
-  vector[n-1]=particion;
+  vector[n-2]=particion;
 
   /*El último elemento es NULL*/
-  vector[n]=NULL;
+  vector[n-1]=NULL;
 
   return vector;
 }
@@ -127,21 +137,45 @@ char**	split	(char * cadena,	char sep){
 char* join(char** strv, char sep){
   if(!strv)
     return NULL;
-  int i=0;
-  char* str;
-  char* srt_copia;
 
+  size_t i=0;
   while(strv[i]!=NULL){
-
-    /*copio el string para no pisarlo con strcat*/
-    str_copia=strdup(strv[i]);
-    if(!str_copia)
-      return NULL;
-
-
+		fprintf(stderr, "%s\n",strv[i] );
+	  i++;
   }
+  size_t cant_palabras= i;
+	fprintf(stderr,"cant_palabras: %lu\n",cant_palabras);
+  size_t cant_separadores= i-1;
+	fprintf(stderr,"cant separadores: %lu\n",cant_separadores);
+	size_t tamanio_cadena=0;
 
+  for(size_t j=0;j<cant_palabras;j++){
+	  tamanio_cadena += strlen(strv[j]);
+	  fprintf(stderr,"-->tamanio_cadena iteracion %lu: %lu\n",j, tamanio_cadena);
+  }
+	tamanio_cadena +=cant_separadores;
+	fprintf(stderr,"tamanio_cadena: %lu\n",tamanio_cadena);
 
+  char * cadena=malloc(sizeof(char)*tamanio_cadena);
+  if(cadena==NULL)
+		  return NULL;
+
+	fprintf(stderr, "%s\n","pude pedir memoria\n");
+
+	size_t inicio_subpalabra=0;
+	size_t tam_palabra=0;
+	for(size_t k=0;k<cant_palabras;k++){
+		tam_palabra=strlen(strv[k]);
+		if(!memcpy(cadena+inicio_subpalabra, strv[k],tam_palabra)){
+			free(cadena);
+			return NULL;
+		}
+		inicio_subpalabra+=tam_palabra;
+		cadena[inicio_subpalabra]=sep;
+		inicio_subpalabra++;
+  }
+	fprintf(stderr, "%s\n", cadena);
+	return cadena;
 }
 
 /*
