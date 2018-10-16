@@ -1,66 +1,75 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include "pila.h"
 #include "strutil.h"
 #define ANSI_COLOR_LGH_RED	   "\x1b[1m\x1b[31m"
 #define ANSI_COLOR_LGH_GREEN   "\x1b[1m\x1b[32m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-/*******FUNCIONES DE CUENTAS*****************/
+typedef (bool)(*function_t)(pila_t * pila);
 
-int potencia(int n,int e){
-  int restante=0;
-  if(e==0)
-    return 1;
-  int potencia_mitad= potencia(n,e/2);
-  if(e%2==1){
-    restante=n;
-  }
-  else{
-    restante=1;
-  }
-  return potencia_mitad*potencia_mitad*restante;
+char * lista_operaciones[]={"+","-","*","/","sqrt","^","log","?",NULL};
+function_t funciones[]={aplicar_suma,aplicar_resta,aplicar_multiplicacion,
+  aplicar_division,aplicar_raiz_cuadrada,aplicar_potencia,aplicar_logaritmo,
+  aplicar_operador_ternario,NULL};
+
+
+bool aplicar_suma(pila_t * pila){
+  int* sumando_1=(int *) pila_desapilar(pila);
+  if(sumando_1==NULL)
+    return false;
+  int* sumando_2=(int *) pila_desapilar(pila);
+  if(sumando_2==NULL)
+    return false;
+  int * suma=malloc(sizeof(int));
+  suma=
+
 }
 
-int logaritmo(int b, int n){
-  if(b==n)
-    return 1;
-  int potencia= 1;
-  while(n/base < 1){
-    potencia++;
-    n= n/base;
-  }
-  return potencia;
-}
 
-bool es_entero(char * literal){
+bool validar_entero(char * literal, int ** pp_entero){
+
   char * endptr=NULL;
-  strtol(literal, &endptr, 10);
-  return (*endptr != '\0');
-}
-/*Pre: la pila fue creada
-Post: Se apilo el literal en la pila*/
-bool procesar_entero (pila_t * pila, char * literal){
-  fprintf(stderr, "%s\n","procesando entero, apilando");
-  bool apile= pila_apilar(pila,literal);
-  fprintf(stderr, "%s: %d\n","procesando entero, apilando",apile?1:0);
-  return apile;
+  int entero= (int) strtol(literal, &endptr, 10);
+  if(pp_entero!=NULL){
+    *pp_entero=malloc(sizeof(int));
+    if(*pp_entero==NULL){
+      return false;
+    **pp_entero=entero;
+    }
+  }
+  return *endptr != '\0';
 }
 
+bool validar_operacion(char * literal,function_t operacion){
+
+  for(i=0;lista_operaciones[i]!=NULL;i++){
+    if(strcmp(lista_operaciones[i],literal)==0){
+      fprintf(stderr, "%s: %s\n","es la funcion",lista_operaciones[i]);
+      operacion=funciones[i];
+      return true;
+    }
+  }
+  return false;
+}
 
 bool procesar_literales(pila_t * pila,char * literal){
-  /*Es un nro?*/
-    //agrego a la pila
-  /*Es una operacion?*/
-    //verifico que es una operacion de la lista de operaciones
-    //aplico operacion(pila,puntero a funcion a la operacion[nro op])
-      //si la operacion no se pudo aplicar, resultado=error, return
-  if(es_entero(literal)){
+  int * p_entero= NULL;
+  function_t p_operacion= NULL;
+
+  if(validar_entero(literal,&p_entero)){
     fprintf(stderr, "%s%s%s\n", "El literal",literal, "es un entero");
-    return procesar_entero(pila,literal);
+    bool apile=  pila_apilar(pila,p_entero);
+    fprintf(stderr, "%s: %d\n","Apile",apile?1:0);
+    return apile;
   }
-  if(es_operacion(literal)){
+  if(validar_operacion(literal,p_operacion)){
     fprintf(stderr, "%s%s%s\n", "El literal",literal, "es una operacion");
-    return procesar_operacion(pila,literal);
+    bool aplicar_op= p_operacion(pila);
+    fprintf(stderr, "%s: %d\n","Realice operacion",aplicar_op?1:0);
+    return aplicar_op;
   }
   return false;
 }

@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "pila.h"
-#include "strutil.h"
 
 typedef (bool)(*function_t)(pila_t * pila);
 

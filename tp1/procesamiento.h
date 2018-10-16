@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "pila.h"
-#include "strutil.h"
+#include "operaciones.h"
 
 bool validar_entero(char * literal, int ** pp_entero);
 bool validar_operacion(char * literal,function_t operacion);
-bool procesar_literales(pila_t * pila,char * literal)
+bool procesar_literales(pila_t * pila,char * literal);
 #endif // PROCESAMIENTO_H
