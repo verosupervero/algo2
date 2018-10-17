@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include "pila.h"
 #include "strutil.h"
+#include "operaciones.h"
+
 #define ANSI_COLOR_LGH_RED	   "\x1b[1m\x1b[31m"
 #define ANSI_COLOR_LGH_GREEN   "\x1b[1m\x1b[32m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
@@ -15,17 +17,276 @@ function_t funciones[]={aplicar_suma,aplicar_resta,aplicar_multiplicacion,
   aplicar_division,aplicar_raiz_cuadrada,aplicar_potencia,aplicar_logaritmo,
   aplicar_operador_ternario,NULL};
 
+bool aplicar_operador_ternario(pila_t * pila){
+  int* n1;
+  int* n2;
+  int* n3
 
-bool aplicar_suma(pila_t * pila){
-  int* sumando_1=(int *) pila_desapilar(pila);
+  n1=(int *) pila_desapilar(pila);
+  if(n1==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*n1 );
+
+  n2=(int *) pila_desapilar(pila);
+  if(n2==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*n2 );
+
+  n3=(int *) pila_desapilar(pila);
+  if(n3==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*n3 );
+
+  int * resultado=malloc(sizeof(int));
+  bool aplico_operador=operador_ternario(*n1, *n2,*n3,&resultado);
+  if(!aplico_operador){
+    fprintf(stderr, "%s\n","no pude ternarizar");
+    return false;
+  }
+  /*Libero la memoria de los datos que no necesito*/
+  free(n1);
+  free(n2);
+  free(n3);
+
+  bool apilo= pila_apilar(pila,resultado);
+  if(apilo){
+    fprintf(stderr, "%s%d\n","pude apilar el resultado:",*resultado );
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+
+bool aplicar_raiz_cuadrada(pila_t * pila){
+  int* n;
+  n=(int *) pila_desapilar(pila);
+
+  if(numerador==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*b );
+
+  int * resultado=malloc(sizeof(int));
+  bool aplico_operador=raiz_cuadrada(*n,&resultado);
+  if(!aplico_operador){
+    fprintf(stderr, "%s\n","no pude sqrt");
+    return false;
+  }
+  /*Libero la memoria de los datos que no necesito*/
+  free(n);
+
+  bool apilo= pila_apilar(pila,resultado);
+  if(apilo){
+    fprintf(stderr, "%s%d\n","pude apilar el resultado del sqrt:",*resultado );
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+
+bool aplicar_logaritmo(pila_t * pila){
+  int* b;
+  int* n;
+  b=(int *) pila_desapilar(pila);
+
+  if(numerador==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*b );
+  n=(int *) pila_desapilar(pila);
+  if(n==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*n );
+
+  int * resultado=malloc(sizeof(int));
+  bool aplico_operador=logaritmo(*b, *n,&resultado);
+  if(!aplico_operador){
+    fprintf(stderr, "%s\n","no pude logg");
+    return false;
+  }
+  /*Libero la memoria de los datos que no necesito*/
+  free(b);
+  free(n);
+
+  bool apilo= pila_apilar(pila,resultado);
+  if(apilo){
+    fprintf(stderr, "%s%d\n","pude apilar el resultado del logaritmo:",*resultado );
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+bool aplicar_potencia(pila_t * pila){
+  int* n;
+  int* e;
+  n=(int *) pila_desapilar(pila);
+
+  if(numerador==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*n );
+  e=(int *) pila_desapilar(pila);
+  if(e==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*e );
+
+  int * resultado=malloc(sizeof(int));
+  bool aplico_operador=potencia(*n, *e,&resultado);
+  if(!aplico_operador){
+    fprintf(stderr, "%s\n","no pude potencia");
+    return false;
+  }
+  /*Libero la memoria de los datos que no necesito*/
+  free(n);
+  free(e);
+
+  bool apilo= pila_apilar(pila,resultado);
+  if(apilo){
+    fprintf(stderr, "%s%d\n","pude apilar el resultado de la division:",*resultado );
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+bool aplicar_division(pila_t * pila){
+  int* numerador;
+  int* denominador;
+  numerador=(int *) pila_desapilar(pila);
+
+  if(numerador==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*numerador );
+  numerador=(int *) pila_desapilar(pila);
+  if(denominador==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*denominador );
+
+  int * resultado=malloc(sizeof(int));
+  bool aplico_operador=dividir(*numerador, *denominador,&resultado);
+  if(!aplico_operador){
+    fprintf(stderr, "%s\n","no pude dividir");
+    return false;
+  }
+  /*Libero la memoria de los datos que no necesito*/
+  free(numerador);
+  free(denominador);
+
+  bool apilo= pila_apilar(pila,resultado);
+  if(apilo){
+    fprintf(stderr, "%s%d\n","pude apilar el resultado de la division:",*resultado );
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+bool aplicar_multiplicacion(pila_t * pila){
+  int* multiplicando_1;
+  int* multiplicando_2;
+  multiplicando_1=(int *) pila_desapilar(pila);
+
+  if(multiplicando_1==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*multiplicando_1 );
+  multiplicando_2=(int *) pila_desapilar(pila);
+  if(multiplicando_2==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*multiplicando_2 );
+
+  int * resultado=malloc(sizeof(int));
+  bool aplico_operador=multiplicar(*numerador, *denominador,&resultado);
+  if(!aplico_operador){
+    fprintf(stderr, "%s\n","no pude multiplicar");
+    return false;
+  }
+
+  /*Libero la memoria de los datos que no necesito*/
+  free(multiplicando_1);
+  free(multiplicando_2);
+
+  bool apilo= pila_apilar(pila,resultado);
+  if(apilo){
+    fprintf(stderr, "%s%d\n","pude apilar el resultado de la multiplicacion:",*resultado );
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+
+bool aplicar_resta(pila_t * pila){
+  int* restando_1;
+  int* restando_2;
+  restando_1=(int *) pila_desapilar(pila);
+
   if(sumando_1==NULL)
     return false;
-  int* sumando_2=(int *) pila_desapilar(pila);
+  fprintf(stderr, "%s%d\n","pude desapilar:",*restando_1 );
+  restando_2=(int *) pila_desapilar(pila);
   if(sumando_2==NULL)
     return false;
-  int * suma=malloc(sizeof(int));
-  suma=
+  fprintf(stderr, "%s%d\n","pude desapilar:",*restando_2 );
 
+  int * resultado=malloc(sizeof(int));
+  bool aplico_operador=restar(*restando_1, *restando_2,&resultado);
+  if(!aplico_operador){
+    fprintf(stderr, "%s\n","no pude restar");
+    return false;
+  }
+  /*Libero la memoria de los datos que no necesito*/
+  free(restando_1);
+  free(restando_2);
+
+  bool apilo= pila_apilar(pila,resultado);
+  if(apilo){
+    fprintf(stderr, "%s%d\n","pude apilar el resultado de la resta:",*resultado );
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+bool aplicar_suma(pila_t * pila){
+  int* sumando_1;
+  int* sumando_2;
+  sumando_1=(int *) pila_desapilar(pila);
+  if(sumando_1==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*sumando_1 );
+
+  sumando_2=(int *) pila_desapilar(pila);
+
+  if(sumando_2==NULL)
+    return false;
+  fprintf(stderr, "%s%d\n","pude desapilar:",*sumando_2 );
+
+
+  int * resultado=malloc(sizeof(int));
+  bool aplico_operador=sumar(*sumando_1, *sumando_2,&resultado);
+  if(!aplico_operador){
+    fprintf(stderr, "%s\n","no pude sumar");
+    return false;
+  }
+  /*Libero la memoria de los datos que no necesito*/
+  free(sumando_1);
+  free(sumando_2);
+
+  bool apilo= pila_apilar(pila,resultado);
+  if(apilo){
+    fprintf(stderr, "%s%d\n","pude apilar el resultado de la suma:",*resultado );
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 
@@ -43,12 +304,15 @@ bool validar_entero(char * literal, int ** pp_entero){
   return *endptr != '\0';
 }
 
-bool validar_operacion(char * literal,function_t operacion){
+bool validar_operacion(char * literal,function_t *operacion){
+
+  if(operacion==NULL)
+    return false;
 
   for(i=0;lista_operaciones[i]!=NULL;i++){
     if(strcmp(lista_operaciones[i],literal)==0){
       fprintf(stderr, "%s: %s\n","es la funcion",lista_operaciones[i]);
-      operacion=funciones[i];
+      *operacion=funciones[i];
       return true;
     }
   }
@@ -65,12 +329,13 @@ bool procesar_literales(pila_t * pila,char * literal){
     fprintf(stderr, "%s: %d\n","Apile",apile?1:0);
     return apile;
   }
-  if(validar_operacion(literal,p_operacion)){
+  if(validar_operacion(literal,&p_operacion)){
     fprintf(stderr, "%s%s%s\n", "El literal",literal, "es una operacion");
-    bool aplicar_op= p_operacion(pila);
+    bool aplicar_op= (*p_operacion)(pila);
     fprintf(stderr, "%s: %d\n","Realice operacion",aplicar_op?1:0);
     return aplicar_op;
   }
+  // Literal invalido
   return false;
 }
 
@@ -129,16 +394,11 @@ bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
   pila_destruir(pila);
 
   /*Devuelvo el resultado y si se realizó el cálculo*/
-  resultado=resultado_a_priori;
+  *resultado=&resultado_a_priori;
+  free(resultado_a_priori);
   return proceso_calculo_polaco;
 }
 
-
-
-//Necesito:
-  //Diccionario de tipos de operaciones
-  //Enum de operaciones
-  //Diccionario de punteros a operaciones
 
 int main (int argc, char * argv []){
 
@@ -161,19 +421,4 @@ int main (int argc, char * argv []){
     }
   }
   free(linea);
-
-    /*Hago split a la linea y la guardo en un vector dinamico*/
-    /*creo una pila vacia*/
-    /*Para cada elemento del vector:*/
-      /*Es un nro?*/
-        //agrego a la pila
-      /*Es una operacion?*/
-        //verifico que es una operacion de la lista de operaciones
-        //aplico operacion(pila,puntero a funcion a la operacion[nro op])
-          //si la operacion no se pudo aplicar, resultado=error, return
-    //Desapilo un elemento de la pila -> lo guardo
-      //si la pila esta vacia esta todo ok y resultado=lo que guarde
-      //si la pila no esta vacia entonces resultado=error
-    //Muestro el resultado de la linea
-    /*destruyo la pila*/
 }

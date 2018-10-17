@@ -1,33 +1,68 @@
 #include <stdio.h>
 #include "operaciones.h"
 
-int sumar(int a,int b){
-  return a+b;
+bool sumar(int a,int b,int * resultado){
+  if(resultado==NULL)
+    return false;
+  *resultado= a+b;
+  return true;
 }
-int restar(int a,int b){
-  return a-b;
+bool restar(int a,int b,int * resultado){
+  if(resultado==NULL)
+    return false;
+  *resultado= a-b;
+  return true;
 }
-int multiplicar(int a,int b){
+bool multiplicar(int a,int b,int * resultado){
+  if(resultado==NULL)
+    return false;
   return a*b;
 }
-int dividir(int a,int b){
-  return a/b;
+bool dividir(int a,int b){
+  if(b<0 || resultado==NULL)
+    return false;
+  *resultado= a/b;
+  return true;
+}
+bool operador_ternario(int a,int b, int c, int *resultado){
+  if(resultado==NULL){
+    return false;
+  }
+  *resultado= (a!=0)?b:c;
+  return true;
 }
 
-int raiz_cuadrada(int n){
+bool raiz_cuadrada(int n, int* resultado){
+  if(resultado==NULL || n<0){
+    return false;
+  }
+  *resultado=_raiz_cuadrada(n);
+  return true;
+}
+
+int _raiz_cuadrada(int n){
   /*Casos base*/
   if (n==0 || n==1)  //O(1)
     return n;
 
   /*División*/
-  cota_inferior=raiz_cuadrada(n>>2)<<1; //T(n/4) (divido por 4, multiplico por 2)
+  cota_inferior=_raiz_cuadrada(n>>2)<<1; //T(n/4) (divido por 4, multiplico por 2)
   cota_superior=mitad_inferior+1;
 
   /*Recombinación*/ //T(n)=T(n/4)+O(1)
   return (cota_superior*cota_superior>n)?cota_inferior:cota_superior;
 }
 
-int potencia(int n,int e){
+bool potencia(int n, int e, int *resultado){
+  if(resultado==NULL || e<0){
+    return false;
+  }
+  *resultado=_potencia(n,e);
+  return true;
+}
+
+
+int _potencia(int n,int e){
   int restante=0;
   if(e==0)
     return 1;
@@ -41,7 +76,15 @@ int potencia(int n,int e){
   return potencia_mitad*potencia_mitad*restante;
 }
 
-int logaritmo(int b, int n){
+bool logaritmo(int b, int n,int * resultado){
+  if(b<=1 || e<0 || resultado==NULL){
+    return false;
+  }
+  *resultado=_logaritmo(int b, int n);
+  return true;
+}
+
+int _logaritmo(int b, int n){
   if(b==n)
     return 1;
   int potencia= 1;

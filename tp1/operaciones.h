@@ -3,12 +3,12 @@
 
 #include <stdbool.h>
 
-int sumar(int a,int b);
-int restar(int a,int b);
-int multiplicar(int a,int b);
-int dividir(int a,int b);
-int potencia(int n,int e);
-int logaritmo(int b, int n);
-int raiz_cuadrada(int n);
+bool sumar(int a, int b, int * resultado);
+bool restar(int a, int b, int * resultado);
+bool dividir(int a, int b,int * resultado);
+bool operador_ternario(int a,int b, int c, int *resultado);
+bool raiz_cuadrada(int n, int* resultado);
+bool potencia(int n, int e, int *resultado);
+bool logaritmo(int b, int n,int * resultado);
 
 #endif // OPERACIONES_H
