@@ -4,7 +4,7 @@
 #include "strutil.h"
 
 int main (void){
-  /*char * cadenas[]={"The memcpy() function copies n bytes from memory area src to memory area dest. The memory areas must not overlap. Use memmove(3) if the memory areas do overlap. ","soy nando","bcopy(3), memccpy(3), memmove(3), mempcpy(3), strcpy(3), strncpy(3), wmemcpy(3)"};
+  char * cadenas[]={"The memcpy() function copies n bytes from memory area src to memory area dest. The memory areas must not overlap. Use memmove(3) if the memory areas do overlap. ","soy nando","bcopy(3), memccpy(3), memmove(3), mempcpy(3), strcpy(3), strncpy(3), wmemcpy(3)"};
   char separadores[]={' ', ' ', ','};
 
   for(size_t i=0; i<3;i++){
@@ -21,7 +21,7 @@ int main (void){
   char *v1=join(cadenasS,',');
   fprintf(stderr, "%s\n", v1);
   free(v1);
-*/
+
   // Ejemplo de uso de join
   // char **strv = split("abc,def,ghi", ',');
   // char *resultado = join(strv, ';');  // "abc;def;ghi"
