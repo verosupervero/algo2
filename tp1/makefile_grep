@@ -1,0 +1,21 @@
+CC = gcc
+CFLAGS = -g -std=c99 -Wall -Wtype-limits -pedantic -Wconversion -Wno-sign-conversion
+LFLAGS = -Wall
+
+all: grep
+
+
+grep: main.o
+	$(CC) $(LFLAGS) -o grep main.o procesar_subcadenas.o strutil.o cola.o
+
+main.o: main.c ADT_MP3_track.h ADT_Vector.h types.h main.h errors.h mp3explorer.h
+	$(CC) $(CFLAGS) -o main.o main.c
+
+procesar_subcadenas.o: procesar_subcadena.c procesar_subcadena.h
+	$(CC) $(CFLAGS) -o procesar_subcadenas procesar_subcadena.c
+
+strutil.o: strutil.c strutil.h
+	$(CC) $(CFLAGS) -o strutil.o strutil.c
+
+cola.o: cola.c cola.h
+	$(CC) $(CFLAGS) -o cola.o cola.c
