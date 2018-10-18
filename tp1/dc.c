@@ -403,15 +403,15 @@ bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
 int main (int argc, char * argv []){
 
   /*Leo la entrada estandar*/
-
-
   char * linea=NULL;
   size_t tamanio_linea=0;
   int resultado=0;
-
+  size_t leyo=getline(&linea,&tamanio_linea,stdin);
+  if(leyo==-1){
+    free(linea);
+  }
   /*Cuando el archivo no termino:*/
-  while(!feof(fi)){     /*Leo una línea del archivo*/
-    linea=getline(&linea,&tamanio_linea,fi);
+  while(leyo==-1){     /*Leo una línea del archivo*/
     proceso=procesar_calculo_polaco_inverso(linea,&resultado);
     if(!proceso){
       fprintf(stdout, "ERROR\n");
@@ -419,6 +419,13 @@ int main (int argc, char * argv []){
     else{
       fprintf(stdout, "%d\n",resultado);
     }
+    free(linea);
+
+    tamanio_linea=0;
+    linea=NULL;
+    leyo=getline(&linea,&tamanio_linea,stdin);
   }
   free(linea);
+
+  return 0;
 }
