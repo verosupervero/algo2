@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -std=c99 -Wall -Wtype-limits -pedantic -Wconversion -Wno-sign-conversion
+CFLAGS = -c -g -std=c99 -Wall -Wtype-limits -pedantic -Wconversion -Wno-sign-conversion
 LFLAGS = -Wall
 
 all: grep dc
