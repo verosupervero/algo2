@@ -4,12 +4,11 @@ LFLAGS = -Wall
 
 all: dc
 
-
-dc: main.o strutil.o pila.o calc_privado.o
+dc: main.o strutil.o pila.o calc_privado.o operaciones.o
 	$(CC) $(LFLAGS) -o dc main.o strutil.o pila.o calc_privado.o operaciones.o
 
 
-main.o: dc.c _calc_privado.h
+dc.o: dc.c _calc_privado.h
 	$(CC) $(CFLAGS) -o main.o dc.c
 
 strutil.o: strutil.c strutil.h

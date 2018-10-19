@@ -1,5 +1,5 @@
-#ifndef __CALC_PRIVADO_H__
-#define __CALC_PRIVADO_H__
+#ifndef CALC_H
+#define CALC_H
 
 /* .h para compilacion y testeo de calc.c */
 
