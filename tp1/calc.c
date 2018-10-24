@@ -11,8 +11,6 @@
 #define ANSI_COLOR_LGH_GREEN   "\x1b[1m\x1b[32m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-typedef (bool)(*function_t)(pila_t * pila);
-
 char * lista_operaciones[]={"+","-","*","/","sqrt","^","log","?",NULL};
 function_t funciones[]={aplicar_suma,aplicar_resta,aplicar_multiplicacion,
   aplicar_division,aplicar_raiz_cuadrada,aplicar_potencia,aplicar_logaritmo,
@@ -21,7 +19,7 @@ function_t funciones[]={aplicar_suma,aplicar_resta,aplicar_multiplicacion,
 bool aplicar_operador_ternario(pila_t * pila){
   int* n1;
   int* n2;
-  int* n3
+  int* n3;
 
   n1=(int *) pila_desapilar(pila);
   if(n1==NULL)
@@ -39,7 +37,7 @@ bool aplicar_operador_ternario(pila_t * pila){
   fprintf(stderr, "%s%d\n","pude desapilar:",*n3 );
 
   int * resultado=malloc(sizeof(int));
-  bool aplico_operador=operador_ternario(*n1, *n2,*n3,&resultado);
+  bool aplico_operador=operador_ternario(*n1, *n2,*n3,resultado);
   if(!aplico_operador){
     fprintf(stderr, "%s\n","no pude ternarizar");
     return false;
@@ -64,12 +62,12 @@ bool aplicar_raiz_cuadrada(pila_t * pila){
   int* n;
   n=(int *) pila_desapilar(pila);
 
-  if(numerador==NULL)
+  if(n==NULL)
     return false;
-  fprintf(stderr, "%s%d\n","pude desapilar:",*b );
+  fprintf(stderr, "%s%d\n","pude desapilar:",*n);
 
   int * resultado=malloc(sizeof(int));
-  bool aplico_operador=raiz_cuadrada(*n,&resultado);
+  bool aplico_operador=raiz_cuadrada(*n,resultado);
   if(!aplico_operador){
     fprintf(stderr, "%s\n","no pude sqrt");
     return false;
@@ -93,7 +91,7 @@ bool aplicar_logaritmo(pila_t * pila){
   int* n;
   b=(int *) pila_desapilar(pila);
 
-  if(numerador==NULL)
+  if(b==NULL)
     return false;
   fprintf(stderr, "%s%d\n","pude desapilar:",*b );
   n=(int *) pila_desapilar(pila);
@@ -102,7 +100,7 @@ bool aplicar_logaritmo(pila_t * pila){
   fprintf(stderr, "%s%d\n","pude desapilar:",*n );
 
   int * resultado=malloc(sizeof(int));
-  bool aplico_operador=logaritmo(*b, *n,&resultado);
+  bool aplico_operador=logaritmo(*b, *n,resultado);
   if(!aplico_operador){
     fprintf(stderr, "%s\n","no pude logg");
     return false;
@@ -126,7 +124,7 @@ bool aplicar_potencia(pila_t * pila){
   int* e;
   n=(int *) pila_desapilar(pila);
 
-  if(numerador==NULL)
+  if(n==NULL)
     return false;
   fprintf(stderr, "%s%d\n","pude desapilar:",*n );
   e=(int *) pila_desapilar(pila);
@@ -135,7 +133,7 @@ bool aplicar_potencia(pila_t * pila){
   fprintf(stderr, "%s%d\n","pude desapilar:",*e );
 
   int * resultado=malloc(sizeof(int));
-  bool aplico_operador=potencia(*n, *e,&resultado);
+  bool aplico_operador=potencia(*n, *e,resultado);
   if(!aplico_operador){
     fprintf(stderr, "%s\n","no pude potencia");
     return false;
@@ -162,13 +160,13 @@ bool aplicar_division(pila_t * pila){
   if(numerador==NULL)
     return false;
   fprintf(stderr, "%s%d\n","pude desapilar:",*numerador );
-  numerador=(int *) pila_desapilar(pila);
+  denominador=(int *) pila_desapilar(pila);
   if(denominador==NULL)
     return false;
   fprintf(stderr, "%s%d\n","pude desapilar:",*denominador );
 
   int * resultado=malloc(sizeof(int));
-  bool aplico_operador=dividir(*numerador, *denominador,&resultado);
+  bool aplico_operador=dividir(*numerador, *denominador,resultado);
   if(!aplico_operador){
     fprintf(stderr, "%s\n","no pude dividir");
     return false;
@@ -201,7 +199,7 @@ bool aplicar_multiplicacion(pila_t * pila){
   fprintf(stderr, "%s%d\n","pude desapilar:",*multiplicando_2 );
 
   int * resultado=malloc(sizeof(int));
-  bool aplico_operador=multiplicar(*numerador, *denominador,&resultado);
+  bool aplico_operador=multiplicar(*multiplicando_1, *multiplicando_2,resultado);
   if(!aplico_operador){
     fprintf(stderr, "%s\n","no pude multiplicar");
     return false;
@@ -227,16 +225,16 @@ bool aplicar_resta(pila_t * pila){
   int* restando_2;
   restando_1=(int *) pila_desapilar(pila);
 
-  if(sumando_1==NULL)
+  if(restando_1==NULL)
     return false;
   fprintf(stderr, "%s%d\n","pude desapilar:",*restando_1 );
   restando_2=(int *) pila_desapilar(pila);
-  if(sumando_2==NULL)
+  if(restando_2==NULL)
     return false;
   fprintf(stderr, "%s%d\n","pude desapilar:",*restando_2 );
 
   int * resultado=malloc(sizeof(int));
-  bool aplico_operador=restar(*restando_1, *restando_2,&resultado);
+  bool aplico_operador=restar(*restando_1, *restando_2,resultado);
   if(!aplico_operador){
     fprintf(stderr, "%s\n","no pude restar");
     return false;
@@ -271,7 +269,7 @@ bool aplicar_suma(pila_t * pila){
 
 
   int * resultado=malloc(sizeof(int));
-  bool aplico_operador=sumar(*sumando_1, *sumando_2,&resultado);
+  bool aplico_operador=sumar(*sumando_1, *sumando_2,resultado);
   if(!aplico_operador){
     fprintf(stderr, "%s\n","no pude sumar");
     return false;
@@ -310,7 +308,7 @@ bool validar_operacion(char * literal,function_t *operacion){
   if(operacion==NULL)
     return false;
 
-  for(i=0;lista_operaciones[i]!=NULL;i++){
+  for(int i=0;lista_operaciones[i]!=NULL;i++){
     if(strcmp(lista_operaciones[i],literal)==0){
       fprintf(stderr, "%s: %s\n","es la funcion",lista_operaciones[i]);
       *operacion=funciones[i];
@@ -340,6 +338,26 @@ bool procesar_literales(pila_t * pila,char * literal){
   return false;
 }
 
+/*Reviso que exista solo un resultado final en la pila y no más elementos*/
+bool  revisar_calculo_polaco(pila_t * pila, int * resultado){
+
+  int * resultado_a_priori=NULL;
+  resultado_a_priori=pila_desapilar(pila);
+  fprintf(stderr, "%s\n", "Calculé el resultado a priori");
+
+  if(resultado_a_priori==NULL){
+    fprintf(stderr, "%s\n", "El resultado a priori es NULL");
+    return false;
+  }
+  if(!pila_esta_vacia(pila)){
+    fprintf(stderr, "%s\n", "No se vació la pila");
+    return false;
+  }
+  *resultado=*resultado_a_priori;
+  free(resultado_a_priori);
+  return true;
+}
+
 bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
 
   if(linea==NULL || resultado==NULL){
@@ -360,13 +378,13 @@ bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
 
   /*Proceso el calculo polaco en el vector de literales*/
   bool proceso_calculo_polaco=false;
-  size_t i=0;
-  for(size_t i=0; vector_literales[i]!=NULL; i++){
+  bool proceso_literales=false;
+  for(int i=0; vector_literales[i]!=NULL; i++){
     proceso_literales=procesar_literales(pila,vector_literales[i]);
     if(!proceso_literales){
       fprintf(stderr, "%s %d: %sERROR%s\n", "Literal",i,ANSI_COLOR_LGH_RED,ANSI_COLOR_RESET);
       proceso_calculo_polaco=false;
-      return;
+      break;
     }
     else{
       proceso_calculo_polaco=true;
@@ -375,27 +393,15 @@ bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
   }
 
   fprintf(stderr, "%s\n", "Todo OK con procesar literales");
+
   /*Reviso que exista solo un resultado final en la pila y no más elementos*/
-  int * resultado_a_priori=NULL;
-  if(proceso_calculo_polaco){
-    resultado_a_priori=pila_desapilar(pila);
-    fprintf(stderr, "%s\n", "Calculé el resultado a priori");
-  }
-  if(resultado_a_priori==NULL){
-    fprintf(stderr, "%s\n", "El resultado a priori es NULL");
-    proceso_calculo_polaco=false;
-  }
-  if(!pila_esta_vacia(pila)){
-    fprintf(stderr, "%s\n", "No se vació la pila");
-    proceso_calculo_polaco=false;
-  }
+  proceso_calculo_polaco= revisar_calculo_polaco(pila,resultado);
 
   /*Libero la memoria dinámica pedida*/
   free_strv(vector_literales);
   pila_destruir(pila);
 
   /*Devuelvo el resultado y si se realizó el cálculo*/
-  *resultado=&resultado_a_priori;
-  free(resultado_a_priori);
+
   return proceso_calculo_polaco;
 }
