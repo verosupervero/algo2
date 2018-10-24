@@ -28,4 +28,6 @@ char* join(char** strv, char sep);
  */
 void free_strv(char* strv[]);
 
+char * str_extract(const char * cadena, size_t pos_ini,size_t pos_fin);
+
 #endif  // STRUTIL_H
