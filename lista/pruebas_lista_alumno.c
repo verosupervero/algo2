@@ -197,7 +197,37 @@ void pruebas_lista_nueva(void){
    print_test("Lista nueva destruida:", true);
    print_test("Iterador destruido:", true);
  }
+void estado_lista_enteros(lista_t * lista, lista_iter_t * iter){
+  int * ultimo=lista_ver_ultimo(lista);
+  int * primero=lista_ver_primero(lista);
+  int * pos_iter=lista_iter_ver_actual(iter);
 
+  printf("\n*--------------------------------------*\n");
+
+  if(ultimo){
+    printf("El último de la lista es: %d\n",*ultimo);
+  }
+  else{
+    printf("El último de la lista es: NULL\n");
+  }
+
+  if(primero){
+    printf("El primero de la lista es: %d\n",*primero );
+  }
+  else{
+    printf("El primero de la lista es: NULL\n");
+  }
+
+  if(pos_iter){
+    printf("¿Dónde esta el iterador?: %d\n", *pos_iter);
+  }
+  else{
+    printf("Iterador esta en: NULL\n");
+  }
+  printf("El tamaño de la lista es: %ld\n",lista_largo(lista));
+  printf("\n*--------------------------------------*\n");
+
+}
  void pruebas_iterar_lista_rellena(size_t volumen, char * nombre_volumen){ //aqui
    lista_t* lista;
    lista_iter_t * iter;
@@ -225,40 +255,33 @@ void pruebas_lista_nueva(void){
    int valor_elegido= 1;
    int valor_a_insertar= 39;
    bool checkear_valor= *valor_actual==valor_elegido;
-   int * ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
-
-   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
-
+   estado_lista_enteros(lista,iter);
 
    print_test("Iterador en la lista tiene datos (y es el esperado):", checkear_valor );
-   print_test("Iterador de lista no está al final:", lista_iter_al_final(iter)==false);
+   print_test("Iterador de lista no está al final:", !lista_iter_al_final(iter));
    print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&valor_a_insertar)==true);
 
    printf("Veamos que se insertó el elemento...\n");
    imprimir_lista (volumen,lista, imprimir_entero,NULL);
-   ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
-   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
-
+   estado_lista_enteros(lista,iter);
 
    /*PRUEBAS AL BORRAR ELEMENTOS DE LA LISTA EN POSICION DADA*/
    print_test("El iterador en la lista puede borrar elementos:", lista_iter_borrar(iter)==&valor_a_insertar);
    imprimir_lista (volumen,lista, imprimir_entero,NULL);
-   ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
-   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
+   estado_lista_enteros(lista,iter);
 
    /*PRUEBAS AL BORRAR ELEMENTOS DE LA LISTA AL FINAL*/
    print_test("Puede avanzar iterador en lista:", lista_iter_avanzar(iter)==true);
+   estado_lista_enteros(lista,iter);
    print_test("El iterador en la lista puede borrar elementos:", lista_iter_borrar(iter)==&valor[2]);
    imprimir_lista (volumen,lista, imprimir_entero,NULL);
-   ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
-   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
+   estado_lista_enteros(lista,iter);
 
 
    /*PRUEBAS CON ITERADOR AL FINAL DE LA LISTA (SI ES VECTOR MINI)*/
    print_test("El iterador en la lista puede insertar elementos:", lista_iter_insertar(iter,&valor_a_insertar)==true);
    imprimir_lista (volumen,lista, imprimir_entero,NULL);
-   ultimo_de_la_lista=(int*) lista_ver_ultimo(lista);
-   printf("El último de la lista es: %d\n",*ultimo_de_la_lista);
+   estado_lista_enteros(lista,iter);
 
 
    lista_iter_destruir(iter);
@@ -367,7 +390,7 @@ void pruebas_lista_alumno(void) {
   pruebas_lista_vacia_es_nueva();
   pruebas_iterar_lista_nueva();
   pruebas_iterar_lista_rellena(VOLUMEN_MINI, "Volumen Mini");
-  pruebas_iterar_lista_rellena(VOLUMEN_CHICO,"Volumen Chico");
+   pruebas_iterar_lista_rellena(VOLUMEN_CHICO,"Volumen Chico");
   pruebas_iterar_lista_rellena(VOLUMEN_MEDIO,"Volumen Medio");
   pruebas_receta_de_bizcochuelo();
   pruebas_iterar_lista_borde();
