@@ -34,7 +34,6 @@ char * str_dup(const char * cadena)
  */
 
 char * str_extract(const char * cadena, size_t pos_ini,size_t pos_fin){
-  fprintf(stderr, "str_extract %lu %lu\n", pos_ini, pos_fin);
   if(!cadena)
     return NULL;
   size_t n=pos_fin-pos_ini+1;
@@ -51,8 +50,6 @@ char * str_extract(const char * cadena, size_t pos_ini,size_t pos_fin){
     subcadena[i]=cadena[i];
 */
   subcadena[n-1]='\0'; //agrego el '\0'
-
-  fprintf(stderr, ":::%s:::\n", subcadena);
   return subcadena;
 }
 
@@ -98,12 +95,10 @@ char**	split	(const char * cadena,	char sep){
       /*Genero una particion de mi cadena*/
       particion= str_extract(cadena,pos_ini,pos_fin); //es O(largo)
       if(!particion){
-		  	fprintf(stderr, "gone\n");
         free_strv(vector);
         return NULL;
       }
       /*Guardo la particion en el vector*/
-	  	fprintf(stderr,"-->%s\n",particion);
       vector[n_contador++]=particion;
 
       /*La cadena que sigue empieza al final de la otra*/

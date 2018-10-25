@@ -288,12 +288,31 @@ bool aplicar_suma(pila_t * pila){
   }
 }
 
+int validate_input ( char* input )
+{
+    char *p = input;
+    if( !input ) return 0;
+    for( p=input; *p && (isdigit(*p) || iswhite(*p)); ++p )
+    {
+    }
+    if( *p ) return 0;
+    return 1;
+}
 
 bool validar_entero(char * literal, int ** pp_entero){
 
+
+  /*valido que el literal sea un numero, poshicosas*/
+  char *p;
+  for( p=literal; *p && (isdigit(*p) || iswhite(*p)); ++p );
+  if( *p )  return false;
+
+ /*poshicosas*/
   char * endptr=NULL;
   int entero= (int) strtol(literal, &endptr, 10);
+  fprintf(stderr, "%s:%d\n","el entero es",entero );
   if(pp_entero!=NULL){
+    fprintf(stderr, "%s\n","ppentero es distinto de null" );
     *pp_entero=malloc(sizeof(int));
     if(*pp_entero==NULL){
       return false;
@@ -309,7 +328,8 @@ bool validar_operacion(char * literal,function_t *operacion){
     return false;
 
   for(int i=0;lista_operaciones[i]!=NULL;i++){
-    if(strcmp(lista_operaciones[i],literal)==0){
+    size_t son_distintas_operaciones=strcmp(lista_operaciones[i],literal);
+    if(!son_distintas_operaciones){
       fprintf(stderr, "%s: %s\n","es la funcion",lista_operaciones[i]);
       *operacion=funciones[i];
       return true;
@@ -322,17 +342,20 @@ bool procesar_literales(pila_t * pila,char * literal){
   int * p_entero= NULL;
   function_t p_operacion= NULL;
 
+  if(validar_operacion(literal,&p_operacion)){
+    fprintf(stderr, "%s%s%s\n", "El literal",literal, "es una operacion");
+    bool aplicar_op= (*p_operacion)(pila);
+    fprintf(stderr, "%s: %d\n","Realice operacion",aplicar_op?1:0);
+    return aplicar_op;
+  }
   if(validar_entero(literal,&p_entero)){
     fprintf(stderr, "%s%s%s\n", "El literal",literal, "es un entero");
     bool apile=  pila_apilar(pila,p_entero);
     fprintf(stderr, "%s: %d\n","Apile",apile?1:0);
     return apile;
   }
-  if(validar_operacion(literal,&p_operacion)){
-    fprintf(stderr, "%s%s%s\n", "El literal",literal, "es una operacion");
-    bool aplicar_op= (*p_operacion)(pila);
-    fprintf(stderr, "%s: %d\n","Realice operacion",aplicar_op?1:0);
-    return aplicar_op;
+  else{
+    fprintf(stdout, "%s\n","no pude validar entero" );
   }
   // Literal invalido
   return false;
@@ -358,28 +381,73 @@ bool  revisar_calculo_polaco(pila_t * pila, int * resultado){
   return true;
 }
 
+size_t strv_len(char * vector[]){
+  if(vector==NULL || *vector==NULL){ //caso base
+    return 1;
+  }
+  return 1+strv_len(vector+1);
+}
+
+char * quitar_salto_linea(char ** literal){
+  if(!literal)
+    return NULL;
+
+  char * literal_2=str_extract(*literal,0,strlen(*literal)-2);
+  if(!literal_2)
+    return false;
+
+  free(*literal);
+  *literal=literal_2;
+  return literal_2;
+}
+
+bool imprimir_vector_cadenas(char * vectores[]){
+if(!vectores){
+  fprintf(stdout, "%s\n","no hay vectores" );
+  return false;
+}
+for(size_t i=0; vectores[i]!=NULL; i++){
+    fprintf(stdout, "%s,", vectores[i]);
+ }
+ fprintf(stdout, "\n" );
+ return true;
+}
+
+
 bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
 
+  fprintf(stderr, "\n............PROCESO LITERALES..........\n\n");
   if(linea==NULL || resultado==NULL){
     fprintf(stderr, "%s\n", "No hay linea o resultado");
     return false;
   }
 
   /*Genero un vector de literales para procesarlos por separado*/
-  char ** vector_literales= split(linea, ' ');
+  char ** vector_literales= split(linea,' ');
   if(!vector_literales){
     fprintf(stderr, "%s\n", "No pude procesar los literales");
-    return false;
+    return NULL;
   }
+
+  /*Quito el barra n del ultimo elemento*/
+  size_t len_strv=strv_len(vector_literales);
+  if(!quitar_salto_linea(&vector_literales[len_strv-2]))
+    return false;
+
+  fprintf(stdout, "%s\n\n","Voy a imprimir el vector de literales despues de quitar el salto de linea" );
+  imprimir_vector_cadenas(vector_literales);
+  fprintf(stdout, "\n" );
+
 
   /*Creo una pila para ir almacenando los resultados parciales
   de la calculadora*/
+  fprintf(stdout, "%s\n","creo la pila" );
   pila_t * pila=pila_crear();
 
   /*Proceso el calculo polaco en el vector de literales*/
   bool proceso_calculo_polaco=false;
   bool proceso_literales=false;
-  for(int i=0; vector_literales[i]!=NULL; i++){
+  for(int i=0; i<len_strv-2; i++){
     proceso_literales=procesar_literales(pila,vector_literales[i]);
     if(!proceso_literales){
       fprintf(stderr, "%s %d: %sERROR%s\n", "Literal",i,ANSI_COLOR_LGH_RED,ANSI_COLOR_RESET);
@@ -392,16 +460,17 @@ bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
     }
   }
 
-  fprintf(stderr, "%s\n", "Todo OK con procesar literales");
+  fprintf(stderr, "%s\n", "Procese literales de alguna forma");
 
   /*Reviso que exista solo un resultado final en la pila y no más elementos*/
   proceso_calculo_polaco= revisar_calculo_polaco(pila,resultado);
+  fprintf(stderr, "Proceso calculo polaco %s\n", proceso_calculo_polaco?"OK":"ERROR");
 
   /*Libero la memoria dinámica pedida*/
   free_strv(vector_literales);
   pila_destruir(pila);
 
   /*Devuelvo el resultado y si se realizó el cálculo*/
-
+  fprintf(stderr, "\n-------------RESULTADO FINAL:-----------\n\n");
   return proceso_calculo_polaco;
 }

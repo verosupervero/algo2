@@ -17,8 +17,11 @@ int main (int argc, char * argv []){
   if(leyo==-1){
     free(linea);
   }
+  size_t i=1;
   /*Cuando el archivo no termino:*/
-  while(leyo==-1){     /*Leo una línea del archivo*/
+  while(leyo!=-1){     /*Leo una línea del archivo*/
+    fprintf(stderr, "%s %ld\n","Estoy leyendo la linea del archivo n. ",i );
+    fprintf(stderr, "%s\n", linea);
     bool proceso=procesar_calculo_polaco_inverso(linea,&resultado);
     if(!proceso){
       fprintf(stdout, "ERROR\n");
@@ -28,9 +31,12 @@ int main (int argc, char * argv []){
     }
     free(linea);
 
+    fprintf(stderr, "\n-----------------------------\n\n");
+
     tamanio_linea=0;
     linea=NULL;
     leyo=getline(&linea,&tamanio_linea,stdin);
+    i++;
   }
   free(linea);
 

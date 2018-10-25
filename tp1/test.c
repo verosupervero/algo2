@@ -1,9 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "strutil.h"
+
+size_t strv_len(char * vector[]){
+  if(vector==NULL || *vector==NULL){ //caso base
+    return 1;
+  }
+  return 1+strv_len(vector+1);
+}
 
 int main (void){
+
+  char * h[]={"hola","soy","pepa",NULL};
+  size_t largo=strv_len(h);
+  fprintf(stdout, "%s:%ld\n","el arreglo de chars mide", largo);
+  return 0;
+}
+
+
+//#include "strutil.h"
+//
+// size_t strv_len(char * vector[]){
+//   if(vector==NULL || *vector==NULL){
+//     fprintf(stdout, "%s\n", "es el caso base");
+//     return 0;
+//   } //Caso base
+//   size_t i;
+//   for(i=0;vector[i]!=NULL;i++){
+//     fprintf(stderr, "%s\n","no es el caso base" );
+//   }
+//   return i;
+// }
+//
+// int main (void){
+//
+//   char * h[]={"hola","soy","pepa",NULL};
+//   size_t largo=strv_len(h);
+//   fprintf(stdout, "%s:%ld\n","el arreglo de chars mide", largo);
+//
+
   /*char * cadenas[]={"The memcpy() function copies n bytes from memory area src to memory area dest. The memory areas must not overlap. Use memmove(3) if the memory areas do overlap. ","soy nando","bcopy(3), memccpy(3), memmove(3), mempcpy(3), strcpy(3), strncpy(3), wmemcpy(3)"};
   char separadores[]={' ', ' ', ','};
 
@@ -84,7 +119,7 @@ int main (void){
  //    fprintf(stderr, "%s\n", vectores213[i]);
  // }
  // free_strv(vectores213);
-  return 0;
-
-
-}
+//   return 0;
+//
+//
+// }
