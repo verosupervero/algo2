@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "strutil.h"
 
 #define FACTOR_REDIMENSION            2
@@ -193,4 +194,28 @@ void free_strv(char* strv[]){
     i++;
   }
   free (strv);
+}
+
+
+// Elimina espacios al principio y final de la cadena, y devuelve
+// una cadena nueva alocada dinámicamente. Usa isspace()
+char * trim (const char * str){
+	if (str == NULL) return NULL;
+
+	// Avanzo todos los espacios al inicio
+	size_t inicio=0;
+	for(inicio=0; isspace(str[inicio]); inicio++);
+
+	// Avanzo todos los espacios al final
+	size_t final;
+	for(final=strlen(str)-1; isspace(str[final]); final--);
+
+	// Creo una copia
+	size_t largo_subcadena = 1+final-inicio;
+	char *copia = malloc(sizeof(char)*largo_subcadena);
+	if (copia == NULL) return NULL;
+
+	memcpy(copia, &str[inicio], largo_subcadena);
+
+	return copia;
 }

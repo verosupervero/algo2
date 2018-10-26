@@ -30,4 +30,8 @@ void free_strv(char* strv[]);
 
 char * str_extract(const char * cadena, size_t pos_ini,size_t pos_fin);
 
+// Elimina espacios al principio y final de la cadena, y devuelve
+// una cadena nueva alocada dinámicamente. Usa isspace()
+char * trim (const char * str);
+
 #endif  // STRUTIL_H
