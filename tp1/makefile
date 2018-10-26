@@ -50,8 +50,8 @@ test_strutil: test_strutil.o strutil.o testing.o
 test_strutil.o: test_strutil.c
 	$(CC) $(CFLAGS) -c test_strutil.c
 
-test_calc: test_calc.o strutil.o testing.o
-	$(CC) $(LFLAGS) -o test_calc testing.o test_calc.o strutil.o && ./test_calc
+test_calc: test_calc.o calc.o strutil.o testing.o pila.o operaciones.o
+	$(CC) $(LFLAGS) -o test_calc testing.o test_calc.o pila.o operaciones.o calc.o strutil.o && ./test_calc
 
 test_calc.o: test_calc.c
 	$(CC) $(CFLAGS) -c test_calc.c

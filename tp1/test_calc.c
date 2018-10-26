@@ -9,8 +9,10 @@
 
 int main (){
 	printf("INICIO DE PRUEBAS DE CALC\n");
-	
-	print_test("OK", 1);
+	char* vector[4] = {"2", "3", "+", NULL};
+	int resultado = 0;
+	print_test("2+3 retorno ok", procesar_vector_polaco_inverso(vector, &resultado));
+	print_test("2+3 resultado 5", resultado == 5);
 	
 	return 0;
 }
