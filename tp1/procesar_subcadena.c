@@ -11,12 +11,16 @@
 bool encontrar_subpalabra(char * subpalabra, char * linea){
 
   if(subpalabra==NULL || linea==NULL){
+    //fprintf(stderr, "%s\n","subpalabra o linea son NULL" );
     return false;
   }
 
   size_t n=strlen(subpalabra);
   size_t m=strlen(linea);
   char * sublinea=NULL;
+
+  if(m<n)
+    return false;
 
   for(int i=0; i<m-n;i++){
       sublinea=str_extract(linea,i,i+n-1); // Hay que ver como no ponerla en el .h de strutil.h
@@ -29,19 +33,12 @@ bool encontrar_subpalabra(char * subpalabra, char * linea){
   return false;
 }
 
-bool imprimir_lineas_archivo(lista_t * lista_lineas){
-  if(!lista_lineas)
-    return false;
-
-  char * dato_actual;
-  for(int i=0;i<lista_largo(lista_lineas);i++){
-    dato_actual=(char *) lista_borrar_primero(lista_lineas);
-    if(!dato_actual)
-      return false;
-
-    fprintf(stdout, "%s\n",dato_actual);
-    free(dato_actual);
+bool imprimir_lineas(void *dato, void *extra){
+  if(extra==NULL){
+    //fprintf(stdout, "%s\n","estoy imprimiendo lineas");
+    fprintf(stdout, "%s",(char*)dato);
   }
+
   return true;
 }
 
@@ -56,8 +53,6 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
 
   /*Cuando el archivo no termino:*/
   bool todo_ok=true;
-  int contador=0;
-
   leyo=getline(&linea,&tamanio_linea,archivo);
   if(leyo==-1)
     todo_ok=false;
@@ -65,31 +60,37 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
   while(leyo!=-1){     /*Leo una línea del archivo*/
 
     /*No puedo almacenar mas de N+1 lineas en memoria*/
-    if(lista_largo(lista_lineas)>=N+1){
+    if(lista_largo(lista_lineas)>N+1){
       if(!lista_borrar_primero(lista_lineas)){
         todo_ok=false;
         break;
       }
     }
+
+    //fprintf(stderr, "La cantidad de lineas en el vector es: %ld\n", lista_largo(lista_lineas));
     /*inserto la linea*/
     if(!lista_insertar_ultimo(lista_lineas,linea)){
+      //fprintf(stderr, "%s\n","no pude insertar la linea" );
       todo_ok=false;
       break;
     }
-
-    if(contador<=N)
-      contador++;
+    //fprintf(stderr, "Inserte esta linea: :::%s:::",linea);
 
     if(encontrar_subpalabra(subcadena,linea)){
-      todo_ok= imprimir_lineas_archivo(lista_lineas);
+      //fprintf(stderr, "La ultima linea del archivo es: :::%s:::\n",(char *)lista_ver_ultimo(lista_lineas) );
+      lista_iterar (lista_lineas, imprimir_lineas,NULL);
+      todo_ok=true;
       break; //ya encontré lo que quería o no si no tuve memoria
     }
+    //fprintf(stdout, "%s\n","termine de recorrer una linea y no esta" );
     tamanio_linea=0;
     linea=NULL;
     leyo=getline(&linea,&tamanio_linea,archivo); //aca getline me tira
                                   //distintas pos de memoria tengo entendido
   }
+  //fprintf(stderr, "%s\n","sali del while" );
   free(linea);
-  lista_destruir(lista_lineas,free_strv);
+  //fprintf(stderr, "%s\n","le hice free a linea");
+  lista_destruir(lista_lineas,free);
   return todo_ok;
 }
