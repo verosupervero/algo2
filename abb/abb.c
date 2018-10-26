@@ -14,6 +14,8 @@ struct abb{
   abb_destruir_dato_t destruir_dato;
   abb_comparar_clave_t comparar_clave;
 }
+typedef enum {NO_ES_HIJO,HIJO_IZQUIERDO,HIJO_DERECHO}hijo_t;
+
 /* ******************************************************************
  *                FUNCIONES AUXILIARES DE ABB
  * *****************************************************************/
@@ -144,16 +146,65 @@ bool abb_pertenece(const abb_t *arbol, const char *clave){
 }
 
 /******************************************************************************
-Desemparenta un nodo padre de su nodo hijo
-PRE: Recibe padre e hijo
-POST: El padre apunta a NULL en la direccion que apuntaba a su hijo
+ Obtiene el tipo de hijo.
+PRE: Recibe un padre y su hijo
+POST: Devuelve si es hijo_derecho, hijo_izquierdo o si no es hijo.
 *******************************************************************************/
-void desemparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo){
-  if(padre->hijo_derecho == hijo){
+size_t obtener_parentezco(const abb_nodo_t * padre, const abb_nodo_t * hijo){
+  if(padre->hijo_derecho == hijo)
+    return HIJO_DERECHO;
+  else if(padre->hijo_izquierdo==hijo)
+    return HIJO_IZQUIERDO;
+  return NO_ES_HIJO;
+}
+
+
+/******************************************************************************
+Desemparenta un nodo padre de su nodo hijo
+PRE: Recibe padre e hijo y un puntero si se desea saber de que tipo era.
+Ambos existen.
+POST: El padre apunta a NULL en la direccion que apuntaba a su hijo.
+Se guarda el parentezco anterior de ambos
+*******************************************************************************/
+void desemparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t * parentezco_anterior){
+
+  tipo_hijo=obtener_parentezco(padre,hijo);
+
+  if(tipo_hijo==HIJO_DERECHO){
       padre->hijo_derecho=NULL;
+      if(parentezco_anterior!=NULL)
+        *parentezco_anterior=HIJO_DERECHO;
       return;
   }
-  padre->hijo_izquierdo=NULL;
+  else if(tipo_hijo==HIJO_IZQUIERDO){
+    padre->hijo_izquierdo=NULL;
+    if(parentezco_anterior!=NULL)
+      *parentezco_anterior=HIJO_IZQUIERDO;
+  }
+  else{
+    if(parentezco_anterior!=NULL)
+      *parentezco_anterior=NO_ES_HIJO;
+  }
+}
+
+
+/******************************************************************************
+Emparenta un nodo padre de su nodo hijo
+PRE: Recibe padre e hijo y el tipo de emparentamiento que se desea.
+POST: Emparento padre con hijo o no lo emparento si se paso que no era hijo.
+*******************************************************************************/
+void emparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t tipo_hijo){
+  if(tipo_hijo==HIJO_DERECHO){
+      padre->hijo_derecho=hijo;
+      return;
+  }
+  else if(tipo_hijo==HIJO_IZQUIERDO){
+    padre->hijo_izquierdo=hijo;
+    return
+  }
+  else{
+    fprintf(stderr, "%s\n","No son parientes" );
+  }
 }
 
 /******************************************************************************
@@ -164,14 +215,15 @@ en donde estaba el nodo.
 *******************************************************************************/
 void * abb_borrar_nodo_sin_hijos(abb_nodo_t * nodo_a_borrar, abb_nodo_t * padre){
   if(!nodo_a_borrar || !padre)
-    retun NULL;
-  desemparentar_padre_e_hijo(padre,nodo_a_borrar);
+    return NULL;
+  desemparentar_padre_e_hijo(padre,nodo_a_borrar,NULL);
   dato=destruir_nodo(nodo_a_borrar);
   return dato;
 }
 
 void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo_a_borrar, abb_nodo_t * padre){
-
+  if(!nodo_a_borrar || !padre)
+    return NULL;
 }
 
 
