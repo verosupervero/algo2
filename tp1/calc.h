@@ -31,4 +31,7 @@ bool validar_entero(char * literal, int ** pp_entero);
 bool validar_operacion(char * literal,function_t *operacion);
 bool procesar_literales(pila_t * pila,char * literal);
 
+char** sanitizar_vector_literales(char** tokens);
+bool procesar_vector_polaco_inverso(char** vector_literales, int* resultado);
+
 #endif //__CALC_PRIVADO_H__

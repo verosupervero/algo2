@@ -289,7 +289,7 @@ bool aplicar_suma(pila_t * pila){
   }
 }
 
-int validate_input ( char* input )
+/*int validate_input ( char* input )
 {
     char *p = input;
     if( !input ) return 0;
@@ -298,7 +298,7 @@ int validate_input ( char* input )
     }
     if( *p ) return 0;
     return 1;
-}
+}*/
 
 bool validar_entero(char * literal, int ** pp_entero){
 
@@ -435,7 +435,7 @@ char** parsear_literales(const char* linea, char separador){
   return sanitizar_vector_literales(tokens);
 }
 
-char** sanitizar_vector_literales(const char* tokens){
+char** sanitizar_vector_literales(char** tokens){
   /*
   Elimino los caracteres blancos al principio y final de cada literal; luego, elimino los literales vacios (incluidos los literales de caracteres blancos)
   */
@@ -443,7 +443,7 @@ char** sanitizar_vector_literales(const char* tokens){
   // Aloco otro vector (tambien terminado en NULL)
   size_t len_tokens = strv_len(tokens);
   
-  char** literales = calloc((len_tokens+1)*sizeof(char*));
+  char** literales = calloc(len_tokens+1, sizeof(char*));
   if (literales == NULL){
     free_strv(tokens);
     return NULL;
@@ -507,7 +507,7 @@ bool procesar_vector_polaco_inverso(char** vector_literales, int* resultado){
   if (vector_literales==NULL || resultado==NULL) return false;
   
   // Largo del vector (para que?)
-  size_t len_strv=strv_len(vector_literales);
+  //size_t len_strv=strv_len(vector_literales);
 
   /*Creo una pila para ir almacenando los resultados parciales
   de la calculadora*/
