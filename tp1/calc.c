@@ -351,18 +351,21 @@ bool procesar_literales(pila_t * pila,char * literal_raw){
     fprintf(stderr, "%s%s%s\n", "El literal",literal, "es una operacion");
     bool aplicar_op= (*p_operacion)(pila);
     fprintf(stderr, "%s: %d\n","Realice operacion",aplicar_op?1:0);
+    free(literal);
     return aplicar_op;
   }
   if(validar_entero(literal,&p_entero)){
     fprintf(stderr, "%s%s%s\n", "El literal",literal, "es un entero");
     bool apile=  pila_apilar(pila,p_entero);
     fprintf(stderr, "%s: %d\n","Apile",apile?1:0);
+    free(literal);
     return apile;
   }
   else{
     fprintf(stdout, "%s\n","no pude validar entero" );
   }
   // Literal invalido
+  free(literal);
   return false;
 }
 
@@ -419,6 +422,57 @@ for(size_t i=0; vectores[i]!=NULL; i++){
 }
 
 
+// Recibe una linea de literales separados por <separador>, y devuelve un vector de strings con cada literal
+// Segun strutil.c/split() si separador es SEPARAR_BLANCO separa por cualquier caracter blanco (espacio, \t, \n, etc).
+// #define SEPARAR_BLANCO 0
+char** parsear_literales(const char* linea, char separador){
+  if (linea == NULL) return NULL;
+  
+  // Separo los literales
+  char** tokens = split(linea, separador);
+  
+  // Sanitizo (aka elimino cadenas vacias y blancos)
+  return sanitizar_vector_literales(tokens);
+}
+
+char** sanitizar_vector_literales(const char* tokens){
+  /*
+  Elimino los caracteres blancos al principio y final de cada literal; luego, elimino los literales vacios (incluidos los literales de caracteres blancos)
+  */
+  
+  // Aloco otro vector (tambien terminado en NULL)
+  size_t len_tokens = strv_len(tokens);
+  
+  char** literales = calloc((len_tokens+1)*sizeof(char*));
+  if (literales == NULL){
+    free_strv(tokens);
+    return NULL;
+  }
+  
+  // Copio literales
+  size_t ultimo_literal = 0;
+  for(size_t i=0; tokens[i]!=NULL; i++){
+    // Elimino caracteres blancos
+    char* aux_literal = trim(tokens[i]);
+    
+    // Omito la copia si el literal queda vacio
+    if (strlen(aux_literal)==0){
+      free(aux_literal);
+      continue;
+    }
+    
+    // Agrego el literal al nuevo vector (y postincremento su indice)
+    literales[ultimo_literal++] = aux_literal;
+  }//end for
+  
+  // Termino el vector en NULL (redundante con calloc si NULL==0)
+  literales[ultimo_literal] = NULL;
+  
+  /* Aca puede ir un realloc opcional para liberar memoria */
+  
+  return literales;
+}
+
 bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
 
   fprintf(stderr, "\n............PROCESO LITERALES..........\n\n");
@@ -428,32 +482,46 @@ bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
   }
 
   /*Genero un vector de literales para procesarlos por separado*/
-  char ** vector_literales= split(linea,' ');
+  // Considerar usar como separador CARACTER_BLANCO
+  char ** vector_literales= parsear_literales(linea, ' ');
   if(!vector_literales){
     fprintf(stderr, "%s\n", "No pude procesar los literales");
     return NULL;
   }
+  
+  puts("Resultado parseo:");
+imprimir_vector_cadenas(vector_literales);
+  puts("");
+  
+  bool exito =  procesar_vector_polaco_inverso( vector_literales, resultado);
+  
+  // Libero memoria
+  free_strv(vector_literales);
 
-  /*Quito el barra n del ultimo elemento*/
+  return exito;
+}
+
+
+// Recibe un vector de literales sano (use parsear_linea o sanitizar_vector_literales) y realiza el calculo
+bool procesar_vector_polaco_inverso(char** vector_literales, int* resultado){
+  if (vector_literales==NULL || resultado==NULL) return false;
+  
+  // Largo del vector (para que?)
   size_t len_strv=strv_len(vector_literales);
-  if(!quitar_salto_linea(&vector_literales[len_strv-2]))
-    return false;
-
-  fprintf(stdout, "%s\n\n","Voy a imprimir el vector de literales despues de quitar el salto de linea" );
-  imprimir_vector_cadenas(vector_literales);
-  fprintf(stdout, "\n" );
-
 
   /*Creo una pila para ir almacenando los resultados parciales
   de la calculadora*/
-  fprintf(stdout, "%s\n","creo la pila" );
+  puts("creo la pila" );
   pila_t * pila=pila_crear();
 
   /*Proceso el calculo polaco en el vector de literales*/
   bool proceso_calculo_polaco=false;
   bool proceso_literales=false;
-  for(int i=0; i<len_strv-2; i++){
-    proceso_literales=procesar_literales(pila,vector_literales[i]);
+  for(int i=0; vector_literales[i]!=NULL; i++){
+  // Considero que tengo un vector sano aca
+   
+   // Proceso el literal
+   proceso_literales = procesar_literales(pila,vector_literales[i]);
     if(!proceso_literales){
       fprintf(stderr, "%s %d: %sERROR%s\n", "Literal",i,ANSI_COLOR_LGH_RED,ANSI_COLOR_RESET);
       proceso_calculo_polaco=false;
@@ -472,7 +540,6 @@ bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
   fprintf(stderr, "Proceso calculo polaco %s\n", proceso_calculo_polaco?"OK":"ERROR");
 
   /*Libero la memoria dinámica pedida*/
-  free_strv(vector_literales);
   pila_destruir(pila);
 
   /*Devuelvo el resultado y si se realizó el cálculo*/
