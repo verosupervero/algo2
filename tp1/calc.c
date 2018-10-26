@@ -339,9 +339,13 @@ bool validar_operacion(char * literal,function_t *operacion){
   return false;
 }
 
-bool procesar_literales(pila_t * pila,char * literal){
+bool procesar_literales(pila_t * pila,char * literal_raw){
   int * p_entero= NULL;
   function_t p_operacion= NULL;
+  
+  // elimino espacios para evitar lios
+  char* literal=trim(literal_raw);
+  if(literal==NULL) return false;
 
   if(validar_operacion(literal,&p_operacion)){
     fprintf(stderr, "%s%s%s\n", "El literal",literal, "es una operacion");

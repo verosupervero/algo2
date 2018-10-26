@@ -212,10 +212,11 @@ char * trim (const char * str){
 
 	// Creo una copia
 	size_t largo_subcadena = 1+final-inicio;
-	char *copia = malloc(sizeof(char)*largo_subcadena);
+	char *copia = malloc(sizeof(char)*(largo_subcadena+1));
 	if (copia == NULL) return NULL;
 
 	memcpy(copia, &str[inicio], largo_subcadena);
+	copia[largo_subcadena]='\0';
 
 	return copia;
 }
