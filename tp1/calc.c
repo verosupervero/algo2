@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "calc.h"
 #include "pila.h"
 #include "strutil.h"
@@ -292,7 +293,7 @@ int validate_input ( char* input )
 {
     char *p = input;
     if( !input ) return 0;
-    for( p=input; *p && (isdigit(*p) || iswhite(*p)); ++p )
+    for( p=input; *p && (isdigit(*p) || isspace(*p)); ++p )
     {
     }
     if( *p ) return 0;
@@ -304,7 +305,7 @@ bool validar_entero(char * literal, int ** pp_entero){
 
   /*valido que el literal sea un numero, poshicosas*/
   char *p;
-  for( p=literal; *p && (isdigit(*p) || iswhite(*p)); ++p );
+  for( p=literal; *p && (isdigit(*p) || isspace(*p)); ++p );
   if( *p )  return false;
 
  /*poshicosas*/

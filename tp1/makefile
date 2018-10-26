@@ -36,3 +36,26 @@ operaciones.o: operaciones.c operaciones.h
 	$(CC) $(CFLAGS) -c operaciones.c
 
 calc.h: pila.h operaciones.h strutil.h
+
+
+
+tests: test_strutil test_calc
+
+testing: testing.c testing.h
+	$(CC) $(CFLAGS) -c testing.c
+
+test_strutil: test_strutil.o strutil.o testing.o
+	$(CC) $(LFLAGS) -o test_strutil testing.o test_strutil.o strutil.o && ./test_strutil
+
+test_strutil.o: test_strutil.c
+	$(CC) $(CFLAGS) -c test_strutil.c
+
+test_calc: test_calc.o strutil.o testing.o
+	$(CC) $(LFLAGS) -o test_calc testing.o test_calc.o strutil.o && ./test_calc
+
+test_calc.o: test_calc.c
+	$(CC) $(CFLAGS) -c test_calc.c
+	
+
+clear:
+	rm *.o
