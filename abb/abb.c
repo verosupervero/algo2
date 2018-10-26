@@ -166,7 +166,7 @@ Ambos existen.
 POST: El padre apunta a NULL en la direccion que apuntaba a su hijo.
 Se guarda el parentezco anterior de ambos
 *******************************************************************************/
-void desemparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t * parentezco_anterior){
+void desemparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo, hijo_t * parentezco_anterior){
 
   tipo_hijo=obtener_parentezco(padre,hijo);
 
@@ -193,12 +193,12 @@ Emparenta un nodo padre de su nodo hijo
 PRE: Recibe padre e hijo y el tipo de emparentamiento que se desea.
 POST: Emparento padre con hijo o no lo emparento si se paso que no era hijo.
 *******************************************************************************/
-void emparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t tipo_hijo){
-  if(tipo_hijo==HIJO_DERECHO){
+void emparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t parentezco){
+  if(parentezco==HIJO_DERECHO){
       padre->hijo_derecho=hijo;
       return;
   }
-  else if(tipo_hijo==HIJO_IZQUIERDO){
+  else if(parentezco==HIJO_IZQUIERDO){
     padre->hijo_izquierdo=hijo;
     return
   }
@@ -206,26 +206,60 @@ void emparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t tipo_h
     fprintf(stderr, "%s\n","No son parientes" );
   }
 }
+/******************************************************************************
+Busca los hijos de un nodo y los devuelve por referencia. El nodo fue creado.
+PRE: Recibe el nodo y dos punteros para guardar la referencia a los hijos o NULL.
+POST: Devuelve ambos hijos por referencia.
+*******************************************************************************/
+void buscar_hijos(abb_nodo_t* nodo,abb_nodo_t** hijo_izquierdo,abb_nodo_t** hijo_derecho){
+  if(nodo->hijo_izquierdo!=NULL){
+    *hijo_izquierdo=nodo->hijo_izquierdo;
+  }
+  else{
+    *hijo_izquierdo=NULL;
+  }
+  if(nodo->hijo_derecho!=NULL){
+    *hijo_derecho=nodo->hijo_derecho;
+  }
+  else{
+    *hijo_derecho=NULL;
+  }
+}
+
 
 /******************************************************************************
 Borra un nodo sin hijos
-PRE: Recibe el nodo a borrar y su padre
+PRE: Recibe el nodo a borrar y su padre.Deben existir.
 POST: Borra el nodo y devuelve el dato que contenia, su padre apunta a NULL
 en donde estaba el nodo.
 *******************************************************************************/
-void * abb_borrar_nodo_sin_hijos(abb_nodo_t * nodo_a_borrar, abb_nodo_t * padre){
-  if(!nodo_a_borrar || !padre)
-    return NULL;
-  desemparentar_padre_e_hijo(padre,nodo_a_borrar,NULL);
-  dato=destruir_nodo(nodo_a_borrar);
+void * abb_borrar_nodo_sin_hijos(abb_nodo_t * nodo, abb_nodo_t * padre){
+  desemparentar_padre_e_hijo(padre,nodo,NULL);
+  void * dato=destruir_nodo(nodo);
+  return dato;
+}
+/******************************************************************************
+Borra un nodo con un hijo
+PRE: Recibe el nodo a borrar, su hijo y su padre. Deben existir.
+POST: Borra el nodo y devuelve el dato que contenia, su padre se quedo con la
+tenencia de su hijo.
+*******************************************************************************/
+void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nodo_t * padre_nodo){
+  hijo_t parentezco=NULL;
+  desemparentar_padre_e_hijo(padre_nodo,nodo,&parentezco);
+  void * dato=destruir_nodo(nodo);
+  emparentar_padre_e_hijo(padre_nodo,hijo_nodo,parentezco);
   return dato;
 }
 
-void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo_a_borrar, abb_nodo_t * padre){
-  if(!nodo_a_borrar || !padre)
-    return NULL;
+/******************************************************************************
+Borra un nodo con dos hijos
+PRE: Recibe el nodo a borrar y su padre. Deben existir.
+POST: El padre del nodo hereda sus nietos.
+*******************************************************************************/
+void * abb_borrar_nodo_2_hijos(abb_nodo_t * nodo, abb_nodo_t * padre_nodo){
+  
 }
-
 
 /******************************************************************************
 Borra un nodo del arbol
@@ -233,27 +267,33 @@ PRE: Recibe el arbol y una clave
 POST: Borro la clave y reconstruyo el arbol.
 *******************************************************************************/
 void * abb_borrar(abb_t *arbol, const char *clave){
-  abb_nodo_t * padre= NULL;
-  abb_nodo_t * nodo_buscado=abb_buscar_nodo_y_padre(arbol->raiz,clave,arbol->cmp,&padre);
-  if(!nodo_buscado)
+  abb_nodo_t * padre_nodo= NULL;
+  abb_nodo_t * nodo=abb_buscar_nodo_y_padre(arbol->raiz,clave,arbol->cmp,&padre_nodo);
+  if(!nodo)
     return NULL;
-  size_t cantidad_de_hijos=obtener_cantidad_de_hijos(nodo_buscado);
+  abb_nodo_t * hijo_izquierdo=NULL;
+  abb_nodo_t * hijo_derecho=NULL;
+
+  size_t cantidad_de_hijos=buscar_hijos(nodo,&hijo_izquierdo,&hijo_derecho);
   void * dato=NULL;
 
   /*Borro el nodo*/
   if(cantidad_de_hijos==0){
-    dato=abb_borrar_nodo_sin_hijos(nodo,padre,destruir_dato);
+    dato=abb_borrar_nodo_sin_hijos(nodo,padre_nodo);
   }
   else if(cantidad_de_hijos==1){
-    dato=abb_borrar_nodo_1_hijo(nodo,padre,destruir_dato);
+    if(hijo_izquierdo!=NULL)
+      dato=abb_borrar_nodo_1_hijo(nodo,hijo_izquierdo,padre_nodo);
+    else{
+      dato=abb_borrar_nodo_1_hijo(nodo,hijo_derecho,padre_nodo);
+    }
   }
   else{
-    dato=abb_borrar_nodo_2_hijos(nodo,padre,destruir_dato);
+    dato=abb_borrar_nodo_2_hijos(nodo,padre_nodo,destruir_dato);
   }
   /*Si rescato el dato disminuye la cantidad de nodos del arbol*/
-  if(dato){
-    arbol->cantidad_nodos--;
-  }
+
+  arbol->cantidad_nodos--;
   return dato;
 }
 
