@@ -354,12 +354,6 @@ POST: Devuelve true si pertenece, false en caso contrario.
 bool abb_pertenece(const abb_t *arbol, const char *clave){
   return !abb_obtener(arbol, clave)?false:true;
 }
-
-
-
-
-
-
 /******************************************************************************
 Borra un nodo del arbol
 PRE: Recibe el arbol y una clave
@@ -395,11 +389,30 @@ void * abb_borrar(abb_t *arbol, const char *clave){
   arbol->cantidad_nodos--;
   return dato;
 }
+/******************************************************************************
+Destruye el nodo y sus hijos.
+PRE: Recibe el nodo.
+POST: NO hay mas nodo ni hijos.
+*******************************************************************************/
+void _destruir_familia(abb_nodo_t *nodo, abb_destruir_dato_t destruir_dato){
+	if(!nodo)/*Caso base*/
+    return;
 
-void abb_destruir(abb_t *arbol){
-
+	_destruir_familia(nodo->hijo_izquierdo, destruir_dato);
+	_destruir_familia(nodo->hijo_derecho, destruir_dato);
+	nodo_destruir(nodo, destruir_dato);
 }
 
+/******************************************************************************
+Destruye el arbol desde la raiz.
+PRE: Recibe el arbol.
+POST: NO hay mas arbol.
+*******************************************************************************/
+void abb_destruir(abb_t *arbol){
+  _destruir_familia(arbol->raiz, arbol->destruir_dato);
+  free(arbol);
+
+}
 
 /* ******************************************************************
 *                    PRIMITIVAS DEL ITERADOR EXTERNO
