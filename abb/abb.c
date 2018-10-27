@@ -411,19 +411,46 @@ POST: NO hay mas arbol.
 void abb_destruir(abb_t *arbol){
   _destruir_familia(arbol->raiz, arbol->destruir_dato);
   free(arbol);
-
 }
-
 /* ******************************************************************
 *                    PRIMITIVAS DEL ITERADOR EXTERNO
 * *****************************************************************/
+/******************************************************************************
+Crea el iterador del arbol
+PRE: Recibe el arbol.
+POST: Crea el iterador si hay memoria, sino devuelve NULL
+*******************************************************************************/
 abb_iter_t *abb_iter_in_crear(const abb_t *arbol);
+/******************************************************************************
+Avanza en el arbol con el iterador.
+PRE: Recibe el iterador.
+POST: Devuelve si pudo avanzar el iterador.
+*******************************************************************************/
 bool abb_iter_in_avanzar(abb_iter_t *iter);
+/******************************************************************************
+Muestra la clave del elemento actual.
+PRE: Recibe el iterador.
+POST: Devuelve la clave del nodo actual.
+*******************************************************************************/
 const char *abb_iter_in_ver_actual(const abb_iter_t *iter);
+/******************************************************************************
+Revisa si el iterador esta al final
+PRE: Recibe el iterador.
+POST: Devuelve si esta al final.
+*******************************************************************************/
 bool abb_iter_in_al_final(const abb_iter_t *iter);
+/******************************************************************************
+Destruye el iterador del arbol.
+PRE: Recibe el iterador.
+POST: NO hay mas iterador.
+*******************************************************************************/
 void abb_iter_in_destruir(abb_iter_t* iter);
-
 /* ******************************************************************
 *                    PRIMITIVAS DEL ITERADOR INTERNO
 * *****************************************************************/
+/******************************************************************************
+Recorre el ABB IN order
+PRE: Recibe el arbol y la funcion de visita.
+POST: Visito cada nodo con la funcion pasada por parametro.
+*******************************************************************************/
 void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra);
