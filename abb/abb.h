@@ -1,3 +1,7 @@
+#ifndef ABB__H
+#define ABB__H
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -41,3 +45,5 @@ void abb_iter_in_destruir(abb_iter_t* iter);
  *                    PRIMITIVAS DEL ITERADOR INTERNO
  * *****************************************************************/
 void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra);
+
+#endif
