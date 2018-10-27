@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 /* ******************************************************************
  *                DEFINICION DE LOS TIPOS DE DATOS
  * *****************************************************************/
+typedef enum {NO_ES_HIJO,HIJO_IZQUIERDO,HIJO_DERECHO} hijo_t;
+
 typedef struct abb_nodo{
   char * clave;
   void * dato;
@@ -18,8 +21,7 @@ struct abb{
   size_t cantidad_nodos;
   abb_destruir_dato_t destruir_dato;
   abb_comparar_clave_t comparar_clave;
-}
-typedef enum {NO_ES_HIJO,HIJO_IZQUIERDO,HIJO_DERECHO}hijo_t;
+};
 
 /* ******************************************************************
  *                FUNCIONES AUXILIARES DE ABB
@@ -39,10 +41,10 @@ Crea un nuevo nodo con una clave y un valor.
 PRE: Recibe una clave y un valor.
 POST: Copio la clave al nodo creado y la asocia al dato. Sino devuelve NULL.
 *******************************************************************************/
-abb_nodo_t * crear_nodo(char * clave, void * dato){
+abb_nodo_t * crear_nodo(const char * clave, void * dato){
 
   abb_nodo_t * nodo = malloc(sizeof(abb_nodo_t));
-  if(!nodo_abb)
+  if(!nodo)
     return NULL;
 
   char * copia_clave = str_dup(clave);
@@ -85,7 +87,7 @@ PRE: Recibe la raiz del arbol, la clave del nodo buscado, el arbol y una puntero
 al nodo_padre.
 POST: Devuelve por parametro el nodo o NULL y por referencia el padre o NULL
 *******************************************************************************/
-abb_nodo_t * _abb_buscar_nodo_y_padre(abb_t * raiz,const char * clave,
+abb_nodo_t * _abb_buscar_nodo_y_padre(abb_nodo_t * raiz,const char * clave,
                                  const abb_t *arbol, abb_nodo_t ** nodo_padre){
  /*Si el nodo no tiene hijos*/
  if(!raiz)
@@ -93,23 +95,23 @@ abb_nodo_t * _abb_buscar_nodo_y_padre(abb_t * raiz,const char * clave,
 
  /*Si el nodo actual es el padre:*/
  if(!arbol->comparar_clave(raiz->hijo_izquierdo->clave,clave)){
-   if(*padre)
-     *padre=raiz;
+   if(*nodo_padre)
+     *nodo_padre=raiz;
    return raiz->hijo_izquierdo;
  }
  if(!arbol->comparar_clave(raiz->hijo_derecho->clave,clave)){
-   if(*padre)
-     *padre=raiz;
+   if(*nodo_padre)
+     *nodo_padre=raiz;
    return raiz->hijo_derecho;
  }
 
  /*Si no es el padre:*/
  /*Si la clave es mas grande que la que estoy viendo actualmente*/
  if(arbol->comparar_clave(raiz->clave,clave)>0){
-   return _abb_buscar_nodo_y_padre(raiz->hijo_derecho,clave,arbol,padre);
+   return _abb_buscar_nodo_y_padre(raiz->hijo_derecho,clave,arbol,nodo_padre);
  }
  /*Si la clave es mas chica*/
- return _abb_buscar_nodo_y_padre(raiz->hijo_izquierdo,clave,arbol,padre);
+ return _abb_buscar_nodo_y_padre(raiz->hijo_izquierdo,clave,arbol,nodo_padre);
 }
 
 /******************************************************************************
@@ -190,7 +192,13 @@ void buscar_hijos(abb_nodo_t* nodo,abb_nodo_t** hijo_izquierdo,abb_nodo_t** hijo
     *hijo_derecho=NULL;
   }
 }
-
+abb_nodo_t * abb_buscar_reemplazante(abb_nodo_t * reemplazante,abb_nodo_t** padre_reemplazante){
+  if (!reemplazante->hijo_izquierdo->hijo_izquierdo){
+    *padre_reemplazante= reemplazante->hijo_izquierdo;
+    return reemplazante->hijo_izquierdo->hijo_izquierdo;
+  }
+  return abb_buscar_reemplazante(reemplazante->hijo_izquierdo,padre_reemplazante);
+}
 /******************************************************************************
 Borra un nodo sin hijos
 PRE: Recibe el nodo a borrar y su padre.Deben existir.
@@ -199,7 +207,7 @@ en donde estaba el nodo.
 *******************************************************************************/
 void * abb_borrar_nodo_sin_hijos(abb_nodo_t * nodo, abb_nodo_t * padre){
   desemparentar_padre_e_hijo(padre,nodo,NULL);
-  void * dato=destruir_nodo(nodo);
+  void * dato=destruir_nodo(nodo,NULL);
   return dato;
 }
 /******************************************************************************
@@ -233,8 +241,8 @@ void * abb_borrar_nodo_2_hijos(abb_nodo_t * nodo, abb_nodo_t * padre_nodo){
   desemparentar_padre_e_hijo(padre_reemplazante,reemplazante,&parentezco_reemplazante);
 
   /*Busco si el reemplazante tiene hijos*/
-  abb_nodo_t** hijo_izquierdo_reemplazante;
-  abb_nodo_t** hijo_derecho_reemplazante;
+  abb_nodo_t* hijo_izquierdo_reemplazante;
+  abb_nodo_t* hijo_derecho_reemplazante;
   buscar_hijos(reemplazante,&hijo_izquierdo_reemplazante,& hijo_derecho_reemplazante);
 
   /*Borro el reemplazante y me guardo su dato*/
@@ -275,11 +283,11 @@ abb_t* abb_crear(abb_comparar_clave_t comparar_clave,abb_destruir_dato_t destrui
   abb_t * arbol=malloc(sizeof(abb_t));
   if(!arbol)
     return NULL;
-  abb->raiz=NULL;
-  abb->comparar_clave=NULL;
-  abb->destruir_dato=NULL;
-  abb->cantidad_nodos=0;
-  return abb;
+  arbol->raiz=NULL;
+  arbol->comparar_clave=NULL;
+  arbol->destruir_dato=NULL;
+  arbol->cantidad_nodos=0;
+  return arbol;
 }
 /******************************************************************************
 Guarda un nodo en el arbol
@@ -307,7 +315,7 @@ bool _abb_guardar(abb_nodo_t * raiz,const char *clave, void *dato,abb_t * arbol)
   }
   else{
     if(arbol->destruir)
-      arbol->destruir(raiz->dato);
+      arbol->destruir_dato(raiz->dato);
     raiz->dato=dato;
   }
 }
@@ -323,7 +331,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
 
   bool guardo=_abb_guardar(&abb->raiz,clave,dato,arbol);
   if(guardo)
-    arbol->cantidad++;
+    arbol->cantidad_nodos++;
   return guardo;
 }
 
@@ -361,7 +369,7 @@ POST: Borro la clave y reconstruyo el arbol.
 *******************************************************************************/
 void * abb_borrar(abb_t *arbol, const char *clave){
   abb_nodo_t * padre_nodo= NULL;
-  abb_nodo_t * nodo=abb_buscar_nodo_y_padre(arbol->raiz,clave,arbol->cmp,&padre_nodo);
+  abb_nodo_t * nodo=abb_buscar_nodo_y_padre(arbol->raiz,clave,arbol->comparar_clave,&padre_nodo);
   if(!nodo)
     return NULL;
   abb_nodo_t * hijo_izquierdo=NULL;
