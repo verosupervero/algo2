@@ -1,14 +1,26 @@
 CC = gcc
 CFLAGS = -g  -std=c99 -Wall -Wtype-limits -pedantic -Wconversion -Wno-sign-conversion
 LFLAGS = -Wall
+VALGRIND = valgrind
+VALGRIND_FLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
+
+# Chirimbolos raros sacados de: Practical Makefiles, by example
+# Autor: John Tsiombikas <nuclear@member.fsf.org>
+# link: http://nuclear.mutantstargoat.com/articles/make/mktut.pdf
 
 .PHONY: all
 all: grep dc
 
-grep: grep.o procesar_subcadena.o strutil.o lista.o
+# Por simplicidad, listo las dependencias en esta variables
+GREP_OBJS = procesar_subcadena.o strutil.o lista.o
+
+grep: grep.o $(GREP_OBJS)
 	$(CC) $(LFLAGS) -o $@ $^
 
-dc: dc.o strutil.o pila.o calc.o operaciones.o
+# Por simplicidad, listo las dependencias en esta variables
+DC_OBJS = strutil.o pila.o calc.o operaciones.o
+
+dc: dc.o $(DC_OBJS)
 	$(CC) $(LFLAGS) -o $@ $^
 
 dc.o: dc.c calc.h
@@ -39,26 +51,46 @@ operaciones.o: operaciones.c operaciones.h
 calc.c: pila.h operaciones.h strutil.h
 
 
+######################## SECCION DE TESTING ################################
+# make check-valgrind: compila y corre tests con valgrind
+# make check: compila y corre tests
+# make tests: compila tests
+
+# Recordar linkear la libreria de testing:
+TESTING_LIB = testing.o
+
+# Agregar tests en esta lista:
+TESTS = test_strutil test_calc
+
+test_strutil: test_strutil.c strutil.o $(TESTING_LIB)
+	$(CC) $(LFLAGS) -o $@ $^
+
+test_calc: test_calc.c $(DC_OBJS) $(TESTING_LIB)
+	$(CC) $(LFLAGS) -o $@ $^
+
+########## COMPILACION DE TESTS (NO DEBERIAS TOCAR AQUI ABAJO) ##############
+# https://www.brendanlong.com/running-make-check-tests-with-valgrind.html
+
+.PHONY: check
+check: tests
+	@for test in $$(echo $(TESTS)) ; do \
+			 ./$${test} ; \
+	done
+
+.PHONY: check-valgrind
+check-valgrind: tests
+	@for test in $$(echo $(TESTS)) ; do \
+			 $(VALGRIND) $(VALGRIND_FLAGS) $${test} ; \
+	done
 
 .PHONY: tests
-tests: test_strutil test_calc
+tests: $(TESTS)
 
+
+# Biblioteca de testing de la catedra
 testing: testing.c testing.h
 	$(CC) $(CFLAGS) -c $<
 
-test_strutil: test_strutil.o strutil.o testing.o
-	$(CC) $(LFLAGS) -o $@ $^
-
-test_strutil.o: test_strutil.c
-	$(CC) $(CFLAGS) -c $<
-
-test_calc: test_calc.o calc.o strutil.o testing.o pila.o operaciones.o
-	$(CC) $(LFLAGS) -o $@ $^ && ./test_calc
-
-test_calc.o: test_calc.c
-	$(CC) $(CFLAGS) -c $<
-
-
 .PHONY: clean
 clean:
-	rm *.o
+	rm -f *.o
