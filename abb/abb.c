@@ -23,6 +23,11 @@ struct abb{
   abb_comparar_clave_t comparar_clave;
 };
 
+typedef struct abb_iter{
+  const abb_t * arbol;
+  pila_t * pila;
+}abb_iter_t;
+
 /* ******************************************************************
  *                FUNCIONES AUXILIARES DE ABB
  * *****************************************************************/
@@ -420,31 +425,82 @@ Crea el iterador del arbol
 PRE: Recibe el arbol.
 POST: Crea el iterador si hay memoria, sino devuelve NULL
 *******************************************************************************/
-abb_iter_t *abb_iter_in_crear(const abb_t *arbol);
+abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
+  if (!arbol)
+    return NULL;
+
+  abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+  if (!iter)
+    return NULL;
+
+  /*Creo la pila del iterador*/
+  iter->pila = pila_crear();
+  if (!iter->pila)
+    return NULL;
+
+  /*Apilo la raiz*/
+  pila_apilar(iter->pila, arbol->raiz);
+  nodo_izquierdo=arbol->raiz->hijo_izquierdo;
+
+  /*Y todos sus hijos izquierdos*/
+  while(nodo_izquierdo!=NULL){
+    pila_apilar(iter->pila,nodo_izquierdo);
+    nodo_izquierdo=nodo_izquierdo->hijo_izquierdo;
+  }
+  return iter;
+}
 /******************************************************************************
 Avanza en el arbol con el iterador.
 PRE: Recibe el iterador.
 POST: Devuelve si pudo avanzar el iterador.
 *******************************************************************************/
-bool abb_iter_in_avanzar(abb_iter_t *iter);
+bool abb_iter_in_avanzar(abb_iter_t *iter){
+  /*El iterador no puede avanzar si esta al final*/
+  if (abb_iter_in_al_final(iter))
+    return false;
+
+  nodo_abb_t * nodo_desapilado = pila_desapilar(iter->pila);
+
+  /*Si el nodo_desapilado tiene hijo derecho, apilo hijo derecho
+  y todos los hijos izquierdos que existan (sus nietos izquierdos)*/
+  if(nodo_desapilado->hijo_derecho!=NULL){
+    pila_apilar(iter->pila,nodo_desapilado->hijo_derecho);
+    nodo_abb_t * nieto_izquierdo= nodo_desapilado->hijo_derecho->hijo_izquierdo;
+    while(nietos_izquierdo!=NULL){
+      pila_apilar(iter->pila,nieto_izquierdo);
+      nieto_izquierdo=nieto_izquierdo->hijo_izquierdo;
+    }
+  }
+  return true;
+}
 /******************************************************************************
 Muestra la clave del elemento actual.
 PRE: Recibe el iterador.
 POST: Devuelve la clave del nodo actual.
 *******************************************************************************/
-const char *abb_iter_in_ver_actual(const abb_iter_t *iter);
+const char *abb_iter_in_ver_actual(const abb_iter_t *iter){
+	nodo_abb_t * nodo_actual = pila_ver_tope(iter->pila);
+  return nodo_actual->clave;
+}
 /******************************************************************************
 Revisa si el iterador esta al final
 PRE: Recibe el iterador.
 POST: Devuelve si esta al final.
 *******************************************************************************/
-bool abb_iter_in_al_final(const abb_iter_t *iter);
+bool abb_iter_in_al_final(const abb_iter_t *iter){
+   return pila_esta_vacia(iter->pila);
+}
 /******************************************************************************
 Destruye el iterador del arbol.
 PRE: Recibe el iterador.
 POST: NO hay mas iterador.
 *******************************************************************************/
-void abb_iter_in_destruir(abb_iter_t* iter);
+void abb_iter_in_destruir(abb_iter_t* iter){
+  pila_destruir(iter->pila);
+  free(iter);
+}
+
+
 /* ******************************************************************
 *                    PRIMITIVAS DEL ITERADOR INTERNO
 * *****************************************************************/
@@ -453,4 +509,16 @@ Recorre el ABB IN order
 PRE: Recibe el arbol y la funcion de visita.
 POST: Visito cada nodo con la funcion pasada por parametro.
 *******************************************************************************/
-void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra);
+void _abb_in_order(abb_nodo_t * nodo, bool visitar(const char *, void *, void *), void *extra){
+  if(nodo=NULL)
+    return;
+  _abb_in_order(nodo->hijo_izquierdo, visitar,extra);
+  visitar(nodo->clave,nodo->dato,extra);
+  _abb_in_order(nodo->hijo_derecho, visitar,extra);
+}
+
+void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra){
+  if(!arbol || !arbol->raiz)
+    return;
+  return _abb_in_order(arbol->raiz,visitar,extra);
+}
