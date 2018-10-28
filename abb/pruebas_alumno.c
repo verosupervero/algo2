@@ -20,18 +20,6 @@ bool imprimir_claves_strings(const char* clave, void* valor, void* extra){
 }
 
 //abb_comparar_clave_t cmp_ptr = &strcmp;
-
-void guardar_clave_valor(abb_t* arbol, int numero, int* valores, int contador){
-	char clave[3];
-	sprintf (clave, "%i", numero);
-	printf ("Guardo 'Clave %s | Valor <%i> en el arbol", clave, numero);
-	print_test(": ", abb_guardar(arbol, clave, &valores[numero]));
-	printf ("La clave %s pertenece", clave);
-	print_test(":", abb_pertenece(arbol, clave));
-	printf ("Cantidad de arbol es %i", contador);
-	print_test(": ", abb_cantidad(arbol) == contador);
-}
-
 /* ******************************************************************
  *                   PRUEBAS UNITARIAS ALUMNO
  * *****************************************************************/
