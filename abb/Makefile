@@ -1,19 +1,31 @@
-CFLAGS := -g -std=c99 -Wall -Wformat=2
-CFLAGS += -Wshadow -Wpointer-arith -Wunreachable-code
-CFLAGS += -Wconversion -Wno-sign-conversion -Wbad-function-cast
+#Makefile - Arbol Binario de Busqueda
 
-# Se puede comentar durante el desarrollo.
-CFLAGS += -Werror
+#Variables:
+EXEC=abb
+CC=gcc
+CFLAGS= -std=c99 -g -Wall -Wconversion -Wtype-limits -pedantic -Werror
+OBJECTS= abb.o pruebas_alumno.o pila.o main_abb.o testing.o
+VALGRIND= valgrind --leak-check=full --track-origins=yes
 
-test: abb_aux
-	./abb_test.py
+all: $(EXEC)
 
-abb_aux: abb.o abb_aux.o
+abb.o: abb.c abb.h
+	$(CC) $(CFLAGS) -c abb.c
 
-# Dependencias adicionales.
--include deps.mk
+pruebas_alumno.o: pruebas_alumno.c
+	$(CC) $(CFLAGS) -c pruebas_alumno.c
 
-clean:
-	rm -f abb_aux *.o
+pila.o: pila.c pila.h
+	$(CC) $(CFLAGS) -c pila.c
 
-.PHONY: test clean
+main_abb.o: main_abb.c testing.h
+	$(CC) $(CFLAGS) -c main_abb.c
+
+testing.o: testing.c testing.h
+	$(CC) $(CFLAGS) -c testing.c
+
+$(EXEC): $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXEC)
+
+valgrind: $(EXEC)
+	$(VALGRIND) ./$(EXEC)
