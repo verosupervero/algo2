@@ -1,11 +1,15 @@
-#include "abb.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
+#include "abb.h"
+#include "pila.h"
 
 /* ******************************************************************
  *                DEFINICION DE LOS TIPOS DE DATOS
  * *****************************************************************/
+typedef enum {NO_ES_HIJO,HIJO_IZQUIERDO,HIJO_DERECHO} hijo_t;
+
 typedef struct abb_nodo{
   char * clave;
   void * dato;
@@ -18,8 +22,12 @@ struct abb{
   size_t cantidad_nodos;
   abb_destruir_dato_t destruir_dato;
   abb_comparar_clave_t comparar_clave;
-}
-typedef enum {NO_ES_HIJO,HIJO_IZQUIERDO,HIJO_DERECHO}hijo_t;
+};
+
+typedef struct abb_iter{
+  const abb_t * arbol;
+  pila_t * pila;
+}abb_iter_t;
 
 /* ******************************************************************
  *                FUNCIONES AUXILIARES DE ABB
@@ -39,10 +47,10 @@ Crea un nuevo nodo con una clave y un valor.
 PRE: Recibe una clave y un valor.
 POST: Copio la clave al nodo creado y la asocia al dato. Sino devuelve NULL.
 *******************************************************************************/
-abb_nodo_t * crear_nodo(char * clave, void * dato){
+abb_nodo_t * crear_nodo(const char * clave, void * dato){
 
   abb_nodo_t * nodo = malloc(sizeof(abb_nodo_t));
-  if(!nodo_abb)
+  if(!nodo)
     return NULL;
 
   char * copia_clave = str_dup(clave);
@@ -85,31 +93,22 @@ PRE: Recibe la raiz del arbol, la clave del nodo buscado, el arbol y una puntero
 al nodo_padre.
 POST: Devuelve por parametro el nodo o NULL y por referencia el padre o NULL
 *******************************************************************************/
-abb_nodo_t * _abb_buscar_nodo_y_padre(abb_t * raiz,const char * clave,
-                                 const abb_t *arbol, abb_nodo_t ** nodo_padre){
- /*Si el nodo no tiene hijos*/
- if(!raiz)
+abb_nodo_t * _abb_buscar_nodo_y_padre(const abb_t *arbol, const char * clave,
+                                      abb_nodo_t ** nodo_padre,
+                                      abb_nodo_t * raiz, abb_nodo_t * mi_padre){
+  if(!raiz)
    return NULL;
 
- /*Si el nodo actual es el padre:*/
- if(!arbol->comparar_clave(raiz->hijo_izquierdo->clave,clave)){
-   if(*padre)
-     *padre=raiz;
-   return raiz->hijo_izquierdo;
- }
- if(!arbol->comparar_clave(raiz->hijo_derecho->clave,clave)){
-   if(*padre)
-     *padre=raiz;
-   return raiz->hijo_derecho;
- }
-
- /*Si no es el padre:*/
- /*Si la clave es mas grande que la que estoy viendo actualmente*/
- if(arbol->comparar_clave(raiz->clave,clave)>0){
-   return _abb_buscar_nodo_y_padre(raiz->hijo_derecho,clave,arbol,padre);
- }
- /*Si la clave es mas chica*/
- return _abb_buscar_nodo_y_padre(raiz->hijo_izquierdo,clave,arbol,padre);
+  int cmp=arbol->comparar_clave(raiz->clave,clave);
+  if(cmp==0){
+    if(*nodo_padre!=NULL)
+      *nodo_padre= mi_padre;
+    return raiz;
+  }
+  else if(cmp<0){
+    return _abb_buscar_nodo_y_padre(arbol,clave,nodo_padre,raiz->hijo_izquierdo,raiz);
+  }
+   return _abb_buscar_nodo_y_padre(arbol,clave,nodo_padre,raiz->hijo_derecho,raiz);
 }
 
 /******************************************************************************
@@ -117,7 +116,7 @@ abb_nodo_t * _abb_buscar_nodo_y_padre(abb_t * raiz,const char * clave,
 PRE: Recibe un padre y su hijo
 POST: Devuelve si es hijo_derecho, hijo_izquierdo o si no es hijo.
 *******************************************************************************/
-size_t obtener_parentezco(const abb_nodo_t * padre, const abb_nodo_t * hijo){
+hijo_t obtener_parentezco(const abb_nodo_t * padre, const abb_nodo_t * hijo){
   if(padre->hijo_derecho == hijo)
     return HIJO_DERECHO;
   else if(padre->hijo_izquierdo==hijo)
@@ -134,7 +133,7 @@ Se guarda el parentezco anterior de ambos
 *******************************************************************************/
 void desemparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo, hijo_t * parentezco_anterior){
 
-  tipo_hijo=obtener_parentezco(padre,hijo);
+  hijo_t tipo_hijo=obtener_parentezco(padre,hijo);
 
   if(tipo_hijo==HIJO_DERECHO){
       padre->hijo_derecho=NULL;
@@ -158,39 +157,47 @@ Emparenta un nodo padre de su nodo hijo
 PRE: Recibe padre e hijo y el tipo de emparentamiento que se desea.
 POST: Emparento padre con hijo o no lo emparento si se paso que no era hijo.
 *******************************************************************************/
-void emparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t parentezco){
+bool emparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t parentezco){
   if(parentezco==HIJO_DERECHO){
+      if(padre->hijo_derecho!=NULL){
+        fprintf(stderr, "%s\n","El padre ya tiene hijo derecho");
+        return false;
+      }
       padre->hijo_derecho=hijo;
-      return;
+      return true;
   }
   else if(parentezco==HIJO_IZQUIERDO){
+    if(padre->hijo_izquierdo!=NULL){
+      fprintf(stderr, "%s\n","El padre ya tiene hijo_izquierdo");
+      return false;
+    }
     padre->hijo_izquierdo=hijo;
-    return
+    return true;
   }
-  else{
-    fprintf(stderr, "%s\n","No son parientes" );
-  }
+  fprintf(stderr, "%s\n","No son parientes" );
+  return true;
 }
 /******************************************************************************
 Busca los hijos de un nodo y los devuelve por referencia. El nodo fue creado.
 PRE: Recibe el nodo y dos punteros para guardar la referencia a los hijos o NULL.
 POST: Devuelve ambos hijos por referencia.
 *******************************************************************************/
-void buscar_hijos(abb_nodo_t* nodo,abb_nodo_t** hijo_izquierdo,abb_nodo_t** hijo_derecho){
-  if(nodo->hijo_izquierdo!=NULL){
-    *hijo_izquierdo=nodo->hijo_izquierdo;
-  }
-  else{
-    *hijo_izquierdo=NULL;
-  }
-  if(nodo->hijo_derecho!=NULL){
-    *hijo_derecho=nodo->hijo_derecho;
-  }
-  else{
-    *hijo_derecho=NULL;
-  }
+size_t contar_hijos(abb_nodo_t* nodo){
+  return 0+((nodo->hijo_izquierdo!=NULL)?1:0)+((nodo->hijo_derecho!=NULL)?1:0);
 }
-
+/******************************************************************************
+Busca un reemplazante para el nodo.}
+PRE: Recibe el nodo y un puntero donde referenciar al padre reemplazante.
+Además recibe una referencia al padre del nodo en cuestion.
+POST: Devuelve el reemplazante y por referencia su padre.
+*******************************************************************************/
+abb_nodo_t * abb_buscar_reemplazante(abb_nodo_t * nodo,abb_nodo_t** padre_reemplazante, abb_nodo_t * mi_padre){
+  if (!nodo->hijo_izquierdo){
+    *padre_reemplazante= mi_padre;
+    return nodo;
+  }
+  return abb_buscar_reemplazante(nodo->hijo_izquierdo,padre_reemplazante,nodo);
+}
 /******************************************************************************
 Borra un nodo sin hijos
 PRE: Recibe el nodo a borrar y su padre.Deben existir.
@@ -199,7 +206,7 @@ en donde estaba el nodo.
 *******************************************************************************/
 void * abb_borrar_nodo_sin_hijos(abb_nodo_t * nodo, abb_nodo_t * padre){
   desemparentar_padre_e_hijo(padre,nodo,NULL);
-  void * dato=destruir_nodo(nodo);
+  void * dato=destruir_nodo(nodo,NULL);
   return dato;
 }
 /******************************************************************************
@@ -209,7 +216,7 @@ POST: Borra el nodo y devuelve el dato que contenia, su padre se quedo con la
 tenencia de su hijo.
 *******************************************************************************/
 void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nodo_t * padre_nodo){
-  hijo_t parentezco=NULL;
+  hijo_t parentezco;
   desemparentar_padre_e_hijo(padre_nodo,nodo,&parentezco);
   void * dato=destruir_nodo(nodo,NULL);
   emparentar_padre_e_hijo(padre_nodo,hijo_nodo,parentezco);
@@ -224,31 +231,28 @@ POST: El padre del nodo hereda sus nietos.
 void * abb_borrar_nodo_2_hijos(abb_nodo_t * nodo, abb_nodo_t * padre_nodo){
 
   /*Busco al reemplazante y me guardo su clave*/
-  abb_t * padre_reemplazante=NULL;
-  abb_nodo_t * reemplazante = abb_buscar_reemplazante(nodo->hijo_derecho,&padre_reemplazante);
+  abb_nodo_t * padre_reemplazante=NULL;
+  abb_nodo_t * reemplazante = abb_buscar_reemplazante(nodo->hijo_derecho,&padre_reemplazante,nodo);
   char* clave_reemplazante=str_dup(reemplazante->clave);
 
   /*Desemparento padre reemplazante con el nodo reemplazante */
-  hijo_t parentezco_reemplazante=NO_ES_HIJO;
+  hijo_t parentezco_reemplazante=HIJO_IZQUIERDO;
   desemparentar_padre_e_hijo(padre_reemplazante,reemplazante,&parentezco_reemplazante);
-
+  if(parentezco_reemplazante!=HIJO_IZQUIERDO){
+    fprintf(stderr, "%s\n","error al buscar el reemplazante" );
+    return NULL;
+  }
   /*Busco si el reemplazante tiene hijos*/
-  abb_nodo_t** hijo_izquierdo_reemplazante;
-  abb_nodo_t** hijo_derecho_reemplazante;
-  buscar_hijos(reemplazante,&hijo_izquierdo_reemplazante,& hijo_derecho_reemplazante);
+  abb_nodo_t* hijo_derecho_reemplazante=reemplazante->hijo_derecho;
 
   /*Borro el reemplazante y me guardo su dato*/
   void* dato_reemplazante=destruir_nodo(reemplazante,NULL);
 
   /*Si el reemplazante tenia un hijo se lo paso al padre del reemplazante,
-  a lo sumo tiene un solo hijo*/
-
-  if(hijo_izquierdo_reemplazante!=NULL){
-    emparentar_padre_e_hijo(padre_reemplazante,hijo_izquierdo_reemplazante,parentezco_reemplazante);
-  }
-  else{
+  a lo sumo tiene un hijo derecho */
+  if(hijo_derecho_reemplazante!=NULL)
     emparentar_padre_e_hijo(padre_reemplazante,hijo_derecho_reemplazante,parentezco_reemplazante);
-  }
+
   /*Piso los datos del nodo con los datos del reemplazante
   y me guardo el dato anterior del nodo*/
 
@@ -272,14 +276,17 @@ void * abb_borrar_nodo_2_hijos(abb_nodo_t * nodo, abb_nodo_t * padre_nodo){
  *******************************************************************************/
 abb_t* abb_crear(abb_comparar_clave_t comparar_clave,abb_destruir_dato_t destruir_dato){
 
+  if(!comparar_clave || !destruir_dato)
+    return NULL;
+
   abb_t * arbol=malloc(sizeof(abb_t));
   if(!arbol)
     return NULL;
-  abb->raiz=NULL;
-  abb->comparar_clave=NULL;
-  abb->destruir_dato=NULL;
-  abb->cantidad_nodos=0;
-  return abb;
+  arbol->raiz=NULL;
+  arbol->comparar_clave=comparar_clave;
+  arbol->destruir_dato=destruir_dato;
+  arbol->cantidad_nodos=0;
+  return arbol;
 }
 /******************************************************************************
 Guarda un nodo en el arbol
@@ -287,29 +294,32 @@ PRE: recibe la raiz del arbol, el dato, la clave y el arbol
 POST: Recorre el arbol hasta encontrar donde guardar el nodo y lo guarda.
 Devuelve false si no pudo almacenar el nodo en memoria, true en caso contrario.
 *******************************************************************************/
-bool _abb_guardar(abb_nodo_t * raiz,const char *clave, void *dato,abb_t * arbol){
+bool _abb_guardar(abb_nodo_t ** raiz,const char *clave, void *dato,abb_t * arbol){
 
-  if(!raiz){ /*Caso Base*/
+  if(!raiz)
+    return false;
+
+  if(!(*raiz)){ /*Caso Base*/
     abb_nodo_t * nuevo_nodo=crear_nodo(clave,dato);
     if(!nuevo_nodo)
       return false;
-    raiz=nuevo_nodo;
+    *raiz=nuevo_nodo;
     return true;
   }
 
-  int cmp= arbol->comparar_clave(clave,raiz->clave);
+  int cmp= arbol->comparar_clave(clave,(*raiz)->clave);
 
   if(cmp>0){
-    return _abb_guardar(raiz->hijo_derecho,clave,dato,arbol);
+    return _abb_guardar(&(*raiz)->hijo_derecho,clave,dato,arbol);
   }
   else if(cmp<0){
-    return _abb_guardar(raiz->hijo_izquierdo,clave,dato,arbol);
+    return _abb_guardar(&(*raiz)->hijo_izquierdo,clave,dato,arbol);
   }
-  else{
-    if(arbol->destruir)
-      arbol->destruir(raiz->dato);
-    raiz->dato=dato;
-  }
+
+  if(arbol->destruir_dato)
+    arbol->destruir_dato((*raiz)->dato);
+  (*raiz)->dato=dato;
+  return true;
 }
 /******************************************************************************
 Guarda un nodo en el arbol, es wrapper de una funcion recursiva
@@ -321,9 +331,9 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
   if(!arbol)
     return false;
 
-  bool guardo=_abb_guardar(&abb->raiz,clave,dato,arbol);
+  bool guardo=_abb_guardar(&arbol->raiz,clave,dato,arbol);
   if(guardo)
-    arbol->cantidad++;
+    arbol->cantidad_nodos++;
   return guardo;
 }
 
@@ -333,7 +343,7 @@ PRE: El árbol fue creado
 POST: Se devolvió la cantidad de nodos del arbol
 *******************************************************************************/
 size_t abb_cantidad(abb_t * arbol){
-  return arbol->cantidad;
+  return arbol->cantidad_nodos;
 }
 /******************************************************************************
 Obtiene el dato del nodo que contiene la clave o NULL.
@@ -343,7 +353,7 @@ POST: Devuelve el dato asociado a la clave o NULL.
 void * abb_obtener(const abb_t *arbol, const char *clave){
   if(!arbol)
     return NULL;
-  abb_nodo_t * nodo=_abb_buscar_nodo_y_padre(arbol->raiz,clave,arbol,NULL);
+  abb_nodo_t * nodo=_abb_buscar_nodo_y_padre(arbol,clave, NULL,arbol->raiz,NULL);
   return nodo?nodo->dato:NULL;
 }
 /******************************************************************************
@@ -361,13 +371,11 @@ POST: Borro la clave y reconstruyo el arbol.
 *******************************************************************************/
 void * abb_borrar(abb_t *arbol, const char *clave){
   abb_nodo_t * padre_nodo= NULL;
-  abb_nodo_t * nodo=abb_buscar_nodo_y_padre(arbol->raiz,clave,arbol->cmp,&padre_nodo);
+  abb_nodo_t * nodo=_abb_buscar_nodo_y_padre(arbol,clave,&padre_nodo,arbol->raiz,NULL);
   if(!nodo)
     return NULL;
-  abb_nodo_t * hijo_izquierdo=NULL;
-  abb_nodo_t * hijo_derecho=NULL;
 
-  size_t cantidad_de_hijos=buscar_hijos(nodo,&hijo_izquierdo,&hijo_derecho);
+  size_t cantidad_de_hijos=contar_hijos(nodo);
   void * dato=NULL;
 
   /*Borro el nodo*/
@@ -375,17 +383,16 @@ void * abb_borrar(abb_t *arbol, const char *clave){
     dato=abb_borrar_nodo_sin_hijos(nodo,padre_nodo);
   }
   else if(cantidad_de_hijos==1){
-    if(hijo_izquierdo!=NULL)
-      dato=abb_borrar_nodo_1_hijo(nodo,hijo_izquierdo,padre_nodo);
+    if(nodo->hijo_izquierdo!=NULL)
+      dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_izquierdo,padre_nodo);
     else{
-      dato=abb_borrar_nodo_1_hijo(nodo,hijo_derecho,padre_nodo);
+      dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_derecho,padre_nodo);
     }
   }
   else{
     dato=abb_borrar_nodo_2_hijos(nodo,padre_nodo);
   }
-  /*Si rescato el dato disminuye la cantidad de nodos del arbol*/
-
+  /*Disminuye la cantidad de nodos del arbol*/
   arbol->cantidad_nodos--;
   return dato;
 }
@@ -397,10 +404,9 @@ POST: NO hay mas nodo ni hijos.
 void _destruir_familia(abb_nodo_t *nodo, abb_destruir_dato_t destruir_dato){
 	if(!nodo)/*Caso base*/
     return;
-
 	_destruir_familia(nodo->hijo_izquierdo, destruir_dato);
 	_destruir_familia(nodo->hijo_derecho, destruir_dato);
-	nodo_destruir(nodo, destruir_dato);
+	destruir_nodo(nodo, destruir_dato);
 }
 
 /******************************************************************************
@@ -420,31 +426,83 @@ Crea el iterador del arbol
 PRE: Recibe el arbol.
 POST: Crea el iterador si hay memoria, sino devuelve NULL
 *******************************************************************************/
-abb_iter_t *abb_iter_in_crear(const abb_t *arbol);
+abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
+  if (!arbol)
+    return NULL;
+
+  abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+  if (!iter)
+    return NULL;
+
+  /*Creo la pila del iterador*/
+  iter->pila = pila_crear();
+  if (!iter->pila)
+    return NULL;
+
+  /*Apilo la raiz*/
+  pila_apilar(iter->pila, arbol->raiz);
+  abb_nodo_t * nodo_izquierdo=arbol->raiz->hijo_izquierdo;
+
+  /*Y todos sus hijos izquierdos*/
+  while(nodo_izquierdo!=NULL){
+    pila_apilar(iter->pila,nodo_izquierdo);
+    nodo_izquierdo=nodo_izquierdo->hijo_izquierdo;
+  }
+  return iter;
+}
 /******************************************************************************
 Avanza en el arbol con el iterador.
 PRE: Recibe el iterador.
 POST: Devuelve si pudo avanzar el iterador.
 *******************************************************************************/
-bool abb_iter_in_avanzar(abb_iter_t *iter);
+bool abb_iter_in_avanzar(abb_iter_t *iter){
+  /*El iterador no puede avanzar si esta al final*/
+  if (abb_iter_in_al_final(iter))
+    return false;
+
+  abb_nodo_t * nodo_desapilado = pila_desapilar(iter->pila);
+
+  /*Si el nodo_desapilado tiene hijo derecho, apilo hijo derecho
+  y todos los hijos izquierdos que existan (sus nietos izquierdos)*/
+  if(nodo_desapilado->hijo_derecho!=NULL){
+    pila_apilar(iter->pila,nodo_desapilado->hijo_derecho);
+    abb_nodo_t * nieto_izquierdo= nodo_desapilado->hijo_derecho->hijo_izquierdo;
+
+    while(nieto_izquierdo!=NULL){
+      pila_apilar(iter->pila,nieto_izquierdo);
+      nieto_izquierdo=nieto_izquierdo->hijo_izquierdo;
+    }
+  }
+  return true;
+}
 /******************************************************************************
 Muestra la clave del elemento actual.
 PRE: Recibe el iterador.
 POST: Devuelve la clave del nodo actual.
 *******************************************************************************/
-const char *abb_iter_in_ver_actual(const abb_iter_t *iter);
+const char *abb_iter_in_ver_actual(const abb_iter_t *iter){
+	abb_nodo_t * nodo_actual = pila_ver_tope(iter->pila);
+  return nodo_actual->clave;
+}
 /******************************************************************************
 Revisa si el iterador esta al final
 PRE: Recibe el iterador.
 POST: Devuelve si esta al final.
 *******************************************************************************/
-bool abb_iter_in_al_final(const abb_iter_t *iter);
+bool abb_iter_in_al_final(const abb_iter_t *iter){
+   return pila_esta_vacia(iter->pila);
+}
 /******************************************************************************
 Destruye el iterador del arbol.
 PRE: Recibe el iterador.
 POST: NO hay mas iterador.
 *******************************************************************************/
-void abb_iter_in_destruir(abb_iter_t* iter);
+void abb_iter_in_destruir(abb_iter_t* iter){
+  pila_destruir(iter->pila);
+  free(iter);
+}
+
+
 /* ******************************************************************
 *                    PRIMITIVAS DEL ITERADOR INTERNO
 * *****************************************************************/
@@ -453,4 +511,16 @@ Recorre el ABB IN order
 PRE: Recibe el arbol y la funcion de visita.
 POST: Visito cada nodo con la funcion pasada por parametro.
 *******************************************************************************/
-void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra);
+void _abb_in_order(abb_nodo_t * nodo, bool visitar(const char *, void *, void *), void *extra){
+  if(!nodo)
+    return;
+  _abb_in_order(nodo->hijo_izquierdo, visitar,extra);
+  visitar(nodo->clave,nodo->dato,extra);
+  _abb_in_order(nodo->hijo_derecho, visitar,extra);
+}
+
+void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra){
+  if(!arbol || !arbol->raiz)
+    return;
+  return _abb_in_order(arbol->raiz,visitar,extra);
+}
