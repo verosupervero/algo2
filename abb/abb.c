@@ -1,8 +1,9 @@
-#include "abb.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include "abb.h"
+#include "pila.h"
 
 /* ******************************************************************
  *                DEFINICION DE LOS TIPOS DE DATOS
@@ -440,7 +441,7 @@ abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
 
   /*Apilo la raiz*/
   pila_apilar(iter->pila, arbol->raiz);
-  nodo_izquierdo=arbol->raiz->hijo_izquierdo;
+  abb_nodo_t * nodo_izquierdo=arbol->raiz->hijo_izquierdo;
 
   /*Y todos sus hijos izquierdos*/
   while(nodo_izquierdo!=NULL){
@@ -459,14 +460,15 @@ bool abb_iter_in_avanzar(abb_iter_t *iter){
   if (abb_iter_in_al_final(iter))
     return false;
 
-  nodo_abb_t * nodo_desapilado = pila_desapilar(iter->pila);
+  abb_nodo_t * nodo_desapilado = pila_desapilar(iter->pila);
 
   /*Si el nodo_desapilado tiene hijo derecho, apilo hijo derecho
   y todos los hijos izquierdos que existan (sus nietos izquierdos)*/
   if(nodo_desapilado->hijo_derecho!=NULL){
     pila_apilar(iter->pila,nodo_desapilado->hijo_derecho);
-    nodo_abb_t * nieto_izquierdo= nodo_desapilado->hijo_derecho->hijo_izquierdo;
-    while(nietos_izquierdo!=NULL){
+    abb_nodo_t * nieto_izquierdo= nodo_desapilado->hijo_derecho->hijo_izquierdo;
+
+    while(nieto_izquierdo!=NULL){
       pila_apilar(iter->pila,nieto_izquierdo);
       nieto_izquierdo=nieto_izquierdo->hijo_izquierdo;
     }
@@ -479,7 +481,7 @@ PRE: Recibe el iterador.
 POST: Devuelve la clave del nodo actual.
 *******************************************************************************/
 const char *abb_iter_in_ver_actual(const abb_iter_t *iter){
-	nodo_abb_t * nodo_actual = pila_ver_tope(iter->pila);
+	abb_nodo_t * nodo_actual = pila_ver_tope(iter->pila);
   return nodo_actual->clave;
 }
 /******************************************************************************
@@ -510,7 +512,7 @@ PRE: Recibe el arbol y la funcion de visita.
 POST: Visito cada nodo con la funcion pasada por parametro.
 *******************************************************************************/
 void _abb_in_order(abb_nodo_t * nodo, bool visitar(const char *, void *, void *), void *extra){
-  if(nodo=NULL)
+  if(!nodo)
     return;
   _abb_in_order(nodo->hijo_izquierdo, visitar,extra);
   visitar(nodo->clave,nodo->dato,extra);
