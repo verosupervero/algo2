@@ -700,10 +700,14 @@ bool linea_blanca(char* str){
 
 void print_t(abb_t *tree)
 {
-    int niveles=6;
+    int niveles=20;
     char s[niveles][100];
-    for (int i = 0; i < niveles; i++)
-        sprintf(s[i], "%80s", " ");
+    for (int i = 0; i < niveles; i++){
+        for(int j=0; j<99; j++){
+          s[i][j]=' ';
+        }
+        s[i][99]='\0';
+    }
 
     _print_t(tree->raiz, 0, 0, 0, s);
 

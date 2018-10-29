@@ -69,7 +69,28 @@ void pruebas_arbol_vacio(){
 	print_test("Destruir arbol, ", true);
 }
 
-void agregar_y_eliminar_nodos(){
+
+void agregar_y_eliminar_1nodo(){
+	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
+	if(!arbol)
+		return;
+
+	print_test("Guardo nodo de clave 5 y valor cinco", abb_guardar(arbol, "5", "cinco"));
+	print_t(arbol);
+
+	// Elimino nodo 5
+	char* recup_5 = abb_borrar(arbol, "5");
+	print_test("Borro el nodo 5 y recibo cinco", !strcmp(recup_5, "cinco"));
+	print_t(arbol);
+
+	// Agrego 3
+	print_test("Guardo nodo de clave 3 y valor tres", abb_guardar(arbol, "3", "tres"));
+	print_t(arbol);
+
+	abb_destruir(arbol);
+}
+
+void agregar_y_eliminar_3nodos(){
 	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
 	if(!arbol)
 		return;
@@ -85,6 +106,11 @@ void agregar_y_eliminar_nodos(){
 	print_test("Borro el nodo 5 y recibo cinco", !strcmp(recup_5, "cinco"));
 	print_t(arbol);
 	abb_destruir(arbol);
+}
+
+void agregar_y_eliminar_nodos(){
+	agregar_y_eliminar_1nodo();
+	agregar_y_eliminar_3nodos();
 }
 
 void pruebas_claves_ayudantes_e_in_order() {
