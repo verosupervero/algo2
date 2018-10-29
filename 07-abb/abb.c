@@ -465,7 +465,7 @@ void * abb_borrar(abb_t *arbol, const char *clave){
   arbol->cantidad_nodos--;
 
   /* Si elimine el nodo raiz, debo cambiar el puntero*/
-   if(!abb_cantidad(arbol)){
+   if(arbol->cantidad_nodos == 0){
      arbol->raiz = NULL;
    }
 
