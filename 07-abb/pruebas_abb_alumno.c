@@ -90,6 +90,27 @@ void agregar_y_eliminar_1nodo(){
 	abb_destruir(arbol);
 }
 
+void agregar_y_eliminar_2nodos(){
+	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
+	if(!arbol)
+		return;
+
+	print_test("Guardo nodo de clave 5 y valor cinco", abb_guardar(arbol, "5", "cinco"));
+	print_test("Guardo nodo de clave 3 y valor tres", abb_guardar(arbol, "3", "tres"));
+
+	print_t(arbol);
+
+	// Elimino nodo 3
+	char* recup_3 = abb_borrar(arbol, "3");
+	print_test("Borro el nodo 3 y recibo 3", !strcmp(recup_3, "tres"));
+	print_t(arbol);
+
+	// Agrego nodo 1
+	print_test("Guardo nodo de clave 1 y valor uno", abb_guardar(arbol, "1", "uno"));
+	print_t(arbol);
+	abb_destruir(arbol);
+}
+
 void agregar_y_eliminar_3nodos(){
 	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
 	if(!arbol)
@@ -105,11 +126,16 @@ void agregar_y_eliminar_3nodos(){
 	char* recup_5 = abb_borrar(arbol, "5");
 	print_test("Borro el nodo 5 y recibo cinco", !strcmp(recup_5, "cinco"));
 	print_t(arbol);
+
+	// Agrego nodo 9 
+	print_test("Guardo nodo de clave 9 y valor nueve", abb_guardar(arbol, "9", "nueve"));
+	print_t(arbol);
 	abb_destruir(arbol);
 }
 
 void agregar_y_eliminar_nodos(){
 	agregar_y_eliminar_1nodo();
+	agregar_y_eliminar_2nodos();
 	agregar_y_eliminar_3nodos();
 }
 
