@@ -110,6 +110,15 @@ void pruebas_abb_vacio(){
 		abb_destruir(abb1);
 }
 
+bool imprimir_claves_strings(const char* clave, void* valor, void* extra){
+	if(valor){
+		printf ("[%s,%s]->", clave,(char*) valor);
+		return true;
+	}
+	printf ("[%s,%s]->", clave,"NULL");
+	return true;
+}
+
 void pruebas_un_elemento(){
 	//ABB 1 ELEMENTO
 	abb_t* abb1 = abb_crear(strcmp, NULL);
@@ -121,9 +130,13 @@ print_test("Guardar clave1 fue logrado exitosamente", abb_guardar(abb1, clave1, 
 print_test("Arbol tiene 1 nodo", abb_cantidad(abb1) == 1);
 bool borrar= abb_borrar(abb1, clave1)==NULL;
 	print_test("Borrar clave 1", borrar);
+	print_test("Arbol tiene 0 nodos", abb_cantidad(abb1) == 0);
+
+abb_in_order(abb1, imprimir_claves_strings, NULL);
+printf("\n");
 // 	print_test("Clave 1 no pertenece", abb_pertenece(abb1, clave1) == false);
 // 	print_test("Obtener clave 1 es NULL", abb_obtener(abb1, clave1) == NULL);
-	abb_destruir(abb1);
+	free(abb1);
 
 }
 
