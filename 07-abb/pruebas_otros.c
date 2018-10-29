@@ -314,146 +314,146 @@ void pruebas_abb_alumno() {
 	print_test("El iterador esta al final", abb_iter_in_al_final(iter2) == true);
 	print_test("Avanzar con el iterador es false", abb_iter_in_avanzar(iter2) == false);
 	prueba_abb_iter_interno(abb2);
-    abb_iter_in_destruir(iter2);
-    print_test("Borrar clave 10: j", abb_borrar(abb2, clave10) == &dummy);
-		fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
-abb_in_order(abb2, imprimir_claves_strings, NULL);
-printf("\n");
-// Dibujito del abb2
-print_t(abb2);
-printf("___________________________________________________________\n");
+  abb_iter_in_destruir(iter2);
+  print_test("Borrar clave 10: j", abb_borrar(abb2, clave10) == &dummy);
+	fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
 
 
-    print_test("Borrar clave 9: i", abb_borrar(abb2, clave9) == &dummy);
-		fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
-abb_in_order(abb2, imprimir_claves_strings, NULL);
-printf("\n");
-// Dibujito del abb2
-print_t(abb2);
-printf("___________________________________________________________\n");
+  print_test("Borrar clave 9: i", abb_borrar(abb2, clave9) == &dummy);
+	fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
 
 
-    print_test("Borrar clave 1: a", abb_borrar(abb2, clave1) == &dummy);
-		fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
-abb_in_order(abb2, imprimir_claves_strings, NULL);
-printf("\n");
-// Dibujito del abb2
-print_t(abb2);
-printf("___________________________________________________________\n");
+  print_test("Borrar clave 1: a", abb_borrar(abb2, clave1) == &dummy);
+	fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
 
 
-    print_test("Borrar clave 6: f", abb_borrar(abb2, clave6) == &dummy);
-		fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
-abb_in_order(abb2, imprimir_claves_strings, NULL);
-printf("\n");
-// Dibujito del abb2
-print_t(abb2);
-printf("___________________________________________________________\n");
+  print_test("Borrar clave 6: f", abb_borrar(abb2, clave6) == &dummy);
+	fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
 
 
-    print_test("Borrar clave 4 :d", abb_borrar(abb2, clave4) == &dummy);
+  print_test("Borrar clave 4 :d", abb_borrar(abb2, clave4) == &dummy);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-			printf("\n");
-    print_test("Borrar clave 7: g", abb_borrar(abb2, clave7) == &dummy);
-
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
 		printf("\n");
+  print_test("Borrar clave 7: g", abb_borrar(abb2, clave7) == &dummy);
 
-    print_test("Borrar clave 5: e", abb_borrar(abb2, clave5) == &dummy);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-		print_test("Borrar clave 8: h", abb_borrar(abb2, clave8) == &dummy);
+  print_test("Borrar clave 5: e", abb_borrar(abb2, clave5) == &dummy);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-		print_test("Borrar clave 3 : c", abb_borrar(abb2, clave3) == &dummy);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Borrar clave 8: h", abb_borrar(abb2, clave8) == &dummy);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-    print_test("Borrar clave 2 : b", abb_borrar(abb2, clave2) == &dummy);
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("El ABB tiene 0 nodos", abb_cantidad(abb2) == 0);
-  	printf("%d\n", (int)abb_cantidad(abb2));
-  	print_test("Clave 7 no pertenece", abb_pertenece(abb2, clave7) == false);
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 7 es NULL", abb_obtener(abb2, clave7) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Borrar clave 3 : c", abb_borrar(abb2, clave3) == &dummy);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 4 no pertenece", abb_pertenece(abb2, clave4) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+  print_test("Borrar clave 2 : b", abb_borrar(abb2, clave2) == &dummy);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("El ABB tiene 0 nodos", abb_cantidad(abb2) == 0);
+	printf("%d\n", (int)abb_cantidad(abb2));
+	print_test("Clave 7 no pertenece", abb_pertenece(abb2, clave7) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 7 es NULL", abb_obtener(abb2, clave7) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 4 es NULL", abb_obtener(abb2, clave4) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 4 no pertenece", abb_pertenece(abb2, clave4) == false);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 1 no pertenece", abb_pertenece(abb2, clave1) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 4 es NULL", abb_obtener(abb2, clave4) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 1 es NULL", abb_obtener(abb2, clave1) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 1 no pertenece", abb_pertenece(abb2, clave1) == false);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 8 no pertenece", abb_pertenece(abb2, clave8) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 1 es NULL", abb_obtener(abb2, clave1) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 8 es NULL", abb_obtener(abb2, clave8) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 8 no pertenece", abb_pertenece(abb2, clave8) == false);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 6 no pertenece", abb_pertenece(abb2, clave6) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 8 es NULL", abb_obtener(abb2, clave8) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 6 es NULL", abb_obtener(abb2, clave6) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 6 no pertenece", abb_pertenece(abb2, clave6) == false);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 5 no pertenece", abb_pertenece(abb2, clave5) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 6 es NULL", abb_obtener(abb2, clave6) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 5 es NULL", abb_obtener(abb2, clave5) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 5 no pertenece", abb_pertenece(abb2, clave5) == false);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 10 no pertenece", abb_pertenece(abb2, clave10) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 5 es NULL", abb_obtener(abb2, clave5) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 10 es NULL", abb_obtener(abb2, clave10) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 10 no pertenece", abb_pertenece(abb2, clave10) == false);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 3 no pertenece", abb_pertenece(abb2, clave9) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 10 es NULL", abb_obtener(abb2, clave10) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 3 es NULL", abb_obtener(abb2, clave9) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 3 no pertenece", abb_pertenece(abb2, clave9) == false);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 2 no pertenece", abb_pertenece(abb2, clave2) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 3 es NULL", abb_obtener(abb2, clave9) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 2 es NULL", abb_obtener(abb2, clave2) == NULL);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 2 no pertenece", abb_pertenece(abb2, clave2) == false);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Clave 4 no pertenece", abb_pertenece(abb2, clave4) == false);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 2 es NULL", abb_obtener(abb2, clave2) == NULL);
 
-		abb_in_order(abb2, imprimir_claves_strings, NULL);
-		printf("\n");
-  	print_test("Obtener clave 4 es NULL", abb_obtener(abb2, clave4) == NULL);
-		abb_destruir(abb2);
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Clave 4 no pertenece", abb_pertenece(abb2, clave4) == false);
+
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	print_test("Obtener clave 4 es NULL", abb_obtener(abb2, clave4) == NULL);
+	abb_destruir(abb2);
 
 	//Prueba de volumen modificada del abb
     //prueba_abb_volumen(10, true);
