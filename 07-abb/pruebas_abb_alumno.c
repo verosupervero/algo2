@@ -285,3 +285,12 @@ void pruebas_abb_alumno() {
   pruebas_iterar_volumen(VOLUMEN_GRANDE,"Volumen grande");
 	prueba_arbol_clave_vacia();
 }
+
+
+int main(int argc, char *argv[])
+{
+    printf("~~~ PRUEBAS ALUMNO ~~~\n");
+    pruebas_abb_alumno();
+
+    return failure_count() > 0;
+}

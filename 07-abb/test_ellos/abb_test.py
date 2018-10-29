@@ -25,7 +25,7 @@ import unittest
 
 # Nombre del programita auxiliar. Debe estar sincronizado
 # con el nombre que aparece en el makefile.
-CMD_NAME = "./abb_aux"
+CMD_NAME = "../abb_aux"
 
 
 def gen_trees(n):

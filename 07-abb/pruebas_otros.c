@@ -245,3 +245,12 @@ void pruebas_abb_alumno() {
     //prueba_abb_volumen(10, true);
 
 }
+
+
+int main(int argc, char *argv[])
+{
+    printf("~~~ PRUEBAS ALUMNO ~~~\n");
+    pruebas_abb_alumno();
+
+    return failure_count() > 0;
+}

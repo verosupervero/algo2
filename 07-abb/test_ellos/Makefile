@@ -6,7 +6,10 @@ CFLAGS += -Wconversion -Wno-sign-conversion -Wbad-function-cast
 CFLAGS += -Werror
 
 test: abb_aux
+	cp ../abb.* .
+	cp ../pila.* .
 	./abb_test.py
+	rm abb.* pila.*
 
 abb_aux: abb.o abb_aux.o
 
@@ -14,6 +17,6 @@ abb_aux: abb.o abb_aux.o
 -include deps.mk
 
 clean:
-	rm -f abb_aux *.o
+	rm -f abb_aux *.o abb.* pila.*
 
-.PHONY: test clean 
+.PHONY: test clean
