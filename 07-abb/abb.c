@@ -257,7 +257,7 @@ PRE: Recibe el nodo a borrar, su hijo y su padre. Deben existir.
 POST: Borra el nodo y devuelve el dato que contenia, su padre se quedo con la
 tenencia de su hijo.
 *******************************************************************************/
-void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nodo_t * padre_nodo){
+void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nodo_t * padre_nodo, abb_t *arbol){
 
   if(!nodo )
     return NULL;
@@ -267,16 +267,20 @@ void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nod
   //fprintf(stderr, "padre_nodo: %s, nodo: %s \n",padre_nodo->clave,nodo->clave );
   if(padre_nodo){
     desemparentar_padre_e_hijo(padre_nodo,nodo,&parentezco);
-    fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD \n",padre_nodo->clave,nodo->clave,(int) parentezco );
+    fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD \n",nodo->clave,hijo_nodo->clave,(int) parentezco );
   }
+
+  desemparentar_padre_e_hijo(nodo,hijo_nodo,NULL);
   void * dato=destruir_nodo(nodo,NULL);
   fprintf(stderr, "%s\n","destrui nodo " );
-  if(padre_nodo && hijo_nodo){
+  if(padre_nodo){
     emparentar_padre_e_hijo(padre_nodo,hijo_nodo,parentezco);
     fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD\n",padre_nodo->clave,hijo_nodo->clave,(int) parentezco );
-
   }
-      return dato;
+  else{
+    arbol->raiz=hijo_nodo;
+  }
+  return dato;
 }
 
 /******************************************************************************
@@ -470,10 +474,10 @@ void * abb_borrar(abb_t *arbol, const char *clave){
   }
   else if(cantidad_de_hijos==1){
     if(nodo->hijo_izquierdo!=NULL)
-      dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_izquierdo,padre_nodo);
+      dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_izquierdo,padre_nodo,arbol);
     else{
       fprintf(stderr, "%s\n","el nodo tiene un hijo a la derecha" );
-      dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_derecho,padre_nodo);
+      dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_derecho,padre_nodo,arbol);
     }
   }
   else{

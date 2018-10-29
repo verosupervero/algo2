@@ -57,65 +57,65 @@ static void prueba_abb_iter_interno(abb_t* abb2) {
     abb_in_order(abb2, imprimir_clave, NULL);
 }
 
-// static void prueba_abb_volumen(size_t largo, bool debug)
-// {
-//     abb_t* abb3 = abb_crear(strcmp, NULL);
-//
-//     const size_t largo_clave = 10;
-//     char (*claves)[largo_clave] = malloc(largo * largo_clave);
-//
-//     unsigned* valores[largo];
-//
-//     /* Inserta 'largo' parejas en el abb */
-//     bool ok = true;
-//     for (unsigned i = 0; i < largo; i++) {
-//         valores[i] = malloc(sizeof(int));
-//         sprintf(claves[i], "%08d", i);
-//         *valores[i] = i;
-//         ok = abb_guardar(abb3, claves[i], valores[i]);
-//         if (!ok) break;
-//     }
-//
-//     if (debug) print_test("Prueba abb almacenar muchos elementos", ok);
-//     if (debug) print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb3) == largo);
-//
-//     /* Verifica que devuelva los valores correctos */
-//     for (size_t i = 0; i < largo; i++) {
-//         ok = abb_pertenece(abb3, claves[i]);
-//         if (!ok) break;
-//         ok = abb_obtener(abb3, claves[i]) == valores[i];
-//         if (!ok) break;
-//     }
-//
-//     if (debug) print_test("Prueba abb pertenece y obtener muchos elementos", ok);
-//     if (debug) print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb3) == largo);
-//
-//     /* Verifica que borre y devuelva los valores correctos */
-//     for (size_t i = 0; i < largo; i++) {
-//         ok = abb_borrar(abb3, claves[i]) == valores[i];
-//         if (!ok) break;
-//     }
-//
-//     if (debug) print_test("Prueba abb borrar muchos elementos", ok);
-//     if (debug) print_test("Prueba abb la cantidad de elementos es 0", abb_cantidad(abb3) == 0);
-//
-//     /* Destruye el abb y crea uno nuevo que sí libera */
-//     abb_destruir(abb3);
-//     abb3 = abb_crear(strcmp, free);
-//
-//     /* Inserta 'largo' parejas en el abb */
-//     ok = true;
-//     for (size_t i = 0; i < largo; i++) {
-//         ok = abb_guardar(abb3, claves[i], valores[i]);
-//         if (!ok) break;
-//     }
-//
-//     free(claves);
-//
-//     /* Destruye el abb - debería liberar los enteros */
-//     abb_destruir(abb3);
-//
-// }
+static void prueba_abb_volumen(size_t largo, bool debug)
+{
+    abb_t* abb3 = abb_crear(strcmp, NULL);
+
+    const size_t largo_clave = 10;
+    char (*claves)[largo_clave] = malloc(largo * largo_clave);
+
+    unsigned* valores[largo];
+
+    /* Inserta 'largo' parejas en el abb */
+    bool ok = true;
+    for (unsigned i = 0; i < largo; i++) {
+        valores[i] = malloc(sizeof(int));
+        sprintf(claves[i], "%08d", i);
+        *valores[i] = i;
+        ok = abb_guardar(abb3, claves[i], valores[i]);
+        if (!ok) break;
+    }
+
+    if (debug) print_test("Prueba abb almacenar muchos elementos", ok);
+    if (debug) print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb3) == largo);
+
+    /* Verifica que devuelva los valores correctos */
+    for (size_t i = 0; i < largo; i++) {
+        ok = abb_pertenece(abb3, claves[i]);
+        if (!ok) break;
+        ok = abb_obtener(abb3, claves[i]) == valores[i];
+        if (!ok) break;
+    }
+
+    if (debug) print_test("Prueba abb pertenece y obtener muchos elementos", ok);
+    if (debug) print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb3) == largo);
+
+    /* Verifica que borre y devuelva los valores correctos */
+    for (size_t i = 0; i < largo; i++) {
+        ok = abb_borrar(abb3, claves[i]) == valores[i];
+        if (!ok) break;
+    }
+
+    if (debug) print_test("Prueba abb borrar muchos elementos", ok);
+    if (debug) print_test("Prueba abb la cantidad de elementos es 0", abb_cantidad(abb3) == 0);
+
+    /* Destruye el abb y crea uno nuevo que sí libera */
+    abb_destruir(abb3);
+    abb3 = abb_crear(strcmp, free);
+
+    /* Inserta 'largo' parejas en el abb */
+    ok = true;
+    for (size_t i = 0; i < largo; i++) {
+        ok = abb_guardar(abb3, claves[i], valores[i]);
+        if (!ok) break;
+    }
+
+    free(claves);
+
+    /* Destruye el abb - debería liberar los enteros */
+    abb_destruir(abb3);
+
+}
 void pruebas_abb_vacio(){
 	//ABB VACIO
 	abb_t* abb1 = abb_crear(strcmp, NULL);
@@ -355,108 +355,98 @@ void pruebas_abb_alumno() {
 
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 		printf("\n");
-  print_test("Borrar clave 7: g", abb_borrar(abb2, clave7) == &dummy);
 
+	fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
+
+
+
+	print_test("Borrar clave 7: g", abb_borrar(abb2, clave7) == &dummy);
+
+	fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
+
+
 
   print_test("Borrar clave 5: e", abb_borrar(abb2, clave5) == &dummy);
 
+	fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
+
+
 	print_test("Borrar clave 8: h", abb_borrar(abb2, clave8) == &dummy);
+	fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
+	abb_in_order(abb2, imprimir_claves_strings, NULL);
+	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
+
 
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	print_test("Borrar clave 3 : c", abb_borrar(abb2, clave3) == &dummy);
 
+  fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del abb2
+	print_t(abb2);
+	printf("___________________________________________________________\n");
+
   print_test("Borrar clave 2 : b", abb_borrar(abb2, clave2) == &dummy);
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
+  fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
+  abb_in_order(abb2, imprimir_claves_strings, NULL);
+  printf("\n");
+  // Dibujito del abb2
+  print_t(abb2);
+  printf("___________________________________________________________\n");
+
 	print_test("El ABB tiene 0 nodos", abb_cantidad(abb2) == 0);
 	printf("%d\n", (int)abb_cantidad(abb2));
 	print_test("Clave 7 no pertenece", abb_pertenece(abb2, clave7) == false);
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
-	print_test("Obtener clave 7 es NULL", abb_obtener(abb2, clave7) == NULL);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
+  fprintf(stderr, "%s\n","Recorrido del abb2 inorder:" );
+  abb_in_order(abb2, imprimir_claves_strings, NULL);
+  printf("\n");
+  // Dibujito del abb2
+  print_t(abb2);
+  printf("___________________________________________________________\n");
+  print_test("Obtener clave 7 es NULL", abb_obtener(abb2, clave7) == NULL);
 	print_test("Clave 4 no pertenece", abb_pertenece(abb2, clave4) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
-	print_test("Obtener clave 4 es NULL", abb_obtener(abb2, clave4) == NULL);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
+  print_test("Obtener clave 4 es NULL", abb_obtener(abb2, clave4) == NULL);
 	print_test("Clave 1 no pertenece", abb_pertenece(abb2, clave1) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Obtener clave 1 es NULL", abb_obtener(abb2, clave1) == NULL);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Clave 8 no pertenece", abb_pertenece(abb2, clave8) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Obtener clave 8 es NULL", abb_obtener(abb2, clave8) == NULL);
 
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
-	print_test("Clave 6 no pertenece", abb_pertenece(abb2, clave6) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
+  print_test("Clave 6 no pertenece", abb_pertenece(abb2, clave6) == false);
 	print_test("Obtener clave 6 es NULL", abb_obtener(abb2, clave6) == NULL);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Clave 5 no pertenece", abb_pertenece(abb2, clave5) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Obtener clave 5 es NULL", abb_obtener(abb2, clave5) == NULL);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Clave 10 no pertenece", abb_pertenece(abb2, clave10) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Obtener clave 10 es NULL", abb_obtener(abb2, clave10) == NULL);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Clave 3 no pertenece", abb_pertenece(abb2, clave9) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Obtener clave 3 es NULL", abb_obtener(abb2, clave9) == NULL);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Clave 2 no pertenece", abb_pertenece(abb2, clave2) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Obtener clave 2 es NULL", abb_obtener(abb2, clave2) == NULL);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Clave 4 no pertenece", abb_pertenece(abb2, clave4) == false);
-
-	abb_in_order(abb2, imprimir_claves_strings, NULL);
-	printf("\n");
 	print_test("Obtener clave 4 es NULL", abb_obtener(abb2, clave4) == NULL);
 	abb_destruir(abb2);
 
 	//Prueba de volumen modificada del abb
-    //prueba_abb_volumen(10, true);
+    prueba_abb_volumen(500, true);
 
 }
 
