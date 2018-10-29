@@ -101,6 +101,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	printf("\n");
 	// Dibujito del arbol
 	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	print_test("Guardo nodo de clave 5 y valor Dato", abb_guardar(arbol, "5", valor_dato));
 	print_test("El 5 pertenece al arbol", abb_pertenece(arbol, "5"));
@@ -108,9 +109,10 @@ void pruebas_claves_ayudantes_e_in_order() {
 	printf("\n");
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
-	printf("\n");
+	printf("\n\n");
 	// Dibujito del arbol
 	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
 
@@ -120,43 +122,45 @@ void pruebas_claves_ayudantes_e_in_order() {
 	printf("\n");
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
-	printf("\n");
+	printf("\n\n");;
 	// Dibujito del arbol
 	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	print_test("Guardo nodo de clave 3 y valor Agustina", abb_guardar(arbol, "3", valor_agustina));
 	print_test("El 3 pertenece al arbol", abb_pertenece(arbol, "3"));
 	arbol_cantidad++;
-	printf("\n");
+	printf("\n\n");
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
 	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	print_test("Guardo nodo de clave 6 y valor Ignacio", abb_guardar(arbol, "6", valor_ignacio));
 	print_test("El 6 pertenece al arbol", abb_pertenece(arbol, "6"));
 	arbol_cantidad++;
-	printf("\n");
+	printf("\n\n");
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
-	printf("\n");
+	printf("\n\n");
 	// Dibujito del arbol
 	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
 
 	print_test("Matias da la clase, reemplazo dato (Curioso: reemplazo Dato) de clave 5 por Matias: ", abb_guardar(arbol, "5", valor_matias));
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
-
-	printf("\n");
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
-	printf("\n");
+	printf("\n\n");
 
 	// Dibujito del arbol
 	print_t(arbol);
 
+	printf("___________________________________________________________\n");
 
 	fprintf(stdout, "%s\n","Obtencion/Busqueda de claves en el arbol" );
 	print_test("Busco clave 100 con abb_pertenece, devuelve TRUE: ", abb_pertenece(arbol, "100"));
@@ -164,22 +168,28 @@ void pruebas_claves_ayudantes_e_in_order() {
 	print_test("Busca valor de 5, devuelve Matias: ", valor_matias == abb_obtener(arbol, "5"));
 	print_test("Busca valor de 1000, devuelve NULL: ", NULL == abb_obtener(arbol, "1000"));
 	printf("\n");
+	printf("___________________________________________________________\n");
 
 	/*Borrado de nodos*/
 	print_test("Borro nodo sin hijos, devuelve Agustina: ", abb_borrar(arbol, "3") == valor_agustina);
 	arbol_cantidad--;
 	print_test("Busco si pertenece el 3, clave asociada previamente a Agustina: ", !abb_pertenece(arbol, "3"));
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
+	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
+	printf("___________________________________________________________\n");
 
-	printf("\n");
-	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	print_test("Jorge da la clase, reemplazo Ezequiel en arbol: ", abb_guardar(arbol, "100", valor_jorge));
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
-
+	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	print_test("Guardo nodo de clave 98 y valor Ezequiel:", abb_guardar(arbol, "98", valor_ezequiel));
 	print_test("Guardo nodo de clave 99 y valor Jasmina:", abb_guardar(arbol, "99", valor_jasmina));
@@ -187,24 +197,29 @@ void pruebas_claves_ayudantes_e_in_order() {
 	print_test("Guardo nodo de clave 107 y valor Camila D: ", abb_guardar(arbol, "107", valor_camila_d));
 	print_test("Guardo nodo de clave 106 y valor Anita: ", abb_guardar(arbol, "106", valor_anita));
 	arbol_cantidad+=5;
-
-	printf("\n");
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
+
+	printf("___________________________________________________________\n");
 
 	printf("\n");
 
 	print_test("Olivia viene a la clase, se va Anita en arbol: ", abb_guardar(arbol, "106", valor_olivia));
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
 
+
 	printf("\n");
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
 
 	printf("\n");
-
+	printf("___________________________________________________________\n");
 	print_test("Borro nodo 1 hijo, devuelve Ezequiel: ", abb_borrar(arbol, "98") == valor_ezequiel);
 	arbol_cantidad--;
 	print_test("Busco si pertenece el 98, clave asociada previamente a Ezequiel: ", !abb_pertenece(arbol, "98"));
@@ -214,6 +229,9 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	printf("\n");
 	print_test("Borro nodo 2 hijos, devuelve Jorge: ", abb_borrar(arbol, "100") == valor_jorge);
@@ -225,6 +243,9 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	print_test("Borro raiz, devuelve Martín, tenía 2 hijos: ", abb_borrar(arbol, "72") == valor_martin);
 	arbol_cantidad--;
@@ -235,6 +256,9 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
+	printf("___________________________________________________________\n");
 
 	abb_destruir(arbol);
 	print_test("Destruir arbol, ", true);
