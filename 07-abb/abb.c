@@ -652,9 +652,9 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
 }
 
 ///////////////////////////////////////////////
-int _print_t(abb_nodo_t *tree, int is_left, int offset, int depth, char s[20][255])
+int _print_t(abb_nodo_t *tree, int is_left, int offset, int depth, char s[6][100])
 {
-    char b[20];
+    char b[6];
     int width = 5;
 
     if (!tree) return 0;
@@ -688,12 +688,13 @@ int _print_t(abb_nodo_t *tree, int is_left, int offset, int depth, char s[20][25
 
 void print_t(abb_t *tree)
 {
-    char s[20][255];
-    for (int i = 0; i < 20; i++)
+    int niveles=6;
+    char s[niveles][100];
+    for (int i = 0; i < niveles; i++)
         sprintf(s[i], "%80s", " ");
 
     _print_t(tree->raiz, 0, 0, 0, s);
 
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < niveles; i++)
         printf("%s\n", s[i]);
 }
