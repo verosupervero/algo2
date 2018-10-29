@@ -429,6 +429,13 @@ void * abb_borrar(abb_t *arbol, const char *clave){
   else{
     dato=abb_borrar_nodo_2_hijos(nodo,padre_nodo);
   }
+
+  /* Caso particular */
+  if(arbol->raiz == nodo){
+    // Debo eliminar el nodo raiz
+    arbol->raiz = NULL;
+  }
+
   /*Disminuye la cantidad de nodos del arbol*/
   arbol->cantidad_nodos--;
   return dato;
