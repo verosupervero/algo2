@@ -136,7 +136,7 @@ abb_in_order(abb1, imprimir_claves_strings, NULL);
 printf("\n");
 // 	print_test("Clave 1 no pertenece", abb_pertenece(abb1, clave1) == false);
 // 	print_test("Obtener clave 1 es NULL", abb_obtener(abb1, clave1) == NULL);
-	free(abb1);
+	abb_destruir(abb1);
 
 }
 

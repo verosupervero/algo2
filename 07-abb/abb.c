@@ -174,6 +174,9 @@ PRE: Recibe padre e hijo y el tipo de emparentamiento que se desea.
 POST: Emparento padre con hijo o no lo emparento si se paso que no era hijo.
 *******************************************************************************/
 bool emparentar_padre_e_hijo(abb_nodo_t * padre, abb_nodo_t * hijo,hijo_t parentezco){
+  if(!padre)
+    return false;
+
   if(parentezco==HIJO_DERECHO){
       if(padre->hijo_derecho!=NULL){
         //fprintf(stderr, "%s\n","El padre ya tiene hijo derecho");
@@ -199,6 +202,8 @@ PRE: Recibe el nodo y dos punteros para guardar la referencia a los hijos o NULL
 POST: Devuelve ambos hijos por referencia.
 *******************************************************************************/
 int contar_hijos(abb_nodo_t* nodo){
+  if(!nodo)
+    return 0;
   return 0+((nodo->hijo_izquierdo!=NULL)?1:0)+((nodo->hijo_derecho!=NULL)?1:0);
 }
 /******************************************************************************
@@ -208,6 +213,10 @@ Además recibe una referencia al padre del nodo en cuestion.
 POST: Devuelve el reemplazante y por referencia su padre.
 *******************************************************************************/
 abb_nodo_t * _abb_buscar_reemplazante(abb_nodo_t * nodo,abb_nodo_t** padre_reemplazante, abb_nodo_t * mi_padre){
+
+  if(!nodo)
+    return NULL;
+
   if (!nodo->hijo_izquierdo){
     *padre_reemplazante= mi_padre;
     return nodo;
@@ -237,16 +246,18 @@ tenencia de su hijo.
 *******************************************************************************/
 void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nodo_t * padre_nodo){
 
-  if(!nodo)
+  if(!nodo )
     return NULL;
 
   hijo_t parentezco;
   //fprintf(stderr, "%s\n", "voy a desemparentar nodo con su padre");
   //fprintf(stderr, "padre_nodo: %s, nodo: %s \n",padre_nodo->clave,nodo->clave );
-  desemparentar_padre_e_hijo(padre_nodo,nodo,&parentezco);
+  if(padre_nodo)
+    desemparentar_padre_e_hijo(padre_nodo,nodo,&parentezco);
   //fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD \n",padre_nodo->clave,nodo->clave,(int) parentezco );
   void * dato=destruir_nodo(nodo,NULL);
-  emparentar_padre_e_hijo(padre_nodo,hijo_nodo,parentezco);
+  if(padre_nodo && hijo_nodo)
+    emparentar_padre_e_hijo(padre_nodo,hijo_nodo,parentezco);
   //fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD\n",padre_nodo->clave,hijo_nodo->clave,(int) parentezco );
   return dato;
 }
@@ -257,6 +268,9 @@ PRE: Recibe el nodo a borrar y su padre. Deben existir.
 POST: El padre del nodo hereda sus nietos.
 *******************************************************************************/
 void * abb_borrar_nodo_2_hijos(abb_nodo_t * nodo, abb_nodo_t * padre_nodo){
+
+  if(!nodo )
+    return NULL;
 
   /*Busco al reemplazante y me guardo su clave*/
   abb_nodo_t * padre_reemplazante=NULL;
@@ -275,9 +289,11 @@ void * abb_borrar_nodo_2_hijos(abb_nodo_t * nodo, abb_nodo_t * padre_nodo){
       return NULL;
     }
   }
+  abb_nodo_t* hijo_derecho_reemplazante=NULL;
 
   /*Busco si el reemplazante tiene hijos*/
-  abb_nodo_t* hijo_derecho_reemplazante=reemplazante->hijo_derecho;
+  if(reemplazante)
+    hijo_derecho_reemplazante=reemplazante->hijo_derecho;
 
   /*Borro el reemplazante y me guardo su dato*/
   void* dato_reemplazante=destruir_nodo(reemplazante,NULL);
@@ -422,7 +438,7 @@ POST: Borro la clave y reconstruyo el arbol.
 void * abb_borrar(abb_t *arbol, const char *clave){
   abb_nodo_t * padre_nodo= NULL;
   abb_nodo_t * nodo=_abb_buscar_nodo_y_padre(arbol,clave,&padre_nodo,arbol->raiz,NULL);
-  fprintf(stderr, "%s\n","busque nodo y padre" );
+  //fprintf(stderr, "%s\n","busque nodo y padre" );
   if(!nodo)
     return NULL;
 

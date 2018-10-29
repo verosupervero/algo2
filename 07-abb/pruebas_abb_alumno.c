@@ -278,11 +278,11 @@ static void prueba_arbol_clave_vacia(){
 }
 
 void pruebas_abb_alumno() {
-	pruebas_arbol_vacio();
+	//pruebas_arbol_vacio();
 	pruebas_claves_ayudantes_e_in_order();
-	pruebas_iterar_volumen(VOLUMEN_CHICO, "Volumen chico");
-  pruebas_iterar_volumen(VOLUMEN_MEDIO,"Volumen medio");
-  pruebas_iterar_volumen(VOLUMEN_GRANDE,"Volumen grande");
+	//pruebas_iterar_volumen(VOLUMEN_CHICO, "Volumen chico");
+  //pruebas_iterar_volumen(VOLUMEN_MEDIO,"Volumen medio");
+  //pruebas_iterar_volumen(VOLUMEN_GRANDE,"Volumen grande");
 	prueba_arbol_clave_vacia();
 }
 
