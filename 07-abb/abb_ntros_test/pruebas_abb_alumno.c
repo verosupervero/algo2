@@ -18,8 +18,6 @@ bool imprimir_claves_strings(const char* clave, void* valor, void* extra){
 	printf ("[%s,%s]->", clave,(char*) valor);
 	return true;
 }
-
-//abb_comparar_clave_t cmp_ptr = &strcmp;
 /* ******************************************************************
  *                   PRUEBAS UNITARIAS ALUMNO
  * *****************************************************************/
