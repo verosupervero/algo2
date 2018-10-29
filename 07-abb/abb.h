@@ -18,6 +18,9 @@ typedef struct abb_iter abb_iter_t;
 typedef int (*abb_comparar_clave_t) (const char *, const char *);
 typedef void (*abb_destruir_dato_t) (void *);
 
+
+//BORRAR ESTA PRIMITIVA DESPUES!!!:
+  char * abb_obtener_clave_raiz(abb_t* arbol);
 /* ******************************************************************
  *                    PRIMITIVAS DEL ABB
  * *****************************************************************/

@@ -18,6 +18,18 @@ bool imprimir_claves_strings(const char* clave, void* valor, void* extra){
 	printf ("[%s,%s]->", clave,(char*) valor);
 	return true;
 }
+
+int strcmp_for_integers(const char *aa, const char *bb){
+    char aa2[11] = "";
+    char bb2[11] = "";
+    int answer;
+
+    sprintf(aa2, "%010d", atoi(aa));
+    sprintf(bb2, "%010d", atoi(bb));
+    answer = strcmp(aa2, bb2);
+
+    return answer;
+}
 /* ******************************************************************
  *                   PRUEBAS UNITARIAS ALUMNO
  * *****************************************************************/
@@ -26,7 +38,7 @@ void pruebas_arbol_vacio(){
 
 	printf("INICIO DE PRUEBAS DE ARBOL VACIO\n");
 
-	abb_t* arbol = abb_crear(*strcmp, NULL);
+	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
 
 	print_test("Prueba arbol vacio: ", arbol);
 	print_test("El arbol tiene 0: ", abb_cantidad(arbol) == 0);
@@ -74,7 +86,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	char *valor_jorge = "Jorge";
 	char *valor_olivia= "Olivia";
 
-	abb_t* arbol = abb_crear(*strcmp, NULL);
+	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
 	if(!arbol)
 		return;
 
@@ -216,7 +228,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 
 
 void pruebas_iterar_volumen(size_t volumen, char * nombre_volumen){ //aqui
-	abb_t* arbol = abb_crear(*strcmp, NULL);
+	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
 	if(!arbol)
 		return;
 
@@ -266,7 +278,7 @@ void pruebas_iterar_volumen(size_t volumen, char * nombre_volumen){ //aqui
 	print_test("Iterador destruido:", true);
 }
 static void prueba_arbol_clave_vacia(){
-    abb_t* arbol = abb_crear(*strcmp,NULL);
+    abb_t* arbol = abb_crear(strcmp_for_integers,NULL);
 
     char *clave = "", *valor = "";
 

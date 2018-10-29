@@ -42,12 +42,19 @@ char * str_dup(const char * cadena){
   for(i=0; (copia[i]=cadena[i]);i++);
   return copia;
 }
+
+char * abb_obtener_clave_raiz(abb_t* arbol){
+  if(!arbol)
+    return NULL;
+
+  return arbol->raiz->clave;
+}
 /******************************************************************************
 Crea un nuevo nodo con una clave y un valor.
 PRE: Recibe una clave y un valor.
 POST: Copio la clave al nodo creado y la asocia al dato. Sino devuelve NULL.
 *******************************************************************************/
-abb_nodo_t * crear_nodo(const char * clave, void * dato){
+static abb_nodo_t * crear_nodo(const char * clave, void * dato){
 
   abb_nodo_t * nodo = malloc(sizeof(abb_nodo_t));
   if(!nodo)
@@ -73,13 +80,12 @@ PRE: Recibe un nodo y una funcion de destruccion de dato/NULL.
 POST: Devuelve el dato o NULL si el dato es NULL o la funcion de destruccion
 destruyo el dato.
 *******************************************************************************/
-void* destruir_nodo(abb_nodo_t* nodo, abb_destruir_dato_t destruir_dato ){
-  if(!nodo)
-    return NULL;
+static void* destruir_nodo(abb_nodo_t* nodo, abb_destruir_dato_t destruir_dato ){
+
  free(nodo->clave);
  void* dato;
  if(destruir_dato){
-   destruir_dato(nodo);
+   destruir_dato(nodo->dato);
    fprintf(stderr, "%s\n","destrui dato" );
    dato=NULL;
  }
@@ -109,13 +115,19 @@ abb_nodo_t * _abb_buscar_nodo_y_padre(const abb_t *arbol, const char * clave,
   int cmp=arbol->comparar_clave(raiz->clave,clave);
   if(cmp==0){
     //fprintf(stderr, "%s\n","si el nodo padre no es null pasa a ser mi padre" );
-    if(nodo_padre!=NULL)
+    if(nodo_padre!=NULL){
       *nodo_padre= mi_padre;
+      if(mi_padre)
+        fprintf(stderr, "%s %s\n","mi padre es",mi_padre->clave );
+      if(raiz)
+        fprintf(stderr, "%s %s\n","yo soy", raiz->clave );
+    }
+
     //fprintf(stderr, "%s\n\n","devuelvo raiz" );
     //fprintf(stderr, "%s%s\n","pude encontrar la clave:",clave );
     return raiz;
   }
-  else if(cmp<0){
+  else if(cmp>0){
     //fprintf(stderr, "%s\n","la clave es mas chica la busco a la izquierda" );
     //fprintf(stderr, "%s->",raiz->clave );
     return _abb_buscar_nodo_y_padre(arbol,clave,nodo_padre,raiz->hijo_izquierdo,raiz);
@@ -250,16 +262,20 @@ void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nod
     return NULL;
 
   hijo_t parentezco;
-  //fprintf(stderr, "%s\n", "voy a desemparentar nodo con su padre");
+  fprintf(stderr, "%s\n", "voy a desemparentar nodo con su padre");
   //fprintf(stderr, "padre_nodo: %s, nodo: %s \n",padre_nodo->clave,nodo->clave );
-  if(padre_nodo)
+  if(padre_nodo){
     desemparentar_padre_e_hijo(padre_nodo,nodo,&parentezco);
-  //fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD \n",padre_nodo->clave,nodo->clave,(int) parentezco );
+    fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD \n",padre_nodo->clave,nodo->clave,(int) parentezco );
+  }
   void * dato=destruir_nodo(nodo,NULL);
-  if(padre_nodo && hijo_nodo)
+  fprintf(stderr, "%s\n","destrui nodo " );
+  if(padre_nodo && hijo_nodo){
     emparentar_padre_e_hijo(padre_nodo,hijo_nodo,parentezco);
-  //fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD\n",padre_nodo->clave,hijo_nodo->clave,(int) parentezco );
-  return dato;
+    fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD\n",padre_nodo->clave,hijo_nodo->clave,(int) parentezco );
+
+  }
+      return dato;
 }
 
 /******************************************************************************
@@ -364,10 +380,10 @@ bool _abb_guardar(abb_nodo_t ** raiz,const char *clave, void *dato,abb_t * arbol
 
   int cmp= arbol->comparar_clave(clave,(*raiz)->clave);
 
-  if(cmp<0){
+  if(cmp>0){
     return _abb_guardar(&(*raiz)->hijo_derecho,clave,dato,arbol,raiz,existia_clave);
   }
-  else if(cmp>0){
+  else if(cmp<0){
     return _abb_guardar(&(*raiz)->hijo_izquierdo,clave,dato,arbol,raiz,existia_clave);
   }
   /*si la clave ya existe*/
@@ -393,7 +409,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
     return false;
 
   abb_nodo_t * padre=NULL;
-  bool existia_clave;
+  bool existia_clave=false;
   bool guardo=_abb_guardar(&arbol->raiz,clave,dato,arbol,&padre,&existia_clave);
   if(guardo && !existia_clave)
     arbol->cantidad_nodos++;
@@ -453,6 +469,7 @@ void * abb_borrar(abb_t *arbol, const char *clave){
     if(nodo->hijo_izquierdo!=NULL)
       dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_izquierdo,padre_nodo);
     else{
+      fprintf(stderr, "%s\n","el nodo tiene un hijo a la derecha" );
       dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_derecho,padre_nodo);
     }
   }
@@ -532,15 +549,17 @@ abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
   /*Creo la pila del iterador*/
   //fprintf(stderr, "%s\n","creo la pila" );
   iter->pila = pila_crear();
-  if (!iter->pila)
+  if (!iter->pila){
+    free(iter);
     return NULL;
+  }
 
   if(arbol-> raiz){
-    /*Apilo la raiz*/
+    /*Apilo la raiz y todos sus hijos izquierdos*/
     pila_apilar(iter->pila, arbol->raiz);
     abb_nodo_t * nodo_izquierdo=arbol->raiz->hijo_izquierdo;
 
-    /*Y todos sus hijos izquierdos*/
+    /**/
     while(nodo_izquierdo!=NULL){
       pila_apilar(iter->pila,nodo_izquierdo);
       nodo_izquierdo=nodo_izquierdo->hijo_izquierdo;
@@ -560,15 +579,17 @@ bool abb_iter_in_avanzar(abb_iter_t *iter){
     return false;
 
   abb_nodo_t * nodo_desapilado = pila_desapilar(iter->pila);
+  if(!nodo_desapilado)
+    return false;
 
   /*Si el nodo_desapilado tiene hijo derecho, apilo hijo derecho
   y todos los hijos izquierdos que existan (sus nietos izquierdos)*/
-  if(nodo_desapilado->hijo_derecho!=NULL){
+  if(nodo_desapilado->hijo_derecho){
     pila_apilar(iter->pila,nodo_desapilado->hijo_derecho);
-    abb_nodo_t * nieto_izquierdo= nodo_desapilado->hijo_derecho->hijo_izquierdo;
+    abb_nodo_t * nieto_izquierdo= nodo_desapilado->hijo_derecho;
 
-    while(nieto_izquierdo!=NULL){
-      pila_apilar(iter->pila,nieto_izquierdo);
+    while(nieto_izquierdo->hijo_izquierdo){
+      pila_apilar(iter->pila,nieto_izquierdo->hijo_izquierdo);
       nieto_izquierdo=nieto_izquierdo->hijo_izquierdo;
     }
   }
@@ -581,7 +602,9 @@ POST: Devuelve la clave del nodo actual.
 *******************************************************************************/
 const char *abb_iter_in_ver_actual(const abb_iter_t *iter){
 	abb_nodo_t * nodo_actual = pila_ver_tope(iter->pila);
-  return nodo_actual?nodo_actual->clave:NULL;
+  if(nodo_actual)
+    fprintf(stderr, "%s\n",nodo_actual->clave );
+  return nodo_actual?(nodo_actual->clave):NULL;
 }
 /******************************************************************************
 Revisa si el iterador esta al final
@@ -614,8 +637,10 @@ void _abb_in_order(abb_nodo_t * nodo, bool visitar(const char *, void *, void *)
   if(!nodo)
     return;
   _abb_in_order(nodo->hijo_izquierdo, visitar,extra);
-  visitar(nodo->clave,nodo->dato,extra);
-  _abb_in_order(nodo->hijo_derecho, visitar,extra);
+  if(visitar(nodo->clave,nodo->dato,extra)){
+    _abb_in_order(nodo->hijo_derecho, visitar,extra);
+  }
+
 }
 
 void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra){
