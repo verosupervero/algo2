@@ -460,14 +460,15 @@ void * abb_borrar(abb_t *arbol, const char *clave){
     dato=abb_borrar_nodo_2_hijos(nodo,padre_nodo);
   }
 
- // /* Si elimine el nodo raiz, debo cambiar el puntero*/
- //  if(arbol->raiz == nodo){
- //    // Quedaria todo más lindo al trabajar con dobles punteros
- //    arbol->raiz = NULL;
- //  }
 
   /*Disminuye la cantidad de nodos del arbol*/
   arbol->cantidad_nodos--;
+
+  /* Si elimine el nodo raiz, debo cambiar el puntero*/
+   if(!abb_cantidad(arbol)){
+     arbol->raiz = NULL;
+   }
+
   return dato;
 }
 /******************************************************************************
