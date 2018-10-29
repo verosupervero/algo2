@@ -373,6 +373,7 @@ static void prueba_arbol_clave_vacia(){
 
 void pruebas_abb_alumno() {
 	//pruebas_arbol_vacio();
+	agregar_y_eliminar_nodos();
 	pruebas_claves_ayudantes_e_in_order();
 	//pruebas_iterar_volumen(VOLUMEN_CHICO, "Volumen chico");
   //pruebas_iterar_volumen(VOLUMEN_MEDIO,"Volumen medio");
@@ -384,8 +385,7 @@ void pruebas_abb_alumno() {
 int main(int argc, char *argv[])
 {
     printf("~~~ PRUEBAS ALUMNO ~~~\n");
-		agregar_y_eliminar_nodos();
-    //pruebas_abb_alumno();
+    pruebas_abb_alumno();
 
     return failure_count() > 0;
 }
