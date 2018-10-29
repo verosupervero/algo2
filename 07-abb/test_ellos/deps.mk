@@ -1,3 +1,2 @@
 # De hacer falta, añadir "pila.o" aquí.
-abb_aux:
-	pila.h
+abb_aux: pila.o

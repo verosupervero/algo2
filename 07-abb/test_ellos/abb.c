@@ -126,6 +126,8 @@ PRE: Recibe un padre y su hijo
 POST: Devuelve si es hijo_derecho, hijo_izquierdo o si no es hijo.
 *******************************************************************************/
 hijo_t obtener_parentezco(const abb_nodo_t * padre, const abb_nodo_t * hijo){
+  if(!padre)
+    return NO_ES_HIJO;
   if(padre->hijo_derecho == hijo)
     return HIJO_DERECHO;
   else if(padre->hijo_izquierdo==hijo)

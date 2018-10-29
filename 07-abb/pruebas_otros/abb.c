@@ -69,21 +69,26 @@ abb_nodo_t * crear_nodo(const char * clave, void * dato){
 
 /******************************************************************************
 Destruye el nodo y devuelve o no el dato segun los parametros pasados.
-PRE: Recibe un nodo y una funcion de destruccion de dato/NULL. El nodo fue creado.
+PRE: Recibe un nodo y una funcion de destruccion de dato/NULL.
 POST: Devuelve el dato o NULL si el dato es NULL o la funcion de destruccion
 destruyo el dato.
 *******************************************************************************/
 void* destruir_nodo(abb_nodo_t* nodo, abb_destruir_dato_t destruir_dato ){
+  if(!nodo)
+    return NULL;
  free(nodo->clave);
  void* dato;
  if(destruir_dato){
    destruir_dato(nodo);
+   fprintf(stderr, "%s\n","destrui dato" );
    dato=NULL;
  }
  else{
    dato=nodo->dato;
  }
+ fprintf(stderr, "%s\n","estoy antes de hacerle free al nodo" );
  free(nodo);
+ fprintf(stderr, "%s\n","devuelvo dato" );
  return dato;
 }
 
@@ -216,7 +221,11 @@ POST: Borra el nodo y devuelve el dato que contenia, su padre apunta a NULL
 en donde estaba el nodo.
 *******************************************************************************/
 void * abb_borrar_nodo_sin_hijos(abb_nodo_t * nodo, abb_nodo_t * padre){
-  desemparentar_padre_e_hijo(padre,nodo,NULL);
+  if (!nodo)
+    return NULL;
+
+  if(padre)
+    desemparentar_padre_e_hijo(padre,nodo,NULL);
   void * dato=destruir_nodo(nodo,NULL);
   return dato;
 }
@@ -227,6 +236,10 @@ POST: Borra el nodo y devuelve el dato que contenia, su padre se quedo con la
 tenencia de su hijo.
 *******************************************************************************/
 void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nodo_t * padre_nodo){
+
+  if(!nodo)
+    return NULL;
+
   hijo_t parentezco;
   //fprintf(stderr, "%s\n", "voy a desemparentar nodo con su padre");
   //fprintf(stderr, "padre_nodo: %s, nodo: %s \n",padre_nodo->clave,nodo->clave );
@@ -409,6 +422,7 @@ POST: Borro la clave y reconstruyo el arbol.
 void * abb_borrar(abb_t *arbol, const char *clave){
   abb_nodo_t * padre_nodo= NULL;
   abb_nodo_t * nodo=_abb_buscar_nodo_y_padre(arbol,clave,&padre_nodo,arbol->raiz,NULL);
+  fprintf(stderr, "%s\n","busque nodo y padre" );
   if(!nodo)
     return NULL;
 
@@ -439,11 +453,28 @@ PRE: Recibe el nodo.
 POST: NO hay mas nodo ni hijos.
 *******************************************************************************/
 void _destruir_familia(abb_nodo_t *nodo, abb_destruir_dato_t destruir_dato){
-	if(!nodo)/*Caso base*/
-    return;
-	_destruir_familia(nodo->hijo_izquierdo, destruir_dato);
-	_destruir_familia(nodo->hijo_derecho, destruir_dato);
-	destruir_nodo(nodo, destruir_dato);
+
+  if(!nodo){
+     fprintf(stderr, "%s\n","caso base" );
+     return;
+   }/*Caso base*/
+
+  if (nodo->hijo_izquierdo)
+    _destruir_familia(nodo->hijo_izquierdo, destruir_dato);
+	if (nodo->hijo_derecho)
+    _destruir_familia(nodo->hijo_derecho, destruir_dato);
+  fprintf(stderr, "%s\n", "voy a destruir el nodo");
+	destruir_nodo(nodo,destruir_dato);
+
+
+	// if(!nodo){
+  //   fprintf(stderr, "%s\n","caso base" );
+  //   return;
+  // }/*Caso base*/
+  //
+	// _destruir_familia(nodo->hijo_izquierdo, destruir_dato);
+	// _destruir_familia(nodo->hijo_derecho, destruir_dato);
+	// destruir_nodo(nodo, destruir_dato);
 }
 
 /******************************************************************************
@@ -452,9 +483,13 @@ PRE: Recibe el arbol.
 POST: NO hay mas arbol.
 *******************************************************************************/
 void abb_destruir(abb_t *arbol){
-  _destruir_familia(arbol->raiz, arbol->destruir_dato);
+  if(!arbol)
+    return;
+  if(arbol->raiz)
+    _destruir_familia(arbol->raiz, arbol->destruir_dato);
   free(arbol);
 }
+
 /* ******************************************************************
 *                    PRIMITIVAS DEL ITERADOR EXTERNO
 * *****************************************************************/
