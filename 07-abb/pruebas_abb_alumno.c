@@ -99,6 +99,8 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
 
 	print_test("Guardo nodo de clave 5 y valor Dato", abb_guardar(arbol, "5", valor_dato));
 	print_test("El 5 pertenece al arbol", abb_pertenece(arbol, "5"));
@@ -107,6 +109,8 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
 
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
 
@@ -117,6 +121,8 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
 
 	print_test("Guardo nodo de clave 3 y valor Agustina", abb_guardar(arbol, "3", valor_agustina));
 	print_test("El 3 pertenece al arbol", abb_pertenece(arbol, "3"));
@@ -125,6 +131,8 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
 
 	print_test("Guardo nodo de clave 6 y valor Ignacio", abb_guardar(arbol, "6", valor_ignacio));
 	print_test("El 6 pertenece al arbol", abb_pertenece(arbol, "6"));
@@ -133,6 +141,8 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+	// Dibujito del arbol
+	print_t(arbol);
 
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
 
@@ -143,6 +153,10 @@ void pruebas_claves_ayudantes_e_in_order() {
 	fprintf(stderr, "%s\n","Recorrido del arbol inorder:" );
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
+
+	// Dibujito del arbol
+	print_t(arbol);
+
 
 	fprintf(stdout, "%s\n","Obtencion/Busqueda de claves en el arbol" );
 	print_test("Busco clave 100 con abb_pertenece, devuelve TRUE: ", abb_pertenece(arbol, "100"));

@@ -461,6 +461,8 @@ void * abb_borrar(abb_t *arbol, const char *clave){
   int cantidad_de_hijos=contar_hijos(nodo);
   void * dato=NULL;
 
+  fprintf(stderr, "------------------> cantidad de hijos de '%s': %d\n", clave, cantidad_de_hijos);
+
   /*Borro el nodo*/
   if(cantidad_de_hijos==0){
     dato=abb_borrar_nodo_sin_hijos(nodo,padre_nodo);
@@ -647,4 +649,51 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
   if(!arbol || !arbol->raiz)
     return;
   _abb_in_order(arbol->raiz,visitar,extra);
+}
+
+///////////////////////////////////////////////
+int _print_t(abb_nodo_t *tree, int is_left, int offset, int depth, char s[20][255])
+{
+    char b[20];
+    int width = 5;
+
+    if (!tree) return 0;
+
+    sprintf(b, "(%03d)", atoi(tree->clave));
+
+    int left  = _print_t(tree->hijo_izquierdo,  1, offset,                depth + 1, s);
+    int right = _print_t(tree->hijo_derecho, 0, offset + left + width, depth + 1, s);
+
+
+    for (int i = 0; i < width; i++)
+        s[depth][offset + left + i] = b[i];
+
+    if (depth && is_left) {
+
+        for (int i = 0; i < width + right; i++)
+            s[depth - 1][offset + left + width/2 + i] = '-';
+
+        s[depth - 1][offset + left + width/2] = '.';
+
+    } else if (depth && !is_left) {
+
+        for (int i = 0; i < left + width; i++)
+            s[depth - 1][offset - width/2 + i] = '-';
+
+        s[depth - 1][offset + left + width/2] = '.';
+    }
+
+    return left + width + right;
+}
+
+void print_t(abb_t *tree)
+{
+    char s[20][255];
+    for (int i = 0; i < 20; i++)
+        sprintf(s[i], "%80s", " ");
+
+    _print_t(tree->raiz, 0, 0, 0, s);
+
+    for (int i = 0; i < 20; i++)
+        printf("%s\n", s[i]);
 }
