@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
 #include "abb.h"
@@ -686,6 +687,17 @@ int _print_t(abb_nodo_t *tree, int is_left, int offset, int depth, char s[20][25
     return left + width + right;
 }
 
+bool linea_blanca(char* str){
+  for (size_t i=0; str[i]; ++i){
+     if(str[i]!=32){
+       return false;
+     }
+     //fprintf(stderr, "%d ", str[i]);
+  }
+
+  return true;
+}
+
 void print_t(abb_t *tree)
 {
     char s[20][255];
@@ -694,6 +706,10 @@ void print_t(abb_t *tree)
 
     _print_t(tree->raiz, 0, 0, 0, s);
 
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 20; i++){
+      if(!linea_blanca(s[i])){
         printf("%s\n", s[i]);
+      }
+    }
+
 }

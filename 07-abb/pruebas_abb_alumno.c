@@ -69,6 +69,24 @@ void pruebas_arbol_vacio(){
 	print_test("Destruir arbol, ", true);
 }
 
+void agregar_y_eliminar_nodos(){
+	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
+	if(!arbol)
+		return;
+
+	print_test("Guardo nodo de clave 5 y valor cinco", abb_guardar(arbol, "5", "cinco"));
+	print_test("Guardo nodo de clave 3 y valor tres", abb_guardar(arbol, "3", "tres"));
+	print_test("Guardo nodo de clave 8 y valor ocho", abb_guardar(arbol, "8", "ocho"));
+
+	print_t(arbol);
+
+	// Elimino nodo 5
+	char* recup_5 = abb_borrar(arbol, "5");
+	print_test("Borro el nodo 5 y recibo cinco", !strcmp(recup_5, "cinco"));
+	print_t(arbol);
+	abb_destruir(arbol);
+}
+
 void pruebas_claves_ayudantes_e_in_order() {
 
 	printf("INICIO DE PRUEBAS ABB NOMBRES\n");
@@ -316,7 +334,8 @@ void pruebas_abb_alumno() {
 int main(int argc, char *argv[])
 {
     printf("~~~ PRUEBAS ALUMNO ~~~\n");
-    pruebas_abb_alumno();
+		agregar_y_eliminar_nodos();
+    //pruebas_abb_alumno();
 
     return failure_count() > 0;
 }
