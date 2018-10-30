@@ -8,6 +8,9 @@ VALGRIND= valgrind --leak-check=full --track-origins=yes
 
 all: pruebas_abb_alumno pruebas_otros pruebas_manu_p
 
+main.o: main.c testing.h
+	$(CC) $(CFLAGS) -c main.c
+
 abb.o: abb.c abb.h
 	$(CC) $(CFLAGS) -c abb.c
 
@@ -17,10 +20,10 @@ pruebas_abb_alumno.o: pruebas_abb_alumno.c
 pila.o: pila.c pila.h
 	$(CC) $(CFLAGS) -c pila.c
 
-pruebas_abb_alumno: pruebas_abb_alumno.c testing.o pila.o abb.o
+pruebas_abb_alumno: pruebas_abb_alumno.c testing.o pila.o abb.o main.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-pruebas_otros: pruebas_otros.c testing.o pila.o abb.o
+pruebas_otros: pruebas_otros.c testing.o pila.o abb.o 
 	$(CC) $(CFLAGS) -o $@ $^
 
 pruebas_manu_p: pruebas_manu_p.c testing.o pila.o abb.o

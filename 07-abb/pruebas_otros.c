@@ -200,7 +200,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -209,7 +209,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -218,7 +218,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -227,7 +227,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -236,7 +236,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -246,7 +246,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 	print_test("Guardar clave6 fue logrado exitosamente", abb_guardar(abb2, clave6, &dummy) == true );
@@ -254,7 +254,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -263,7 +263,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -273,7 +273,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -283,7 +283,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -320,7 +320,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	////print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -329,7 +329,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -338,7 +338,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -347,7 +347,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -360,7 +360,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -371,7 +371,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -382,7 +382,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -391,7 +391,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
 
@@ -403,7 +403,7 @@ void pruebas_abb_alumno() {
 	abb_in_order(abb2, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del abb2
-	print_t(abb2);
+	//print_t(abb2);
 	printf("___________________________________________________________\n");
 
   print_test("Borrar clave 2 : b", abb_borrar(abb2, clave2) == &dummy);
@@ -411,7 +411,7 @@ void pruebas_abb_alumno() {
   abb_in_order(abb2, imprimir_claves_strings, NULL);
   printf("\n");
   // Dibujito del abb2
-  print_t(abb2);
+  //print_t(abb2);
   printf("___________________________________________________________\n");
 
 	print_test("El ABB tiene 0 nodos", abb_cantidad(abb2) == 0);
@@ -421,7 +421,7 @@ void pruebas_abb_alumno() {
   abb_in_order(abb2, imprimir_claves_strings, NULL);
   printf("\n");
   // Dibujito del abb2
-  print_t(abb2);
+  //print_t(abb2);
   printf("___________________________________________________________\n");
   print_test("Obtener clave 7 es NULL", abb_obtener(abb2, clave7) == NULL);
 	print_test("Clave 4 no pertenece", abb_pertenece(abb2, clave4) == false);

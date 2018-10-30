@@ -84,18 +84,18 @@ destruyo el dato.
 static void* destruir_nodo(abb_nodo_t* nodo, abb_destruir_dato_t destruir_dato ){
 
  free(nodo->clave);
- void* dato;
+ void* dato=NULL;
  if(destruir_dato){
    destruir_dato(nodo->dato);
-   fprintf(stderr, "%s\n","destrui dato" );
+   //fprintf(stderr, "%s\n","destrui dato" );
    dato=NULL;
  }
  else{
    dato=nodo->dato;
  }
- fprintf(stderr, "%s\n","estoy antes de hacerle free al nodo" );
+ //fprintf(stderr, "%s\n","estoy antes de hacerle free al nodo" );
  free(nodo);
- fprintf(stderr, "%s\n","devuelvo dato" );
+ //fprintf(stderr, "%s\n","devuelvo dato" );
  return dato;
 }
 
@@ -108,7 +108,7 @@ POST: Devuelve por parametro el nodo o NULL y por referencia el padre o NULL
 abb_nodo_t * _abb_buscar_nodo_y_padre(const abb_t *arbol, const char * clave,
                                       abb_nodo_t ** nodo_padre,
                                       abb_nodo_t * raiz, abb_nodo_t * mi_padre){
-  if(!raiz){
+  if(!raiz || !arbol->raiz){
     //fprintf(stderr, "%s\n", "la raiz es NULL" );
     return NULL;
   }
@@ -118,10 +118,10 @@ abb_nodo_t * _abb_buscar_nodo_y_padre(const abb_t *arbol, const char * clave,
     //fprintf(stderr, "%s\n","si el nodo padre no es null pasa a ser mi padre" );
     if(nodo_padre!=NULL){
       *nodo_padre= mi_padre;
-      if(mi_padre)
-        fprintf(stderr, "%s %s\n","mi padre es",mi_padre->clave );
-      if(raiz)
-        fprintf(stderr, "%s %s\n","yo soy", raiz->clave );
+      //if(mi_padre)
+        //fprintf(stderr, "%s %s\n","mi padre es",mi_padre->clave );
+      //if(raiz)
+        //fprintf(stderr, "%s %s\n","yo soy", raiz->clave );
     }
 
     //fprintf(stderr, "%s\n\n","devuelvo raiz" );
@@ -263,19 +263,19 @@ void * abb_borrar_nodo_1_hijo(abb_nodo_t * nodo, abb_nodo_t * hijo_nodo, abb_nod
     return NULL;
 
   hijo_t parentezco;
-  fprintf(stderr, "%s\n", "voy a desemparentar nodo con su padre");
+  //fprintf(stderr, "%s\n", "voy a desemparentar nodo con su padre");
   //fprintf(stderr, "padre_nodo: %s, nodo: %s \n",padre_nodo->clave,nodo->clave );
   if(padre_nodo){
     desemparentar_padre_e_hijo(padre_nodo,nodo,&parentezco);
-    fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD \n",nodo->clave,hijo_nodo->clave,(int) parentezco );
+    //fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD \n",nodo->clave,hijo_nodo->clave,(int) parentezco );
   }
 
   desemparentar_padre_e_hijo(nodo,hijo_nodo,NULL);
   void * dato=destruir_nodo(nodo,NULL);
-  fprintf(stderr, "%s\n","destrui nodo " );
+  //fprintf(stderr, "%s\n","destrui nodo " );
   if(padre_nodo){
     emparentar_padre_e_hijo(padre_nodo,hijo_nodo,parentezco);
-    fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD\n",padre_nodo->clave,hijo_nodo->clave,(int) parentezco );
+    //fprintf(stderr, "%s->%s\n parentezco: %d (1) HI (2) HD\n",padre_nodo->clave,hijo_nodo->clave,(int) parentezco );
   }
   else{
     arbol->raiz=hijo_nodo;
@@ -448,8 +448,28 @@ Revisa si la clave pertenece al arbol
 PRE: Recibe clave y arbol
 POST: Devuelve true si pertenece, false en caso contrario.
 *******************************************************************************/
+bool _abb_pertenece(const abb_t* arbol, const abb_nodo_t *raiz, const char * clave){
+  if(!raiz){
+    //fprintf(stderr, "%s\n", "la raiz es NULL" );
+    return NULL;
+  }
+
+  int cmp=arbol->comparar_clave(raiz->clave,clave);
+  if(cmp==0){
+    return true;
+  }
+  else if(cmp>0){
+    //fprintf(stderr, "%s\n","la clave es mas chica la busco a la izquierda" );
+    //fprintf(stderr, "%s->",raiz->clave );
+    return _abb_pertenece(arbol,raiz->hijo_izquierdo,clave);
+  }
+   //fprintf(stderr, "%s\n","la clave es mas grande la busco a la derecha" );
+   //fprintf(stderr, "%s->",raiz->clave );
+   return _abb_pertenece(arbol,raiz->hijo_derecho,clave);
+}
+
 bool abb_pertenece(const abb_t *arbol, const char *clave){
-  return abb_obtener(arbol, clave)?true:false;
+  return _abb_pertenece(arbol,arbol->raiz, clave);
 }
 /******************************************************************************
 Borra un nodo del arbol
@@ -466,7 +486,7 @@ void * abb_borrar(abb_t *arbol, const char *clave){
   int cantidad_de_hijos=contar_hijos(nodo);
   void * dato=NULL;
 
-  fprintf(stderr, "------------------> cantidad de hijos de '%s': %d\n", clave, cantidad_de_hijos);
+  //fprintf(stderr, "------------------> cantidad de hijos de '%s': %d\n", clave, cantidad_de_hijos);
 
   /*Borro el nodo*/
   if(cantidad_de_hijos==0){
@@ -476,7 +496,7 @@ void * abb_borrar(abb_t *arbol, const char *clave){
     if(nodo->hijo_izquierdo!=NULL)
       dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_izquierdo,padre_nodo,arbol);
     else{
-      fprintf(stderr, "%s\n","el nodo tiene un hijo a la derecha" );
+      //fprintf(stderr, "%s\n","el nodo tiene un hijo a la derecha" );
       dato=abb_borrar_nodo_1_hijo(nodo,nodo->hijo_derecho,padre_nodo,arbol);
     }
   }
@@ -503,7 +523,7 @@ POST: NO hay mas nodo ni hijos.
 void _destruir_familia(abb_nodo_t *nodo, abb_destruir_dato_t destruir_dato){
 
   if(!nodo){
-     fprintf(stderr, "%s\n","caso base" );
+     //fprintf(stderr, "%s\n","caso base" );
      return;
    }/*Caso base*/
 
@@ -511,7 +531,7 @@ void _destruir_familia(abb_nodo_t *nodo, abb_destruir_dato_t destruir_dato){
     _destruir_familia(nodo->hijo_izquierdo, destruir_dato);
 	if (nodo->hijo_derecho)
     _destruir_familia(nodo->hijo_derecho, destruir_dato);
-  fprintf(stderr, "%s\n", "voy a destruir el nodo");
+  //fprintf(stderr, "%s\n", "voy a destruir el nodo");
 	destruir_nodo(nodo,destruir_dato);
 
 
@@ -609,8 +629,8 @@ POST: Devuelve la clave del nodo actual.
 *******************************************************************************/
 const char *abb_iter_in_ver_actual(const abb_iter_t *iter){
 	abb_nodo_t * nodo_actual = pila_ver_tope(iter->pila);
-  if(nodo_actual)
-    fprintf(stderr, "%s\n",nodo_actual->clave );
+  //if(nodo_actual)
+    //fprintf(stderr, "%s\n",nodo_actual->clave );
   return nodo_actual?(nodo_actual->clave):NULL;
 }
 /******************************************************************************

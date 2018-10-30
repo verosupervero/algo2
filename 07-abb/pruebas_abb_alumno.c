@@ -8,7 +8,7 @@
 
 #define VOLUMEN_GRANDE          10000
 #define VOLUMEN_CHICO           10
-#define VOLUMEN_MEDIO           1000
+#define VOLUMEN_MEDIO           500
 
 bool imprimir_claves(const char* clave, void* valor, void* extra){
 	printf ("[%s,%d]\n", clave, *(int*) valor);
@@ -76,16 +76,16 @@ void agregar_y_eliminar_1nodo(){
 		return;
 
 	print_test("Guardo nodo de clave 5 y valor cinco", abb_guardar(arbol, "5", "cinco"));
-	print_t(arbol);
+	////print_t(arbol);
 
 	// Elimino nodo 5
 	char* recup_5 = abb_borrar(arbol, "5");
 	print_test("Borro el nodo 5 y recibo cinco", !strcmp(recup_5, "cinco"));
-	print_t(arbol);
+	////print_t(arbol);
 
 	// Agrego 3
 	print_test("Guardo nodo de clave 3 y valor tres", abb_guardar(arbol, "3", "tres"));
-	print_t(arbol);
+	//print_t(arbol);
 
 	abb_destruir(arbol);
 }
@@ -98,16 +98,16 @@ void agregar_y_eliminar_2nodos(){
 	print_test("Guardo nodo de clave 5 y valor cinco", abb_guardar(arbol, "5", "cinco"));
 	print_test("Guardo nodo de clave 3 y valor tres", abb_guardar(arbol, "3", "tres"));
 
-	print_t(arbol);
+	//print_t(arbol);
 
 	// Elimino nodo 3
 	char* recup_3 = abb_borrar(arbol, "3");
 	print_test("Borro el nodo 3 y recibo 3", !strcmp(recup_3, "tres"));
-	print_t(arbol);
+	//print_t(arbol);
 
 	// Agrego nodo 1
 	print_test("Guardo nodo de clave 1 y valor uno", abb_guardar(arbol, "1", "uno"));
-	print_t(arbol);
+	//print_t(arbol);
 	abb_destruir(arbol);
 }
 
@@ -120,16 +120,16 @@ void agregar_y_eliminar_3nodos(){
 	print_test("Guardo nodo de clave 3 y valor tres", abb_guardar(arbol, "3", "tres"));
 	print_test("Guardo nodo de clave 8 y valor ocho", abb_guardar(arbol, "8", "ocho"));
 
-	print_t(arbol);
+	//print_t(arbol);
 
 	// Elimino nodo 5
 	char* recup_5 = abb_borrar(arbol, "5");
 	print_test("Borro el nodo 5 y recibo cinco", !strcmp(recup_5, "cinco"));
-	print_t(arbol);
+	//print_t(arbol);
 
-	// Agrego nodo 9 
+	// Agrego nodo 9
 	print_test("Guardo nodo de clave 9 y valor nueve", abb_guardar(arbol, "9", "nueve"));
-	print_t(arbol);
+	//print_t(arbol);
 	abb_destruir(arbol);
 }
 
@@ -170,7 +170,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	print_test("Guardo nodo de clave 5 y valor Dato", abb_guardar(arbol, "5", valor_dato));
@@ -181,7 +181,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
@@ -194,7 +194,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n\n");;
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	print_test("Guardo nodo de clave 3 y valor Agustina", abb_guardar(arbol, "3", valor_agustina));
@@ -205,7 +205,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	print_test("Guardo nodo de clave 6 y valor Ignacio", abb_guardar(arbol, "6", valor_ignacio));
@@ -216,7 +216,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	print_test("Cantidad de nodos ok: ", abb_cantidad(arbol) == arbol_cantidad);
@@ -228,7 +228,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	printf("\n\n");
 
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 
 	printf("___________________________________________________________\n");
 
@@ -249,7 +249,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	print_test("Jorge da la clase, reemplazo Ezequiel en arbol: ", abb_guardar(arbol, "100", valor_jorge));
@@ -258,7 +258,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	print_test("Guardo nodo de clave 98 y valor Ezequiel:", abb_guardar(arbol, "98", valor_ezequiel));
@@ -271,7 +271,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 
 	printf("___________________________________________________________\n");
 
@@ -286,7 +286,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 
 	printf("\n");
 	printf("___________________________________________________________\n");
@@ -300,7 +300,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	printf("\n");
@@ -314,7 +314,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	print_test("Borro raiz, devuelve Martín, tenía 2 hijos: ", abb_borrar(arbol, "72") == valor_martin);
@@ -327,7 +327,7 @@ void pruebas_claves_ayudantes_e_in_order() {
 	abb_in_order(arbol, imprimir_claves_strings, NULL);
 	printf("\n");
 	// Dibujito del arbol
-	print_t(arbol);
+	//print_t(arbol);
 	printf("___________________________________________________________\n");
 
 	abb_destruir(arbol);
@@ -384,34 +384,45 @@ void pruebas_iterar_volumen(size_t volumen, char * nombre_volumen){ //aqui
 	abb_destruir(arbol);
 	print_test("Arbol destruido:", true);
 	print_test("Iterador destruido:", true);
+	free(claves);
+
 }
-static void prueba_arbol_clave_vacia(){
-    abb_t* arbol = abb_crear(strcmp_for_integers,NULL);
 
-    char *clave = "", *valor = "";
+void prueba_arbol_clave_vacia()
+{
+	abb_t* abb = abb_crear(strcmp, NULL);
 
-    print_test("Prueba arbol insertar clave vacia", abb_guardar(arbol, clave, valor));
-    print_test("Prueba arbol la cantidad de elementos es 1", abb_cantidad(arbol) == 1);
-    print_test("Prueba arbol obtener clave vacia es valor", abb_obtener(arbol, clave) == valor);
-    print_test("Prueba arbol pertenece clave vacia, es true", abb_pertenece(arbol, clave));
-    abb_destruir(arbol);
+	char *clave = "", *valor = "";
+
+	print_test("Prueba abb insertar clave vacia", abb_guardar(abb, clave, valor));
+	print_test("Prueba abb la cantidad de elementos es 1", abb_cantidad(abb) == 1);
+	print_test("Prueba abb obtener clave vacia es valor", abb_obtener(abb, clave) == valor);
+	print_test("Prueba abb pertenece clave vacia, es true", abb_pertenece(abb, clave));
+	print_test("Prueba abb borrar clave vacia, es valor", abb_borrar(abb, clave) == valor);
+	print_test("Prueba abb la cantidad de elementos es 0", abb_cantidad(abb) == 0);
+
+	abb_destruir(abb);
+
+	abb = abb_crear(strcmp, NULL);
+
+	void * valor2=NULL;
+
+	print_test("Prueba abb insertar clave vacia", abb_guardar(abb, clave, valor2));
+	print_test("Prueba abb la cantidad de elementos es 1", abb_cantidad(abb) == 1);
+	print_test("Prueba abb obtener clave vacia es valor", abb_obtener(abb, clave) == valor2);
+	print_test("Prueba abb pertenece clave vacia, es true", abb_pertenece(abb, clave));
+	print_test("Prueba abb borrar clave vacia, es valor", abb_borrar(abb, clave) == valor2);
+	print_test("Prueba abb la cantidad de elementos es 0", abb_cantidad(abb) == 0);
+
+	abb_destruir(abb);
 }
 
 void pruebas_abb_alumno() {
-	//pruebas_arbol_vacio();
-	agregar_y_eliminar_nodos();
-	pruebas_claves_ayudantes_e_in_order();
+	pruebas_arbol_vacio();
+	//agregar_y_eliminar_nodos();
+	//pruebas_claves_ayudantes_e_in_order();
 	//pruebas_iterar_volumen(VOLUMEN_CHICO, "Volumen chico");
   //pruebas_iterar_volumen(VOLUMEN_MEDIO,"Volumen medio");
-  //pruebas_iterar_volumen(VOLUMEN_GRANDE,"Volumen grande");
+	//pruebas_iterar_volumen(VOLUMEN_GRANDE,"Volumen grande");
 	prueba_arbol_clave_vacia();
-}
-
-
-int main(int argc, char *argv[])
-{
-    printf("~~~ PRUEBAS ALUMNO ~~~\n");
-    pruebas_abb_alumno();
-
-    return failure_count() > 0;
 }
