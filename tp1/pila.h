@@ -51,8 +51,14 @@ void* pila_ver_tope(const pila_t *pila);
 // Post: si la pila no estaba vacía, se devuelve el valor del tope anterior
 // y la pila contiene un elemento menos.
 void* pila_desapilar(pila_t *pila);
+/* ******************************************************************
+ *                    PRIMITIVAS DEL ITERADOR INTERNO
+ * *****************************************************************/
 
-
+// Itera una posicion en la pila. Visitar recibe el dato y un puntero extra.
+// Devuelve true si se debe seguir iterando, false en caso contrario.
+// Pre: La pila fue creada.
+void pila_iterar(pila_t *pila, bool visitar(void *dato, void *extra), void *extra);
 /* *****************************************************************
  *                    PRUEBAS PARA LA PILA
  * *****************************************************************/

@@ -8,6 +8,14 @@
 #include "lista.h"
 #include "procesar_subcadena.h"
 
+void vaciar_lista(lista_t * lista_lineas){
+  while(!lista_esta_vacia(lista_lineas)){
+    void * linea= lista_borrar_primero(lista_lineas);
+    free(linea);
+  }
+}
+
+
 bool encontrar_subpalabra(char * subpalabra, char * linea){
 
   if(subpalabra==NULL || linea==NULL){
@@ -79,8 +87,8 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
     if(encontrar_subpalabra(subcadena,linea)){
       //fprintf(stderr, "La ultima linea del archivo es: :::%s:::\n",(char *)lista_ver_ultimo(lista_lineas) );
       lista_iterar (lista_lineas, imprimir_lineas,NULL);
-      todo_ok=true;
-      break; //ya encontré lo que quería o no si no tuve memoria
+      todo_ok&=true;
+      vaciar_lista(lista_lineas);
     }
     //fprintf(stdout, "%s\n","termine de recorrer una linea y no esta" );
     tamanio_linea=0;

@@ -109,4 +109,16 @@ void* pila_desapilar(pila_t *pila){
   return tope;
 }
 
-// ...
+/* ******************************************************************
+ *                    PRIMITIVAS DEL ITERADOR INTERNO
+ * *****************************************************************/
+
+// Itera una posicion en la pila. Visitar recibe el dato y un puntero extra.
+// Devuelve true si se debe seguir iterando, false en caso contrario.
+// Pre: La pila fue creada.
+void pila_iterar(pila_t *pila, bool visitar(void *dato, void *extra), void *extra){
+  for(int i=0;i<pila->cantidad;i++){
+    if(!visitar(pila->datos[i],extra))
+      return;
+  }
+}

@@ -33,5 +33,6 @@ bool procesar_literales(pila_t * pila,char * literal);
 
 char** sanitizar_vector_literales(char** tokens);
 bool procesar_vector_polaco_inverso(char** vector_literales, int* resultado);
-
+char** parsear_literales(const char* linea, char separador);
+size_t strv_len(char * vector[]);
 #endif //__CALC_PRIVADO_H__

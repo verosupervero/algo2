@@ -78,21 +78,14 @@ bool potencia(int n, int e, int *resultado){
 
 
 
-int _logaritmo(int b, int n){
-  if(b==n)
-    return 1;
-  int potencia= 1;
-  while(n/b < 1){
-    potencia++;
-    n= n/b;
-  }
-  return potencia;
+int _logaritmo(int n, int b){
+  return (n>b-1)?1+_logaritmo(n/b,b):0;
 }
 
-bool logaritmo(int b, int n,int * resultado){
+bool logaritmo(int n,int b, int * resultado){
   if(b<=1 || n<0 || resultado==NULL){
     return false;
   }
-  *resultado=_logaritmo(b,n);
+  *resultado=_logaritmo(n,b);
   return true;
 }

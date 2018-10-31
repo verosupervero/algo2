@@ -66,7 +66,7 @@ test_strutil: test_strutil.c strutil.o $(TESTING_LIB)
 	$(CC) $(LFLAGS) -o $@ $^
 
 test_calc: test_calc.c $(DC_OBJS) $(TESTING_LIB)
-	$(CC) $(LFLAGS) -o $@ $^
+	$(CC) $(LFLAGS) -lm -o $@ $^
 
 ########## COMPILACION DE TESTS (NO DEBERIAS TOCAR AQUI ABAJO) ##############
 # https://www.brendanlong.com/running-make-check-tests-with-valgrind.html
