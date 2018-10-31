@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include "pila.h"
 #include "strutil.h"
+#include "strutil2.h"
 #include "operaciones.h"
 
 #define ANSI_COLOR_LGH_RED	   "\x1b[1m\x1b[31m"

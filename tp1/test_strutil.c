@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "strutil.h"
+#include "strutil2.h"
 #include "testing.h"
 
 

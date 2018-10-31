@@ -6,6 +6,7 @@
 #include "calc.h"
 #include "pila.h"
 #include "strutil.h"
+#include "strutil2.h"
 #include "operaciones.h"
 
 #define ANSI_COLOR_LGH_RED	   "\x1b[1m\x1b[31m"
@@ -309,16 +310,6 @@ bool aplicar_suma(pila_t * pila){
 
 bool validar_entero(char * literal, int ** pp_entero){
 
-
-  /*valido que el literal sea un numero, poshicosas*/
-  char *p;
-  for( p=literal; *p && (isdigit(*p) || isspace(*p)); ++p );
-  if( *p ) {
-    //fprintf(stderr, "%s\n","no es entero" );
-    return false;
-  }
-
- /*poshicosas*/
   char * endptr=NULL;
   int entero= (int) strtol(literal, &endptr, 10);
   //fprintf(stderr, "%s:%d\n","el entero es",entero );
@@ -373,7 +364,7 @@ bool procesar_literales(pila_t * pila,char * literal_raw){
     return apile;
   }
   else{
-    //fprintf(stdout, "%s\n","no pude validar entero" );
+    fprintf(stdout, "%s\n","no pude validar entero" );
   }
   // Literal invalido
   free(literal);
@@ -500,8 +491,8 @@ bool procesar_calculo_polaco_inverso (char * linea, int * resultado){
     return NULL;
   }
 
-  // puts("Resultado parseo:");
-  // imprimir_vector_cadenas(vector_literales);
+   //puts("Resultado parseo:");
+   //imprimir_vector_cadenas(vector_literales);
   // puts("");
 
   bool exito =  procesar_vector_polaco_inverso( vector_literales, resultado);
