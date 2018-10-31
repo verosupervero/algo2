@@ -1,3 +1,3 @@
-grep: grep.c grep.h procesar_subcadena.c procesar_subcadena.h strutil.c strutil.h
+grep: grep.c procesar_subcadena.c procesar_subcadena.h strutil.c strutil.h lista.c lista.h 
 
-dc: dc.c dc.h calc.c calc.h pila.h pila.c strutil.h strutil.c operaciones.c operaciones.h 
+dc: dc.c calc.c calc.h pila.h pila.c strutil.h strutil.c operaciones.c operaciones.h 
