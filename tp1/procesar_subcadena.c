@@ -51,60 +51,51 @@ bool imprimir_lineas(void *dato, void *extra){
   return true;
 }
 
+bool guardar_linea(lista_t* lista_lineas, char* linea, size_t N){
+  if (!lista_lineas) return true;
+
+  // Agrego linea a la lista
+  if(!lista_insertar_ultimo(lista_lineas,linea)) return false;
+
+  // Si hay más lineas de las pedida, elimino
+  while(lista_largo(lista_lineas)>N){ // uso whie por robustez
+    free(lista_borrar_primero(lista_lineas));
+  }
+
+  return true;
+}
+
+
 bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
 
   char * linea=NULL;
-  size_t tamanio_linea=0;
-  lista_t * lista_lineas =lista_crear();
-  size_t leyo=0;
+  lista_t * lista_lineas = lista_crear();
+  bool todo_ok = true;
+  size_t memoria_alocada = 0;
   if(lista_lineas==NULL)
     return false;
 
   /* Leo el archivo línea a línea */
-  bool todo_ok=true;
-  leyo=getline(&linea,&tamanio_linea,archivo);
-  if(leyo==-1)
-    todo_ok=false;
-
-  while(leyo!=-1){     /*Leo una línea del archivo*/
-    /* Almaceno las últimas N+1 líneas leídas, elimino la primera */
-    if(lista_largo(lista_lineas)>N){
-      char * elemento_a_borrar = lista_borrar_primero(lista_lineas);
-      if(elemento_a_borrar ==  NULL){
-        // Error eliminando nodo
-        todo_ok=false;
-        break;
-      }else{
-        // Libero memeoria pedida por getline
-        free(elemento_a_borrar);
-        elemento_a_borrar = NULL; // Por seguridad
-      }
-    }
-
-    //fprintf(stderr, "La cantidad de lineas en el vector es: %ld\n", lista_largo(lista_lineas));
-    /* Agrego la linea leida al final de la lista */
-    if(!lista_insertar_ultimo(lista_lineas,linea)){
-      //fprintf(stderr, "%s\n","no pude insertar la linea" );
-      todo_ok=false;
-      break;
-    }
-    //fprintf(stderr, "Inserte esta linea: :::%s:::",linea);
-
+  while( getline(&linea,&memoria_alocada,archivo) !=-1){ /*Leo una línea del archivo*/
     // Busco el patron en la linea leida
     if(encontrar_subpalabra(subcadena,linea)){
-      //fprintf(stderr, "La ultima linea del archivo es: :::%s:::\n",(char *)lista_ver_ultimo(lista_lineas) );
-      // Encontrado: muestro las lineas guardadas (junto con la actual)
+      // Encontrado: muestro las lineas guardadas:
       lista_iterar (lista_lineas, imprimir_lineas,NULL);
-      todo_ok&=true;
-      vaciar_lista(lista_lineas);
+      imprimir_lineas((void *)linea, NULL); // Imprimo la linea dato_actual
+      vaciar_lista(lista_lineas); // Libero las lineas
+      free(linea); // Y el buffer de lectura
+    } else {
+      // La linea no contiene el patron, la guardo
+      if(!guardar_linea(lista_lineas, linea, N)){
+        todo_ok = false;
+        break;
+      }
+      linea = NULL; // Copie el puntero, borro la referencia
     }
-    //fprintf(stdout, "%s\n","termine de recorrer una linea y no esta" );
-    tamanio_linea=0;
-    linea=NULL;
-    leyo=getline(&linea,&tamanio_linea,archivo); //aca getline me tira
-                                  //distintas pos de memoria tengo entendido
+    linea = NULL; // Lo necesito para que getline pida memoria
   }
-  // Al fallar getline, necesito liberar la memoria del buffer
+
+  // Terminé de leer, al fallar getline necesito liberar la memoria del buffer
   free(linea);
 
   // Por otro lado, libero la lista con las lineas anteriores
