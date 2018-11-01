@@ -20,8 +20,9 @@ bool multiplicar(int a,int b,int * resultado){
   return true;
 }
 bool dividir(int a,int b, int * resultado){
-  if(b<0 || resultado==NULL)
+  if(b==0 || resultado==NULL)
     return false;
+
   *resultado= a/b;
   return true;
 }

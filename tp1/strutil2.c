@@ -48,26 +48,37 @@ char * str_extract(const char * cadena, size_t pos_ini,size_t pos_fin){
   return subcadena;
 }
 
-// Elimina espacios al principio y final de la cadena, y devuelve
-// una cadena nueva alocada dinámicamente. Usa isspace()
 char * trim (const char * str){
-	if (str == NULL) return NULL;
+	if (!str)
+		return NULL;
+
+	//fprintf(stderr, "parseo: {%s}\n",str);
+	size_t len = strlen(str);
 
 	// Avanzo todos los espacios al inicio
-	size_t inicio=0;
-	for(inicio=0; isspace(str[inicio]); inicio++);
+	int inicio=0;
+	for(int i=0; i<len; i++){
+		if(!isspace(str[i])){
+			//fprintf(stderr, "|%c| no es espacio\n",str[i]);
+			inicio=i;
+			break;
+		}
+	}
 
 	// Avanzo todos los espacios al final
-	size_t final;
-	for(final=strlen(str)-1; isspace(str[final]); final--);
+	int final=(int) len;
+	int j;
+	for(j= (int) len-1; j>=inicio && isspace(str[j]); j--);
+	final=j;
 
-	// Creo una copia
-	size_t largo_subcadena = 1+final-inicio;
-	char *copia = malloc(sizeof(char)*(largo_subcadena+1));
-	if (copia == NULL) return NULL;
+	// Creo una copia y la devuelvo
+	return str_extract(str, inicio,final);
 
-	memcpy(copia, &str[inicio], largo_subcadena);
-	copia[largo_subcadena]='\0';
+ }
 
-	return copia;
+size_t strv_len(char * vector[]){
+  if(vector==NULL || *vector==NULL){ //caso base
+    return 0;
+  }
+  return 1+strv_len(vector+1);
 }

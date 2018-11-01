@@ -364,7 +364,7 @@ bool procesar_literales(pila_t * pila,char * literal_raw){
     return apile;
   }
   else{
-    fprintf(stdout, "%s\n","no pude validar entero" );
+    //fprintf(stdout, "%s\n","no pude validar entero" );
   }
   // Literal invalido
   free(literal);
@@ -391,13 +391,6 @@ bool  revisar_calculo_polaco(pila_t * pila, int * resultado){
   return true;
 }
 
-size_t strv_len(char * vector[]){
-  if(vector==NULL || *vector==NULL){ //caso base
-    return 0;
-  }
-  return 1+strv_len(vector+1);
-}
-
 char * quitar_salto_linea(char ** literal){
   if(!literal)
     return NULL;
@@ -413,7 +406,7 @@ char * quitar_salto_linea(char ** literal){
 
 bool imprimir_vector_cadenas(char * vectores[]){
 if(!vectores){
-  fprintf(stdout, "%s\n","no hay vectores" );
+  //fprintf(stdout, "%s\n","no hay vectores" );
   return false;
 }
 for(size_t i=0; vectores[i]!=NULL; i++){
@@ -432,7 +425,6 @@ char** parsear_literales(const char* linea, char separador){
 
   // Separo los literales
   char** tokens = split(linea, separador);
-
   // Sanitizo (aka elimino cadenas vacias y blancos)
   return sanitizar_vector_literales(tokens);
 }
@@ -441,9 +433,12 @@ char** sanitizar_vector_literales(char** tokens){
   /*
   Elimino los caracteres blancos al principio y final de cada literal; luego, elimino los literales vacios (incluidos los literales de caracteres blancos)
   */
+  //fprintf(stderr, "%s\n","imprimo vector literales antes de parseo:" );
+  //imprimir_vector_cadenas(tokens);
 
   // Aloco otro vector (tambien terminado en NULL)
   size_t len_tokens = strv_len(tokens);
+  //el tamaño de los tokens es: %ld\n",len_tokens );
 
   char** literales = calloc(len_tokens+1, sizeof(char*));
   if (literales == NULL){
@@ -456,6 +451,7 @@ char** sanitizar_vector_literales(char** tokens){
   for(size_t i=0; i<len_tokens; i++){
     // Elimino caracteres blancos
     char* aux_literal = trim(tokens[i]);
+    //fprintf(stderr, "parsee: {%s}. obtuve:{%s}\n",tokens[i],aux_literal);
 
     // Omito la copia si el literal queda vacio
     if (strlen(aux_literal)==0){
@@ -471,7 +467,10 @@ char** sanitizar_vector_literales(char** tokens){
   literales[ultimo_literal] = NULL;
 
   /* Aca puede ir un realloc opcional para liberar memoria */
+  //fprintf(stderr, "%s\n","parsee literales" );
+  //fprintf(stderr, "%s\n","imprimo vector literales DESPUES de parseo:" );
 
+  //imprimir_vector_cadenas(literales);
   return literales;
 }
 

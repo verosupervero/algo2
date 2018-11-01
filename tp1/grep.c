@@ -36,13 +36,13 @@ int main (int argc, char * argv []){
 
   // Validacion cantidad parametros
   if(argc!=3 && argc!=4){
-    fprintf(stderr, "%s\n", "Cantidad de parámetros errónea");
+    fprintf(stderr, "%s\n", "Cantidad de parametros erronea");
     exit(1);
   }
 
   // El segundo parámetro debe ser un numero
   if(atoi(argv[2])<0){
-    fprintf(stderr, "%s\n","Tipo de parámetro incorrecto");
+    fprintf(stderr, "%s\n","Tipo de parametro incorrecto");
     exit(1);
   }
 
@@ -62,7 +62,7 @@ int main (int argc, char * argv []){
     archivo= stdin;
   }
 
-  fprintf(stderr, "Lineas: %d, string: %s\n", cant_lineas, subcadena);
+  //fprintf(stderr, "Lineas: %d, string: %s\n", cant_lineas, subcadena);
 
   bool mostro=mostrar_subcadena_en_archivo(subcadena,(size_t)cant_lineas,archivo);
 

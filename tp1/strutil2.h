@@ -12,4 +12,6 @@ char * trim (const char * str);
 
 char * str_dup(const char * cadena);
 
+size_t strv_len(char * vector[]);
+
 #endif  // STRUTIL2_H
