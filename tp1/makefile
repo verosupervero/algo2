@@ -12,13 +12,13 @@ VALGRIND_FLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
 all: grep dc
 
 # Por simplicidad, listo las dependencias en esta variables
-GREP_OBJS = procesar_subcadena.o strutil.o lista.o strutil2.o
+GREP_OBJS = procesar_subcadena.o lista.o
 
 grep: grep.o $(GREP_OBJS)
 	$(CC) $(LFLAGS) -o $@ $^
 
 # Por simplicidad, listo las dependencias en esta variables
-DC_OBJS = strutil.o strutil2.o pila.o calc.o operaciones.o
+DC_OBJS = strutil.o pila.o calc.o operaciones.o
 
 dc: dc.o $(DC_OBJS)
 	$(CC) $(LFLAGS) -o $@ $^
@@ -29,13 +29,10 @@ dc.o: dc.c calc.h
 grep.o: grep.c procesar_subcadena.h
 	$(CC) $(CFLAGS) -c $<
 
-procesar_subcadena.o: procesar_subcadena.c procesar_subcadena.h strutil.h strutil2.h
+procesar_subcadena.o: procesar_subcadena.c procesar_subcadena.h
 	$(CC) $(CFLAGS) -c $<
 
-strutil.o: strutil.c strutil.h strutil2.h
-	$(CC) $(CFLAGS) -c $<
-
-strutil2.o: strutil2.c strutil2.h
+strutil.o: strutil.c strutil.h
 	$(CC) $(CFLAGS) -c $<
 
 lista.o: lista.c lista.h
@@ -51,7 +48,7 @@ calc.o: calc.c calc.h pila.h strutil.h operaciones.h
 operaciones.o: operaciones.c operaciones.h
 	$(CC) $(CFLAGS) -c $<
 
-calc.c: pila.h operaciones.h strutil.h strutil2.h
+calc.c: pila.h operaciones.h strutil.h
 
 
 ######################## SECCION DE TESTING ################################
