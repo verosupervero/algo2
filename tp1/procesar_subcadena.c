@@ -60,7 +60,7 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
   if(lista_lineas==NULL)
     return false;
 
-  /*Cuando el archivo no termino:*/
+  /* Leo el archivo línea a línea */
   bool todo_ok=true;
   leyo=getline(&linea,&tamanio_linea,archivo);
   if(leyo==-1)
@@ -68,11 +68,17 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
 
   while(leyo!=-1){     /*Leo una línea del archivo*/
 
-    /*No puedo almacenar mas de N+1 lineas en memoria*/
+    /* Almaceno las últimas N+1 líneas leídas*/
     if(lista_largo(lista_lineas)>N){
-      if(!lista_borrar_primero(lista_lineas)){
+      char * elemento_a_borrar = lista_borrar_primero(lista_lineas);
+      if(elemento_a_borrar ==  NULL){
+        // Error eliminando nodo
         todo_ok=false;
         break;
+      }else{
+        // Libero memeoria pedida por getline
+        free(elemento_a_borrar);
+        elemento_a_borrar = NULL; // Por seguridad
       }
     }
 
