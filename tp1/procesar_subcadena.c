@@ -69,7 +69,7 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
   while(leyo!=-1){     /*Leo una línea del archivo*/
 
     /*No puedo almacenar mas de N+1 lineas en memoria*/
-    if(lista_largo(lista_lineas)>N+1){
+    if(lista_largo(lista_lineas)>N){
       if(!lista_borrar_primero(lista_lineas)){
         todo_ok=false;
         break;
