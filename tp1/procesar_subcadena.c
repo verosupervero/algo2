@@ -10,8 +10,8 @@
 #include "procesar_subcadena.h"
 
 void vaciar_lista(lista_t * lista_lineas){
-  while(!lista_esta_vacia(lista_lineas)){
-    void * linea= lista_borrar_primero(lista_lineas);
+  void * linea;
+  while( (linea = lista_borrar_primero(lista_lineas)) != NULL ){
     free(linea);
   }
 }
