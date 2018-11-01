@@ -67,8 +67,7 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
     todo_ok=false;
 
   while(leyo!=-1){     /*Leo una línea del archivo*/
-
-    /* Almaceno las últimas N+1 líneas leídas*/
+    /* Almaceno las últimas N+1 líneas leídas, elimino la primera */
     if(lista_largo(lista_lineas)>N){
       char * elemento_a_borrar = lista_borrar_primero(lista_lineas);
       if(elemento_a_borrar ==  NULL){
@@ -83,7 +82,7 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
     }
 
     //fprintf(stderr, "La cantidad de lineas en el vector es: %ld\n", lista_largo(lista_lineas));
-    /*inserto la linea*/
+    /* Agrego la linea leida al final de la lista */
     if(!lista_insertar_ultimo(lista_lineas,linea)){
       //fprintf(stderr, "%s\n","no pude insertar la linea" );
       todo_ok=false;
@@ -91,8 +90,10 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
     }
     //fprintf(stderr, "Inserte esta linea: :::%s:::",linea);
 
+    // Busco el patron en la linea leida
     if(encontrar_subpalabra(subcadena,linea)){
       //fprintf(stderr, "La ultima linea del archivo es: :::%s:::\n",(char *)lista_ver_ultimo(lista_lineas) );
+      // Encontrado: muestro las lineas guardadas (junto con la actual)
       lista_iterar (lista_lineas, imprimir_lineas,NULL);
       todo_ok&=true;
       vaciar_lista(lista_lineas);
@@ -103,9 +104,10 @@ bool mostrar_subcadena_en_archivo(char *subcadena, size_t N, FILE * archivo){
     leyo=getline(&linea,&tamanio_linea,archivo); //aca getline me tira
                                   //distintas pos de memoria tengo entendido
   }
-  //fprintf(stderr, "%s\n","sali del while" );
+  // Al fallar getline, necesito liberar la memoria del buffer
   free(linea);
-  //fprintf(stderr, "%s\n","le hice free a linea");
+
+  // Por otro lado, libero la lista con las lineas anteriores
   lista_destruir(lista_lineas,free);
   return todo_ok;
 }
