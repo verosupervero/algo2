@@ -33,11 +33,16 @@ bool encontrar_subpalabra(char * subpalabra, char * linea){
 
   for(int i=0; i<m-n;i++){
       sublinea=str_extract(linea,i,i+n-1); // Hay que ver como no ponerla en el .h de strutil.h
+      /*
       if(!strcmp(subpalabra,sublinea)){
         free(sublinea);
         return true;
       }
       free(sublinea);
+      */
+      if(strncmp(subpalabra,sublinea, n) == 0){
+        return true;
+      }
   }
   return false;
 }
