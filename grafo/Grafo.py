@@ -132,3 +132,36 @@ class Grafo(object):
 
         # Convierto a una lista de nombres de nodos
         return [nombre for nombre,idx in self._indices.items() if idx in idx_hijos]
+
+    def bfs(self,origen=None):
+        visitados=[]
+        cola=[]
+        cola.append(origen)
+        while cola:
+            visitados.append(origen)
+            adyacentes=grafo.listar_hijos(origen)
+            for a in adyacentes:
+                if not a in cola:
+                    cola.append(origen)
+            origen=cola.pop(0)
+
+        visitados.append(origen)
+        return visitados
+
+    def dfs (self,origen=None):
+        visitados=[]
+        pila=[]
+        pila.append(origen)
+
+        while pila:
+            adyacente=grafo.obtener_adyacente(origen)
+            
+            if not adyacente or adyacente in visitados:
+                pila.pop(0)
+                origen=pila[0]
+
+            if adyacente not in visitados:
+                pila.insert(0,adyacente)
+                visitados.append(adyacente)
+
+        return visitados
