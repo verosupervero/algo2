@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define VOLUMEN_GRANDE          10000
 #define VOLUMEN_CHICO           10
 #define VOLUMEN_MEDIO           500
 
@@ -334,7 +333,6 @@ void pruebas_claves_ayudantes_e_in_order() {
 	print_test("Destruir arbol, ", true);
 }
 
-
 void pruebas_iterar_volumen(size_t volumen, char * nombre_volumen){ //aqui
 	abb_t* arbol = abb_crear(strcmp_for_integers, NULL);
 	if(!arbol)
@@ -345,11 +343,11 @@ void pruebas_iterar_volumen(size_t volumen, char * nombre_volumen){ //aqui
 
   size_t valores[volumen];
 
-  /* Inserta 'largo' parejas en el arbol */
+	/* Inserta 'largo' parejas en el arbol */
   bool ok = true;
   for (unsigned i = 0; i < volumen; i++) {
       sprintf(claves[i], "%08d", i);
-      valores[i] = i;
+      valores[i] =rand();
       ok = abb_guardar(arbol, claves[i], &valores[i]);
       if (!ok) break;
   }
@@ -419,10 +417,9 @@ void prueba_arbol_clave_vacia()
 
 void pruebas_abb_alumno() {
 	pruebas_arbol_vacio();
-	//agregar_y_eliminar_nodos();
-	//pruebas_claves_ayudantes_e_in_order();
-	//pruebas_iterar_volumen(VOLUMEN_CHICO, "Volumen chico");
-  //pruebas_iterar_volumen(VOLUMEN_MEDIO,"Volumen medio");
-	//pruebas_iterar_volumen(VOLUMEN_GRANDE,"Volumen grande");
+	agregar_y_eliminar_nodos();
+	pruebas_claves_ayudantes_e_in_order();
+	pruebas_iterar_volumen(VOLUMEN_CHICO, "Volumen chico");
+  pruebas_iterar_volumen(VOLUMEN_MEDIO,"Volumen medio");
 	prueba_arbol_clave_vacia();
 }
