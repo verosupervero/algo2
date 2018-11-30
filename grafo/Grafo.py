@@ -121,3 +121,14 @@ class Grafo(object):
         # No voy a modificar las dimensiones de la matriz de adyacencia porque debería actualizar
         # todos los índices, y al ser sparse no molesta tener más ceros. De todas formas se puede
         # compactar la representación interna usando el método _compactar()
+
+    def listar_hijos(self, padre=None):
+        """Devuelvo una lista con todos los hijos del nodo padre"""
+        # Busco los índices de los nodos
+        idx_padre = self._indices[padre]
+
+        # Obtengo los hijos del nodo, serían aquellas posiciones que no tienen 0 en la columna dada
+        idx_hijos = np.where(self._mat_ady[idx_padre,:].todense()!=0)[1]
+
+        # Convierto a una lista de nombres de nodos
+        return [nombre for nombre,idx in self._indices.items() if idx in idx_hijos]
