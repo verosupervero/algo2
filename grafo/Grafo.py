@@ -70,7 +70,11 @@ class Grafo(object):
         Si no se especifica el hijo, se crean dos vértices, uno en cada sentido, de peso dado.
         Si el peso no se especifica, se asigna el valor 1.
 
+        El peso no puede ser negativo.
         Si el peso es 0, el vertice es eliminado."""
+
+        if peso < 0:
+            raise ValueError('El peso debe ser no negativo')
 
         # Busco los índices de los nodos
         idx_padre = self._indices[padre]
