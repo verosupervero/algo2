@@ -105,10 +105,8 @@ POST: Devuelve por parametro el nodo o NULL y por referencia el padre o NULL
 abb_nodo_t * _abb_buscar_nodo_y_padre(const abb_t *arbol, const char * clave,
                                       abb_nodo_t ** nodo_padre,
                                       abb_nodo_t * raiz, abb_nodo_t * mi_padre){
-  if(!raiz || !arbol->raiz){
-    //fprintf(stderr, "%s\n", "la raiz es NULL" );
+  if(!raiz || !arbol->raiz)
     return NULL;
-  }
 
   int cmp=arbol->comparar_clave(raiz->clave,clave);
   if(cmp==0){
@@ -412,23 +410,12 @@ Revisa si la clave pertenece al arbol
 PRE: Recibe clave y arbol
 POST: Devuelve true si pertenece, false en caso contrario.
 *******************************************************************************/
-bool _abb_pertenece(const abb_t* arbol, const abb_nodo_t *raiz, const char * clave){
-  if(!raiz){
-    return NULL;
-  }
-
-  int cmp=arbol->comparar_clave(raiz->clave,clave);
-  if(cmp==0){
-    return true;
-  }
-  else if(cmp>0){
-    return _abb_pertenece(arbol,raiz->hijo_izquierdo,clave);
-  }
-   return _abb_pertenece(arbol,raiz->hijo_derecho,clave);
-}
 
 bool abb_pertenece(const abb_t *arbol, const char *clave){
-  return _abb_pertenece(arbol,arbol->raiz, clave);
+  if(!arbol)
+    return NULL;
+  abb_nodo_t * nodo=_abb_buscar_nodo_y_padre(arbol,clave, NULL,arbol->raiz,NULL);
+  return nodo?true:false;
 }
 /******************************************************************************
 Borra un nodo del arbol
@@ -502,6 +489,18 @@ void abb_destruir(abb_t *arbol){
 /* ******************************************************************
 *                    PRIMITIVAS DEL ITERADOR EXTERNO
 * *****************************************************************/
+
+bool _abb_apilar_nodo_e_hijos_izquierdos(pila_t * pila, abb_nodo_t* nodo){
+  if(!pila || !nodo)
+    return false;
+  abb_nodo_t * nodo_actual=nodo;
+  while(nodo_actual!=NULL){
+    pila_apilar(pila,nodo_actual);
+    nodo_actual=nodo_actual->hijo_izquierdo;
+  }
+  return true;
+}
+
 /******************************************************************************
 Crea el iterador del arbol
 PRE: Recibe el arbol.
@@ -519,19 +518,12 @@ abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
     free(iter);
     return NULL;
   }
-
-  if(arbol-> raiz){
-    /*Apilo la raiz y todos sus hijos izquierdos*/
-    pila_apilar(iter->pila, arbol->raiz);
-    abb_nodo_t * nodo_izquierdo=arbol->raiz->hijo_izquierdo;
-
-    while(nodo_izquierdo!=NULL){
-      pila_apilar(iter->pila,nodo_izquierdo);
-      nodo_izquierdo=nodo_izquierdo->hijo_izquierdo;
-    }
-  }
+  /*Apilo la raiz y todos sus hijos izquierdos*/
+  if(arbol-> raiz)
+    _abb_apilar_nodo_e_hijos_izquierdos(iter->pila,arbol->raiz);
   return iter;
 }
+
 /******************************************************************************
 Avanza en el arbol con el iterador.
 PRE: Recibe el iterador.
@@ -541,22 +533,15 @@ bool abb_iter_in_avanzar(abb_iter_t *iter){
   /*El iterador no puede avanzar si esta al final*/
   if (abb_iter_in_al_final(iter))
     return false;
-
   abb_nodo_t * nodo_desapilado = pila_desapilar(iter->pila);
   if(!nodo_desapilado)
     return false;
 
   /*Si el nodo_desapilado tiene hijo derecho, apilo hijo derecho
   y todos los hijos izquierdos que existan (sus nietos izquierdos)*/
-  if(nodo_desapilado->hijo_derecho){
-    pila_apilar(iter->pila,nodo_desapilado->hijo_derecho);
-    abb_nodo_t * nieto_izquierdo= nodo_desapilado->hijo_derecho;
+  if(nodo_desapilado->hijo_derecho)
+    _abb_apilar_nodo_e_hijos_izquierdos(iter->pila,nodo_desapilado->hijo_derecho);
 
-    while(nieto_izquierdo->hijo_izquierdo){
-      pila_apilar(iter->pila,nieto_izquierdo->hijo_izquierdo);
-      nieto_izquierdo=nieto_izquierdo->hijo_izquierdo;
-    }
-  }
   return true;
 }
 /******************************************************************************
