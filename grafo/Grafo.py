@@ -145,14 +145,17 @@ class Grafo(object):
         cola=[]
         cola.append(origen)
         while cola:
-            visitados.append(origen)
-            adyacentes=grafo.listar_hijos(origen)
-            for a in adyacentes:
-                if not a in cola:
-                    cola.append(origen)
+            # Desdencolo un nodo y lo agrego a visitados
             origen=cola.pop(0)
+            visitados.append(origen)
+            #print("levanto: "+origen)
 
-        visitados.append(origen)
+            # Encolo todos sus hijos que no hayan sido visitados previamente
+            adyacentes=self.listar_hijos(origen)
+            for nodo in adyacentes:
+                if not (nodo in visitados or nodo in cola): #FIXME
+                    cola.append(nodo)
+                    #print("encolo: "+nodo)
         return visitados
 
     def dfs (self,origen=None):
@@ -161,18 +164,109 @@ class Grafo(object):
         pila.append(origen)
 
         while pila:
-            adyacente=grafo.obtener_adyacente(origen)
+            # Saco un nodo de la pila
+            origen = pila.pop(0)
+            #print("levanto: "+origen)
+            visitados.append(origen)
 
-            if not adyacente or adyacente in visitados:
-                pila.pop(0)
-                origen=pila[0]
-
-            if adyacente not in visitados:
-                pila.insert(0,adyacente)
-                visitados.append(adyacente)
-
+            # Apilo todos sus hijos que no hayan sido visitados
+            adyacentes=self.listar_hijos(origen)
+            for nodo in adyacentes:
+                 if not (nodo in visitados or nodo in pila): #FIXME
+                     pila.insert(0,nodo)
+                     #print("inserto: "+nodo)
         return visitados
 
+
+
+class TestRecorridosNoDirigidos(TestCase):
+    """ Prueba recorridos sobre el siguiente grafo no dirigido:
+             A 
+             | 
+        ----------- 
+       /     |      \ 
+      B      C       E 
+    /  \     |       | 
+   D    F    G       | 
+        |____________| 
+    """
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.lista_nodos = ["A","B","C","D","E","F","G"]
+        self.lista_aristas = [("A","B"), ("B","D"), ("B","F"), ("F","E"), #
+        ("A","C"),("C","G"), #
+        ("A","E")]
+
+        for k in self.lista_nodos:
+            self.grafito.agregar_nodo(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b,no_dirigido=True)
+
+    def test_recorridos(self):
+        algoritmos =[("BFS", self.grafito.bfs), ("DFS", self.grafito.dfs)]
+
+        for padre in self.lista_nodos:
+            for nombre,algoritmo in algoritmos:
+                # Corro el algoritmo arrancando por el nodo padre
+                recorrido = algoritmo(padre)
+                # Verifico que haya recorrido todos los nodos
+                faltantes = [n for n in self.lista_nodos if not n in recorrido]
+                error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_nodos}\n Recorrido: {recorrido}\n"
+                self.assertEqual(len(faltantes), 0, f"Falta recorrer nodos por {nombre}\n {error_help}")
+
+                # Verifico cardinalidad por duplicados
+                self.assertEqual(len(recorrido), len(self.lista_nodos), f"Sobran nodos al recorrer por {nombre}\n {error_help}")
+
+class TestRecorridosDirigidos(TestCase):
+    """ Prueba recorridos sobre el siguiente grafo dirigido:
+             A
+             v
+        -----------
+       v     v      v
+      B      C       E
+    v  v     v       ^
+   D    F    G       |
+        v____________|
+    """
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.lista_nodos = ["A","B","C","D","E","F","G"]
+        self.lista_aristas = [("A","B"), ("B","D"), ("B","F"), ("F","E"), #
+        ("A","C"),("C","G"), #
+        ("A","E")]
+
+        for k in self.lista_nodos:
+            self.grafito.agregar_nodo(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b)
+
+    def test_recorridos(self):
+        algoritmos =[("BFS", self.grafito.bfs), ("DFS", self.grafito.dfs)]
+        tests = [ #(padre, lista de nodos alcanzables)
+            ("A", {"A","B","C","D","E","F","G"}),
+            ("B", {"B","D","F","E"}),
+            ("D", {"D"}),
+            ("F", {"F","E"}),
+            ("C", {"C","G"}),
+            ("G", {"G"}),
+            ("E", {"E"})
+        ]
+
+        for padre, alcanzables in tests:
+            for nombre,algoritmo in algoritmos:
+                # Corro el algoritmo arrancando por el nodo padre
+                recorrido = algoritmo(padre)
+                # Verifico que haya recorrido todos los nodos alcanzables
+                faltantes = [n for n in alcanzables if not n in recorrido]
+                error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_nodos}\n Recorrido: {recorrido}\n"
+                self.assertEqual(len(faltantes), 0, f"Falta recorrer nodos por {nombre}\n {error_help}")
+
+                # Verifico cardinalidad por duplicados
+                self.assertEqual(len(recorrido), len(alcanzables), f"Sobran nodos al recorrer por {nombre}\n {error_help}")
 
 class TestGrafo(TestCase):
     def setUp(self):
