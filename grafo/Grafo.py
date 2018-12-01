@@ -2,6 +2,9 @@ import numpy as np
 from scipy import sparse
 import warnings
 
+import unittest
+from unittest import TestCase
+
 class Grafo(object):
     """Voy a implementar un grafo como una matriz (sparse) de adyacencias y un diccionario de nodos"""
     def __init__(self):
@@ -159,7 +162,7 @@ class Grafo(object):
 
         while pila:
             adyacente=grafo.obtener_adyacente(origen)
-            
+
             if not adyacente or adyacente in visitados:
                 pila.pop(0)
                 origen=pila[0]
@@ -169,3 +172,95 @@ class Grafo(object):
                 visitados.append(adyacente)
 
         return visitados
+
+
+class TestGrafo(TestCase):
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.lista_nodos = ["A","B","C","I","F"]
+        self.lista_aristas = [("A","B"), ("B","C"), ("C","A"), ("I","A"), ("C","F")]
+
+        for k in self.lista_nodos:
+            self.grafito.agregar_nodo(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b)
+
+    def test_aarmado(self):
+        """Check de nodos y aristas en grafo dirigido"""
+        nodos = self.grafito.lista_nodos()
+        for nodo in nodos:
+            self.assertTrue(nodo in self.lista_nodos, "Nodo "+nodo+" no encontrado")
+
+        # Comparo cardinalidad
+        self.assertEqual(len(nodos), len(self.lista_nodos), "Cantidad de nodos invalida")
+
+        # Chequeo parentezco
+        for a in self.lista_nodos:
+            for b in self.lista_nodos:
+                self.assertEqual(self.grafito.son_adyacentes(a,b), (a,b) in self.lista_aristas, "Error en parentezco ("+a+","+b+").")
+
+    def test_arista_peso_cero(self):
+        """Setear arista con peso cero provoca no adyacencia"""
+        self.grafito.agregar_arista("A","B",0)
+        self.assertFalse(self.grafito.son_adyacentes("A","B"))
+
+    def test_arista_peso_arbitrario(self):
+        """Setear peso 0.1 a una arista provoca adyacencia"""
+        self.grafito.agregar_arista("A","F",0.1)
+        self.assertTrue(self.grafito.son_adyacentes("A","F"))
+
+    def test_eliminar_arista(self):
+        """Eliminar una arista provoca no adyacencia y no modifica nodos"""
+        self.grafito.eliminar_arista("A","B")
+        self.assertFalse(self.grafito.son_adyacentes("A","B"))
+        nodos = self.grafito.lista_nodos()
+        self.assertTrue("A" in nodos, "A eliminado inesperadamente")
+        self.assertTrue("B" in nodos, "B eliminado inesperadamente")
+
+    def test_eliminar_nodo(self):
+        """Elimiación de un nodo"""
+        self.grafito.eliminar_nodo("A")
+        nodos = self.grafito.lista_nodos()
+        self.assertFalse("A" in nodos, "A no fue eliminado")
+
+    def eliminar_todos_los_nodos(self):
+        """Eliminar todos los nodos del grafo lo vacia"""
+        nodos = self.grafito.lista_nodos()
+        for nodo in nodos:
+            self.grafito.eliminar_nodo(nodo)
+
+        self.assertEqual(len(self.grafito.lista_nodos()), 0)
+
+class TestGrafoNoDirigido(TestCase):
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.lista_nodos = ["A","B","C","I","F"]
+        self.lista_aristas = [("A","B"), ("B","C"), ("C","A"), ("I","A"), ("C","F")]
+
+        for k in self.lista_nodos:
+            self.grafito.agregar_nodo(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b, no_dirigido=True)
+
+    def test_aarmado(self):
+        """Check aristas y nodos en grafo no dirigido"""
+        nodos = self.grafito.lista_nodos()
+        for nodo in nodos:
+            self.assertTrue(nodo in self.lista_nodos, "Nodo "+nodo+" no encontrado")
+
+        # Comparo cardinalidad
+        self.assertEqual(len(nodos), len(self.lista_nodos), "Cantidad de nodos invalida")
+
+        # Chequeo parentezco
+        for a in self.lista_nodos:
+            for b in self.lista_nodos:
+                unidos = ((a,b) in self.lista_aristas) or ((b,a) in self.lista_aristas)
+                self.assertEqual(self.grafito.son_adyacentes(a,b), unidos, "Error en parentezco ("+a+","+b+").")
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
