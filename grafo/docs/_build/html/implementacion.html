@@ -1,0 +1,165 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Implementación de la clase Grafo &#8212; documentación de Grafo - </title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="prev" title="Documentación" href="documentacion.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="implementacion-de-la-clase-grafo">
+<h1>Implementación de la clase Grafo<a class="headerlink" href="#implementacion-de-la-clase-grafo" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Existen diversas formas de modelar un grafo, tal vez la más común sea con
+una lista de nodos, donde cada nodo posea una lista de todos aquellos hijos
+que posea.</p>
+<p>Las ventajas de una lista es que agregar nodos y aristas resulta trivial, aunque
+no tanto encontrar los padres de un nodo. Por esta razón al eliminar se debería
+recorrer todos los nodos buscando las referencias al nodo eliminado para sacarlas.</p>
+<p>Una forma matemáticamente elegante de representar un grafo es a través de
+su matriz de adyacencias. En estas, el elemento (i,j) representa la conexión
+desde el nodo i hacia el nodo j. Generalmente 0 si no están conectados y 1 si
+lo están, o cualquier otro número positivo que represente algún peso.</p>
+<p>Por lo general, a menos que un grafo esté extraordinariamente poblado
+de aristas, es de esperarse una gran cantidad de elementos nulos y unas
+pocas conexiones, por lo cual la mayor parte del espacio se gastaría en
+almacenar ceros que no guardan información.</p>
+<p>Eliminar el nodo i-ésimo implicaría eliminar la fila y la columna i-ésima, y
+agregar un nodo implicaría agregar una nueva fila y columna a la matriz.
+Las matrices suelen almacenarse como un gran vector donde cada columna
+(o fila) está concatenada a la siguiente, por lo cual relizar estas operaciones
+requeriría realizar una copia de todos los elementos a una nueva posición
+en memoria.</p>
+<p>Por estas cuestiones y otras más, no suele ser una buena idea almacenar un
+grafo como una matriz (pensando en un array en memoria), a menos que se utilice
+una matriz dispersa (o «sparse»).</p>
+<div class="section" id="matriz-dispersa">
+<h2>Matriz dispersa<a class="headerlink" href="#matriz-dispersa" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Las matrices con grandes cantidades de cero aparecen mucho al trabajar con
+sistemas y datos de la vida real, por lo cual, biblioteca algebráica que
+se respete debe implementar alguna clase de matriz dispersa que permita manejar
+tales situaciones.</p>
+<p>La idea básica de una matriz dispersa es almacenar solamente los elementos
+no nulos de la matriz. <a class="reference external" href="https://www.scipy.org/">SciPy</a> posee
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html">varias implementaciones</a>
+de matrices dispersas, cada una con sus ventajas y desventajas.</p>
+<p>A grandes razgos, la compresión CSC y CSR consiste en concatenar las columnas
+o filas (respectivamente) de la matriz, y eliminar los bloques de ceros. Esto
+permite tener en regiones contiguas de memoria toda la información relevante.
+Sin embargo, <em>redimensionar la matriz es igual de contraproducente que con
+matrices normales</em>. DIA es similar, pero tomando las diagonales de la matriz.</p>
+<p>Por otro lado, COO y DOK almacenan el dato y sus coordenadas, la primera
+usando una lista y la segunda un diccionario. La diferencia es que COO permite
+entradas repetidas (que se suman), y DOK perminte acceder en tiempo O(1) a los
+datos. <em>En estas redimensionar una matriz puede hacerse de forma muy eficiente.</em></p>
+</div>
+<div class="section" id="implementacion">
+<h2>Implementación<a class="headerlink" href="#implementacion" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Por lo dicho anteriormente, la clase Grafo se implementó sobre una matriz
+dispersa de la clase DOK de SciPy.
+Para almacenar los nombres de los nodos, se utilizó un diccionario donde
+las claves corresponden a los nombres de los nodos y su valor, a su índice
+(es decir, el número de fila y columna respectiva en la matriz).</p>
+<p>Al eliminar un nodo, para eliminar una fila y una columna sería necesario
+readecuar el resto de los índices en el diccionario interno de la matriz, por
+lo cual sería una operación O(catidad de vertices). <strong>Nota:</strong> Si bien puede que no
+se realice in-place, duplicar la matriz también es una operacion O(vertices)
+y no O(nodos^2).</p>
+<p>Por este motivo, al eliminar un nodo se borran la fila y columna correspondientes
+–asignandoles el valor 0, lo cual es O(nodos)–, y se retira el nombre
+del diccionario, lo cual es O(1).
+Dado que los ceros no ocupan espacio, no se está almacenando información trivial
+en la matriz y de esta forma se puede realizar una eliminación más económica
+en la mayoría de los casos.</p>
+<p>De todas formas, se implementa el método <code class="docutils literal notranslate"><span class="pre">_compactar()</span></code> que hace lo anteriormente
+dicho, a fin de poder obtener la matriz de adyacencia «real» si el usuario
+la requiere.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Tabla de Contenidos</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Implementación de la clase Grafo</a><ul>
+<li><a class="reference internal" href="#matriz-dispersa">Matriz dispersa</a></li>
+<li><a class="reference internal" href="#implementacion">Implementación</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="documentacion.html" title="capítulo anterior">Documentación</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>Esta página</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/implementacion.rst.txt"
+            rel="nofollow">Mostrar el código</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Poshito.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/implementacion.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,144 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Inicio Rápido &#8212; documentación de Grafo - </title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Documentación" href="documentacion.html" />
+    <link rel="prev" title="Documentación del TDA Grafo" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="inicio-rapido">
+<h1>Inicio Rápido<a class="headerlink" href="#inicio-rapido" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>En esta sección se describe velozmente cómo utilizar un TDA Grafo. Para detalles
+sobre los métodos de la clase y sus particularidades ver la sección
+Documentación.</p>
+<div class="section" id="detalles-importantes">
+<h2>Detalles importantes<a class="headerlink" href="#detalles-importantes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>La clase Grafo representa un grafo no dirigido, con pesos en las aristas
+no negativos. Posee métodos para insertar y eliminar nodos y aristas
+fácilmente.</p>
+<p>Utilizamos los nombres «padre» e «hijo» para designar las relaciones entre
+nodos de una forma visual. Si el nodo A se enlaza al nodo B, decimos que A
+es el padre de B. Si el nodo A se enlaza con el B y a su vez, también el
+B enlaza con el A, ambos son padre e hijo del otro a la vez.</p>
+</div>
+<div class="section" id="arbol-genealogico">
+<h2>Árbol genealógico<a class="headerlink" href="#arbol-genealogico" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>A continuación se utiliza un Grafo para armar un árbol genealógico:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="kn">from</span> <span class="nn">Grafo</span> <span class="k">import</span> <span class="n">grafo</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span> <span class="o">=</span> <span class="n">Grafo</span><span class="p">()</span>
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">agregar_nodo</span><span class="p">(</span><span class="s2">&quot;jjose&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">agregar_nodo</span><span class="p">(</span><span class="s2">&quot;vero&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">agregar_nodo</span><span class="p">(</span><span class="s2">&quot;naty&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">agregar_nodo</span><span class="p">(</span><span class="s2">&quot;cone&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">agregar_arista</span><span class="p">(</span><span class="s2">&quot;jjose&quot;</span><span class="p">,</span><span class="s2">&quot;vero&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">agregar_arista</span><span class="p">(</span><span class="s2">&quot;jjose&quot;</span><span class="p">,</span><span class="s2">&quot;naty&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">agregar_arista</span><span class="p">(</span><span class="s2">&quot;vero&quot;</span><span class="p">,</span><span class="s2">&quot;cone&quot;</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">listar_hijos</span><span class="p">(</span><span class="s2">&quot;jjose&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="s2">&quot;vero&quot;</span><span class="p">,</span><span class="s2">&quot;naty&quot;</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">listar_hijos</span><span class="p">(</span><span class="s2">&quot;vero&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="s2">&quot;cone&quot;</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">listar_hijos</span><span class="p">(</span><span class="s2">&quot;naty&quot;</span><span class="p">)</span>
+<span class="p">[]</span>
+</pre></div>
+</div>
+<p>Perdiendo todo el sentido de árbol genealógico, se puede armar un loop:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">grafito</span><span class="o">.</span><span class="n">agregar_arista</span><span class="p">(</span><span class="s2">&quot;cone&quot;</span><span class="p">,</span> <span class="s2">&quot;jjose&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Tabla de Contenidos</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Inicio Rápido</a><ul>
+<li><a class="reference internal" href="#detalles-importantes">Detalles importantes</a></li>
+<li><a class="reference internal" href="#arbol-genealogico">Árbol genealógico</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="capítulo anterior">Documentación del TDA Grafo</a></li>
+      <li>Next: <a href="documentacion.html" title="próximo capítulo">Documentación</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>Esta página</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/inicio-rapido.rst.txt"
+            rel="nofollow">Mostrar el código</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Poshito.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/inicio-rapido.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
