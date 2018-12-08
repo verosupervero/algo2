@@ -5,6 +5,8 @@ import warnings
 import unittest
 from unittest import TestCase
 
+from collections import deque
+
 class Grafo(object):
     """Voy a implementar un grafo como una matriz (sparse) de adyacencias y un diccionario de nodos"""
     def __init__(self):
@@ -142,11 +144,11 @@ class Grafo(object):
 
     def bfs(self,origen=None):
         visitados=[]
-        cola=[]
+        cola=deque([])
         cola.append(origen)
         while cola:
-            # Desdencolo un nodo y lo agrego a visitados
-            origen=cola.pop(0)
+            # Desencolo un nodo y lo agrego a visitados
+            origen=cola.popleft()
             visitados.append(origen)
             #print("levanto: "+origen)
 
@@ -177,18 +179,41 @@ class Grafo(object):
                      #print("inserto: "+nodo)
         return visitados
 
+    def camino_minimo(self,v=None,w=None):
+
+    def centralidad(self):
+        cent = []
+        for v in grafo:
+            cent[v] = 0
+        for v in grafo:
+            # hacia todos los demas vertices
+            distancia, padre = camino_minimo(grafo, v, w)
+            cent_aux = []
+            for w in grafo: cent_aux[w] = 0
+            # Aca filtramos (de ser necesario) los vertices a distancia infinita,
+            # y ordenamos de mayor a menor
+            vertices_ordenados = ordenar_vertices(grafo, distancias)
+            for w in vertices_ordenados:
+                cent_aux[padre[w]] += 1 + cent_aux[w]
+            # le sumamos 1 a la centralidad de todos los vertices que se encuentren en
+            # el medio del camino
+            for w in grafo:
+                if w == v: continue
+                cent[w] += cent_aux[w]
+        return cent
+
 
 
 class TestRecorridosNoDirigidos(TestCase):
     """ Prueba recorridos sobre el siguiente grafo no dirigido:
-             A 
-             | 
-        ----------- 
-       /     |      \ 
-      B      C       E 
-    /  \     |       | 
-   D    F    G       | 
-        |____________| 
+             A
+             |
+        -----------
+       /     |      \
+      B      C       E
+    /  \     |       |
+   D    F    G       |
+        |____________|
     """
     def setUp(self):
         """Creación del grafo a utilizar en cada prueba de esta clase"""
