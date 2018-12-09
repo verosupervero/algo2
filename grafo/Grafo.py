@@ -169,6 +169,45 @@ class Grafo(object):
         # Convierto a una lista de nombres de vertices
         return [nombre for nombre,idx in self._indices.items() if idx in idx_hijos]
 
+
+    def bfs(self,origen=None):
+        visitados=[]
+        cola=deque([])
+        cola.append(origen)
+        while cola:
+            # Desencolo un nodo y lo agrego a visitados
+            origen=cola.popleft()
+            visitados.append(origen)
+            #print("levanto: "+origen)
+
+            # Encolo todos sus hijos que no hayan sido visitados previamente
+            adyacentes=self.listar_hijos(origen)
+            for nodo in adyacentes:
+                if not (nodo in visitados or nodo in cola): #FIXME
+                    cola.append(nodo)
+                    #print("encolo: "+nodo)
+        return visitados
+
+    def dfs (self,origen=None):
+        visitados=[]
+        pila=[]
+        pila.append(origen)
+
+        while pila:
+            # Saco un nodo de la pila
+            origen = pila.pop(0)
+            #print("levanto: "+origen)
+            visitados.append(origen)
+
+            # Apilo todos sus hijos que no hayan sido visitados
+            adyacentes=self.listar_hijos(origen)
+            for nodo in adyacentes:
+                 if not (nodo in visitados or nodo in pila): #FIXME
+                     pila.insert(0,nodo)
+                     #print("inserto: "+nodo)
+        return visitados
+
+
     def camino_minimo(self,origen=None):
         distancia={}
         predecesores={}
