@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+"""Clase para representar y procesar grafos"""
 import numpy as np
 from scipy import sparse
 import warnings
