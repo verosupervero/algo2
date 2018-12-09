@@ -9,7 +9,7 @@ from collections import deque
 
 import heapq
 
-class Nodo_heap(object):
+class vertice_heap(object):
     def __init__(self,dato):
         self.dato = dato
     def obtener_valor():
@@ -55,6 +55,15 @@ class Grafo(object):
     def __repr__(self):
         """Devuelve una representación del grafo"""
         return "<vertices: " + str(self.lista_vertices()) + "\n Adyacencias:\n" + str(self.mat_adyacencias()) +" >"
+
+    def __iter__(self):
+        """Iterador sobre los vertices del grafo"""
+        # Ver https://docs.python.org/3/tutorial/classes.html#generators
+        return iter(self.lista_vertices())
+
+    def __len__(self):
+        """Cantidad de vertices del grafo"""
+        return len(self._indices)
 
     def lista_vertices(self):
         """Devuelve una lista de los vertices, ordenados según su aparición en la matriz de adyacencias"""
@@ -164,7 +173,7 @@ class Grafo(object):
         distancia={}
         predecesores={}
 
-        for vertice in self.lista_nodos():
+        for vertice in self:
             distancia[vertice]=float("inf")
 
         distancia[origen]=0
@@ -172,7 +181,7 @@ class Grafo(object):
 
         heap=[]
         heapq.heapify(heap)
-        heapq.heappush(heap,Nodo_heap((distancia[origen],origen)))
+        heapq.heappush(heap,vertice_heap((distancia[origen],origen)))
 
         while heap:
                 [distancia_al_origen, vertice]= heapq.heappop(heap)
@@ -181,23 +190,27 @@ class Grafo(object):
                     if distancia[vertice]+ self.peso_vertice(vertice,w)< distancia[w]:
                         distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
                         predecesores[w]=vertice
-                        heapq.heappush(heap,Nodo_heap((distancia[w],w)))
+                        heapq.heappush(heap,vertice_heap((distancia[w],w)))
         return distancia,predecesores
 
     def centralidad(self,v=None):
+        """Mediante Betweenes Centrality genera un vector con los vertices ordenados
+        por importancia"""
+
+        # WIP: bozquejo
         centralidad={}
-        for vertice in self.lista_nodos():
+        for vertice in self:
             centralidad[vertice]=0
 
-        for vertice in self.lista_nodos():
+        for vertice in self:
             centralidad_vertice_actual= {}
-            distancia,predecesores_vertice= camino_minimo(self,vertice)
+            distancia,predecesores_vertice = self.camino_minimo(vertice)
 
-            for w in self.lista_nodos():
+            for w in self:
                 centralidad_vertice_actual[w]=0
 
             filtrar_infinitos(distancia,predecesores_vertice)
-            
+
 
 
 
