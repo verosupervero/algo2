@@ -232,7 +232,7 @@ class Grafo(object):
         Devuelve un diccionario con la distancia desde el orignen
         hacia cada vertice, y otro diccionario con el predecesor
         en el recorrido minimo de cada vértice en cuestión."""
-        
+
         distancia={}
         predecesores={}
 
@@ -256,8 +256,8 @@ class Grafo(object):
                         heapq.heappush(heap,(distancia[w],w))
         return distancia,predecesores
 
-    def centralidad(self,v=None):
-        """Mediante Betweenes Centrality genera un vector con los vertices ordenados
+    def centralidad(self):
+        """Mediante Betweeness Centrality genera un vector con los vertices ordenados
         por importancia"""
 
         # WIP: bozquejo
@@ -266,13 +266,26 @@ class Grafo(object):
             centralidad[vertice]=0
 
         for vertice in self:
-            centralidad_vertice_actual= {}
-            distancia,predecesores_vertice = self.camino_minimo(vertice)
+            centralidad_auxiliar= {}
+            distancia,predecesor= self.camino_minimo(vertice)
 
             for w in self:
-                centralidad_vertice_actual[w]=0
+                centralidad_auxiliar[w]=0
 
-            filtrar_infinitos(distancia,predecesores_vertice)
+            distancias_filtradas= {k: v for k, v in distancia.items() if v<float("inf")}
+
+            for w in sorted(distancias_filtradas, key=distancias_filtradas.__getitem__,reverse=True):
+                if w==vertice: continue
+                centralidad_auxiliar[predecesor[w]]+=1
+                centralidad_auxiliar[predecesor[w]]+=centralidad_auxiliar[w]
+
+            for w in self:
+                if w==vertice: continue
+                centralidad[w]+=centralidad_auxiliar[w]
+
+        return centralidad
+
+
 
 
 
@@ -470,7 +483,7 @@ class TestCaminoMinimo(TestCase):
 
     def test_nodirigido(self):
         """Dijstra en no dirigido"""
-        
+
         grafito = Grafo()
         lista_vertices = ["A","B","C","D","F","H","I"]
         lista_aristas = [("A","B",5), ("B","F",1), ("C","A",7), ("D","F",6), ("A","F",8), ("C","D",8), ("H","I",1)]
@@ -481,12 +494,37 @@ class TestCaminoMinimo(TestCase):
         for a,b,peso in lista_aristas:
             grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
 
-            
+
         pesos, padres = grafito.camino_minimo(origen="A")
 
         pesos_ok = {'A': 0, 'B': 5.0, 'C': 7.0, 'D': 12.0, 'F': 6.0, 'H': float("inf"), 'I': float("inf")}
         padres_ok = {'A': None, 'B': 'A', 'C': 'A', 'F': 'B', 'D': 'F'}
-        
+
+        self.assertEqual(pesos, pesos_ok, "Los caminos minimos no coinciden")
+        self.assertEqual(padres, padres_ok, "Los predecesores no coinciden")
+
+    def test_dirigido(self):
+
+        grafito = Grafo()
+
+        lista_vertices = ["A","B","C","D","F","H","I"]
+        # aristas no dirigidas
+        lista_aristas = [("A","B",5), ("C","A",7), ("A","F",8), ("D","F",6), ("C","D",8), ("H","I",1)]
+
+        for k in lista_vertices:
+            grafito.agregar_vertice(k)
+
+        for a,b,peso in lista_aristas:
+            grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
+
+        # arista dirigida
+        grafito.agregar_arista("F", "B", peso=1)
+
+        pesos,padres= grafito.camino_minimo(origen="A")
+
+        pesos_ok = {'A': 0, 'B': 5.0, 'C': 7.0, 'D': 14.0, 'F': 8.0, 'H': float("inf"), 'I': float("inf")}
+        padres_ok = {'A': None, 'B': 'A', 'C': 'A', 'F': 'A', 'D': 'F'}
+
         self.assertEqual(pesos, pesos_ok, "Los caminos minimos no coinciden")
         self.assertEqual(padres, padres_ok, "Los predecesores no coinciden")
 
