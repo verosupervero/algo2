@@ -11,7 +11,7 @@ from collections import deque
 
 import heapq
 
-class vertice_heap(object):
+class nodo_max_heap(object):
     def __init__(self,dato):
         self.dato = dato
     def obtener_valor():
@@ -26,6 +26,23 @@ class vertice_heap(object):
         return str(self.dato)
     def __repr__(self):
         return str(self.dato)
+
+class nodo_min_heap(object):
+    def __init__(self,dato):
+        self.dato = dato
+    def obtener_valor():
+        return dato
+    def __lt__(self, other):
+        return self.dato<other.dato
+    def __gt__(self, other):
+        return self.dato>other.dato
+    def __eq__(self, other):
+        return self.dato==other.dato
+    def __str__(self):
+        return str(self.dato)
+    def __repr__(self):
+        return str(self.dato)
+
 
 class Grafo(object):
     """Voy a implementar un grafo como una matriz (sparse) de adyacencias y un diccionario de vertices"""
@@ -160,8 +177,8 @@ class Grafo(object):
         # todos los índices, y al ser sparse no molesta tener más ceros. De todas formas se puede
         # compactar la representación interna usando el método _compactar()
 
-    def listar_hijos(self, padre=None):
-        """Devuelvo una lista con todos los hijos del vertice padre"""
+    def obtener_adyacentes(self, padre=None):
+        """Devuelvo una lista con todos los nodos adyacentes del vertice padre"""
         # Busco los índices de los vertices
         idx_padre = self._indices[padre]
 
@@ -183,7 +200,7 @@ class Grafo(object):
             #print("levanto: "+origen)
 
             # Encolo todos sus hijos que no hayan sido visitados previamente
-            adyacentes=self.listar_hijos(origen)
+            adyacentes=self.obtener_adyacentes(origen)
             for nodo in adyacentes:
                 if not (nodo in visitados or nodo in cola): #FIXME
                     cola.append(nodo)
@@ -202,7 +219,7 @@ class Grafo(object):
             visitados.append(origen)
 
             # Apilo todos sus hijos que no hayan sido visitados
-            adyacentes=self.listar_hijos(origen)
+            adyacentes=self.obtener_adyacentes(origen)
             for nodo in adyacentes:
                  if not (nodo in visitados or nodo in pila): #FIXME
                      pila.insert(0,nodo)
@@ -211,6 +228,11 @@ class Grafo(object):
 
 
     def camino_minimo(self,origen=None):
+        """Calcula el camino minimo desde un origen dado.
+        Devuelve un diccionario con la distancia desde el orignen
+        hacia cada vertice, y otro diccionario con el predecesor
+        en el recorrido minimo de cada vértice en cuestión."""
+        
         distancia={}
         predecesores={}
 
@@ -222,16 +244,16 @@ class Grafo(object):
 
         heap=[]
         heapq.heapify(heap)
-        heapq.heappush(heap,vertice_heap((distancia[origen],origen)))
+        heapq.heappush(heap,(distancia[origen],origen))
 
         while heap:
                 [distancia_al_origen, vertice]= heapq.heappop(heap)
 
-                for w in self.listar_hijos(vertice):
+                for w in self.obtener_adyacentes(vertice):
                     if distancia[vertice]+ self.peso_vertice(vertice,w)< distancia[w]:
                         distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
                         predecesores[w]=vertice
-                        heapq.heappush(heap,vertice_heap((distancia[w],w)))
+                        heapq.heappush(heap,(distancia[w],w))
         return distancia,predecesores
 
     def centralidad(self,v=None):
@@ -432,6 +454,41 @@ class TestGrafoNoDirigido(TestCase):
                 unidos = ((a,b) in self.lista_aristas) or ((b,a) in self.lista_aristas)
                 self.assertEqual(self.grafito.son_adyacentes(a,b), unidos, "Error en parentezco ("+a+","+b+").")
 
+class TestCaminoMinimo(TestCase):
+    # WIP -- hacer
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.lista_vertices = ["A","B","C","I","F"]
+        self.lista_aristas = [("A","B"), ("B","C"), ("C","A"), ("I","A"), ("C","F")]
+
+        for k in self.lista_vertices:
+            self.grafito.agregar_vertice(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b, no_dirigido=True)
+
+    def test_nodirigido(self):
+        """Dijstra en no dirigido"""
+        
+        grafito = Grafo()
+        lista_vertices = ["A","B","C","D","F","H","I"]
+        lista_aristas = [("A","B",5), ("B","F",1), ("C","A",7), ("D","F",6), ("A","F",8), ("C","D",8), ("H","I",1)]
+
+        for k in lista_vertices:
+            grafito.agregar_vertice(k)
+
+        for a,b,peso in lista_aristas:
+            grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
+
+            
+        pesos, padres = grafito.camino_minimo(origen="A")
+
+        pesos_ok = {'A': 0, 'B': 5.0, 'C': 7.0, 'D': 12.0, 'F': 6.0, 'H': float("inf"), 'I': float("inf")}
+        padres_ok = {'A': None, 'B': 'A', 'C': 'A', 'F': 'B', 'D': 'F'}
+        
+        self.assertEqual(pesos, pesos_ok, "Los caminos minimos no coinciden")
+        self.assertEqual(padres, padres_ok, "Los predecesores no coinciden")
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
