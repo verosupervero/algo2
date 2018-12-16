@@ -248,15 +248,15 @@ class Grafo(object):
         heapq.heappush(heap,(distancia[origen],origen))
 
         while heap:
-                [distancia_al_origen, vertice]= heapq.heappop(heap)
-                if(vertice==dest)
-                    break
+            [distancia_al_origen, vertice]= heapq.heappop(heap)
+            if vertice==dest:
+                break
 
-                for w in self.obtener_adyacentes(vertice):
-                    if distancia[vertice]+ self.peso_vertice(vertice,w)< distancia[w]:
-                        distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
-                        predecesores[w]=vertice
-                        heapq.heappush(heap,(distancia[w],w))
+            for w in self.obtener_adyacentes(vertice):
+                if distancia[vertice]+ self.peso_vertice(vertice,w)< distancia[w]:
+                    distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
+                    predecesores[w]=vertice
+                    heapq.heappush(heap,(distancia[w],w))
 
         return distancia,predecesores
 
