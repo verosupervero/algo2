@@ -227,8 +227,9 @@ class Grafo(object):
         return visitados
 
 
-    def camino_minimo(self,origen=None,dest=None):
-        """Calcula el camino minimo desde un origen dado.
+    def camino_minimo(self,origen,dest=None):
+        """Calcula el camino minimo desde un origen dado a un vértice o
+        a todo el grafo.
         Devuelve un diccionario con la distancia desde el orignen
         hacia cada vertice, y otro diccionario con el predecesor
         en el recorrido minimo de cada vértice en cuestión."""
