@@ -108,12 +108,12 @@ class Grafo(object):
         self._mat_ady = M_filtrada
 
     def mat_adyacencias(self):
-        """Devuelve la matriz de adyacencias de forma densa, la lista de vertices se obtiene con lista_vertices()"""
+        """Devuelve la matriz de adyacencias , la lista de vertices se obtiene con lista_vertices()"""
         # Compacto la matriz para eliminar filas y columnas que no representan vertices
         self._compactar()
 
         # Devuelvo la matriz densa
-        return self._mat_ady.todense()
+        return self._mat_ady.copy()
 
     def agregar_arista(self, padre=None, hijo=None, peso=1, no_dirigido=False):
         """Agrega una arista desde el vertice padre hacia el vertice hijo, con un peso dado.
@@ -227,7 +227,7 @@ class Grafo(object):
         return visitados
 
 
-    def camino_minimo(self,origen=None):
+    def camino_minimo(self,origen=None,dest=None):
         """Calcula el camino minimo desde un origen dado.
         Devuelve un diccionario con la distancia desde el orignen
         hacia cada vertice, y otro diccionario con el predecesor
@@ -248,12 +248,15 @@ class Grafo(object):
 
         while heap:
                 [distancia_al_origen, vertice]= heapq.heappop(heap)
+                if(vertice==dest)
+                    break
 
                 for w in self.obtener_adyacentes(vertice):
                     if distancia[vertice]+ self.peso_vertice(vertice,w)< distancia[w]:
                         distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
                         predecesores[w]=vertice
                         heapq.heappush(heap,(distancia[w],w))
+
         return distancia,predecesores
 
     def centralidad(self):
