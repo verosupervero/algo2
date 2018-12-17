@@ -284,7 +284,7 @@ class Grafo(object):
 
         return distancia,predecesores
 
-    def centralidad(self):
+    def centralidad(self,cantidad_aeropuertos):
         """Mediante Betweeness Centrality genera un vector con los vertices ordenados
         por importancia"""
 
@@ -311,6 +311,7 @@ class Grafo(object):
                 if w==vertice: continue
                 centralidad[w]+=centralidad_auxiliar[w]
 
+        print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:cantidad_aeropuertos])))
         return centralidad
 
     def pagerank(self,cantidad_iteraciones):

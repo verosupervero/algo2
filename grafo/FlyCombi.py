@@ -74,15 +74,44 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         origen = params[1]
         destino = params[2]
 
+        if ciudades_codigo.has_key(origen)==False or ciudades_codigo.has_key(destino)==False:
+            print("Origen y/o destino inválidos")
+            return
+
         # Dependiendo del tipo, llamo a cada funcion o devuelvo error
         if tipo == 'barato':
-            grafo_precio.camino_minimo(origen,destino)
+            grafo_precio.camino_minimo(ciudades_codigo[origen],ciudades_codigo[destino])
 
         elif tipo == 'rapido':
-            grafo_tiempo.camino_minimo(origen,destino)
+            grafo_tiempo.camino_minimo(ciudades_codigo[origen],ciudades_codigo[destino])
         else:
             print("Tipo de recorrido invalido. Use ayuda camino_mas")
 
+    #### camino_mas
+    def help_camino_escalas(self):
+        print('Use "camino con menos escalas"')
+
+    def do_camino_escalas(self, inp=""):
+        """Obtengo el camino con menos escalas entre dos aeropuertos."""
+
+        # Valido parametros y los parseo
+        params = inp.split(',')
+        if not inp or not len(params)==3:
+            print("Cantidad de parametros invalida. Use ayuda camino_escalas")
+            return
+        tipo = params[0]
+        origen = params[1]
+        destino = params[2]
+
+        if ciudades_codigo.has_key(origen)==False or ciudades_codigo.has_key(destino)==False:
+            print("Origen y/o destino inválidos")
+            return
+
+        # Dependiendo del tipo, llamo a cada funcion o devuelvo error
+        if tipo == 'camino_escalas':
+            grafo_escalas.camino_minimo(ciudades_codigo[origen],ciudades_codigo[destino])
+        else:
+            print("Tipo de recorrido invalido. Use ayuda camino_escalas")
 
 
 if __name__ == '__main__':
@@ -92,11 +121,16 @@ if __name__ == '__main__':
     grafo_tiempo = Grafo()
     grafo_precio = Grafo()
     grafo_vuelos = Grafo()
-
+    grafo_escalas= Grafo()
+    ciudades_codigo={}
     # Agrego los vertices
     with open('aeropuertos.csv', newline='') as csvfile:
         aeropuertos = csv.reader(csvfile, delimiter=',')
         for dato in aeropuertos:
+            #Agrego la ciudad de nombre y valor el codigo
+            diccionario_ciudades_codigo[dato[0]]=dato[1]
+
+            #Agrego los vertices al grafo, son los codigos
             grafo_tiempo.agregar_vertice(dato[1])
             grafo_precio.agregar_vertice(dato[1])
             grafo_vuelos.agregar_vertice(dato[1])
@@ -108,7 +142,7 @@ if __name__ == '__main__':
             grafo_tiempo.agregar_arista(dato[0],dato[1],dato[2])
             grafo_precio.agregar_arista(dato[0],dato[1],dato[3])
             grafo_vuelos.agregar_arista(dato[0],dato[1],dato[4])
-
+            grafo_escalas.agregar_arista(dato[0],dato[1])
 
 
     # Cargo el menu
