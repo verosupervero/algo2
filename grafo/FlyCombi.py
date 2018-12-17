@@ -76,38 +76,14 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         # Dependiendo del tipo, llamo a cada funcion o devuelvo error
         if tipo == 'barato':
-            distancia,predecesores=grafo_precio.camino_minimo(origen,destino)
-            imprimir_camino(distancia,predecesores,origen,destino)
+            grafo_precio.camino_minimo(origen,destino)
 
         elif tipo == 'rapido':
-            distancia,predecesores=grafo_tiempo.camino_minimo(origen,destino)
-            imprimir_camino(distancia,predecesores,origen,destino)
+            grafo_tiempo.camino_minimo(origen,destino)
         else:
             print("Tipo de recorrido invalido. Use ayuda camino_mas")
 
 
-def imprimir_camino_minimo(distancia,predecesores,origen, dest=None):
-    pila=[]
-    _imprimir_camino_minimo(distancia,predecesores,pila, origen, dest)
-
-def _imprimir_camino_minimo(distancia,predecesores,pila, origen, dest=None):
-
-    if dest==origen:
-        pila.insert(0,dest)
-        for vertice in pila:
-            print(vertice,"->")
-        pila.clear()
-        return
-
-    if dest==None:
-        distancia_max=0
-        for vertice,distancia in distancia.items():
-            if distancia>distancia_max:
-                distancia_max=distancia
-                dest=vertice
-
-    pila.insert(0,dest)
-    _imprimir_camino_minimo(distancia,predecesores,pila, origen, predecesores[dest])
 
 if __name__ == '__main__':
     # Leo los CSV

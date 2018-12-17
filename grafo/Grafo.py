@@ -11,6 +11,28 @@ from collections import deque
 
 import heapq
 
+def imprimir_camino_minimo(distancia,predecesores,origen, dest=None):
+    pila=[]
+    _imprimir_camino_minimo(distancia,predecesores,pila, origen, dest)
+
+def _imprimir_camino_minimo(distancia,predecesores,pila, origen, dest=None):
+
+    if dest==origen:
+        pila.insert(0,dest)
+        print("->".join(map(str,pila)))
+        pila.clear()
+        return
+
+    if dest==None:
+        distancia_max=0
+        for vertice,distancia in distancia.items():
+            if distancia>distancia_max:
+                distancia_max=distancia
+                dest=vertice
+
+    pila.insert(0,dest)
+    _imprimir_camino_minimo(distancia,predecesores,pila, origen, predecesores[dest])
+
 class nodo_max_heap(object):
     def __init__(self,dato):
         self.dato = dato
@@ -257,6 +279,8 @@ class Grafo(object):
                     distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
                     predecesores[w]=vertice
                     heapq.heappush(heap,(distancia[w],w))
+        if dest:
+            imprimir_camino_minimo(distancia,predecesores,origen,dest)
 
         return distancia,predecesores
 
@@ -289,6 +313,43 @@ class Grafo(object):
 
         return centralidad
 
+    def pagerank(self,cantidad_iteraciones):
+        """"""
+        #Para obtener el pagerank de cada pagina necesitamos:
+
+        #La matriz de adyacencias tiene pesos, se que tan fuerte es la union entre nodos y como se conectan,
+        #lo que hago es transponer la matriz y luego llevar sus columnas a que tengan como suma probabilidad=1,
+        #dado que Pagerank(A)=sum Pagerank(i)/L(i) con L(i)= cantidad de links en las paginas.
+        # Debe ser una matriz estocastica por eso se piden estas condiciones,
+        #una matriz estocastica cuenta con esta caracteristica.
+        M=self.mat_adyacencias().transpose()
+        M/= M.sum(axis=0)
+        d=0.8 #duping factor, sino se queda oscilando entre links
+        M= d*M + (1-d)/len(self)
+
+        #Me genero un vector aleatorio (o sea un vector que tiene valores entre 0 y 1)
+        x=np.random.rand(len(self))
+
+        #Sabemos que dado un vector v, lim n->oo A^k*v converge a sum lambda_i^k*v, con lambda_i cada ava.
+        #Con lo cual convergera a los aves de la matriz A.
+        #En este caso serán M y x nuestra matriz y vector.
+        for k in range (0,cantidad_iteraciones):
+            y=M@x
+            y/=y.sum()
+            y_array=np.squeeze(np.asarray(y))
+            if(np.linalg.norm(x-y_array)<0.01):
+                break
+            else:
+                x=y_array+(np.random.rand()/10)**k
+        pagerank={}
+        i=0
+        for vertice in self:
+            pagerank[vertice]=x[i]
+            i=i+1
+
+        #Imprimo el pagerank y lo devuelvo
+        print(','.join(map(str,sorted(pagerank, key=pagerank.get, reverse=True))))
+        return pagerank
 
 class TestRecorridosNoDirigidos(TestCase):
     """ Prueba recorridos sobre el siguiente grafo no dirigido:
