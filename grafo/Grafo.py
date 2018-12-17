@@ -290,11 +290,6 @@ class Grafo(object):
         return centralidad
 
 
-
-
-
-
-
 class TestRecorridosNoDirigidos(TestCase):
     """ Prueba recorridos sobre el siguiente grafo no dirigido:
              A
