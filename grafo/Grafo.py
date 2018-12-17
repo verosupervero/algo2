@@ -249,7 +249,7 @@ class Grafo(object):
         return visitados
 
 
-    def camino_minimo(self,origen,dest=None):
+    def camino_minimo(self,origen,dest=None,imprimir=False):
         """Calcula el camino minimo desde un origen dado a un vértice o
         a todo el grafo.
         Devuelve un diccionario con la distancia desde el orignen
@@ -279,7 +279,7 @@ class Grafo(object):
                     distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
                     predecesores[w]=vertice
                     heapq.heappush(heap,(distancia[w],w))
-        if dest:
+        if dest and imprimir:
             imprimir_camino_minimo(distancia,predecesores,origen,dest)
 
         return distancia,predecesores
@@ -314,7 +314,7 @@ class Grafo(object):
         print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:cantidad_aeropuertos])))
         return centralidad
 
-    def pagerank(self,cantidad_iteraciones):
+    def pagerank(self,cantidad_iteraciones=100,imprimir=False):
         """"""
         #Para obtener el pagerank de cada pagina necesitamos:
 
@@ -338,7 +338,7 @@ class Grafo(object):
             y=M@x
             y/=y.sum()
             y_array=np.squeeze(np.asarray(y))
-            if(np.linalg.norm(x-y_array)<0.01):
+            if(np.linalg.norm(x-y_array)<0.001):
                 break
             else:
                 x=y_array+(np.random.rand()/10)**k
@@ -349,8 +349,31 @@ class Grafo(object):
             i=i+1
 
         #Imprimo el pagerank y lo devuelvo
-        print(','.join(map(str,sorted(pagerank, key=pagerank.get, reverse=True))))
-        return pagerank
+        if imprimir:
+            print(','.join(map(str,sorted(pagerank, key=pagerank.get, reverse=True))))
+        return sorted(pagerank, key=pagerank.get, reverse=True)
+
+class TestPagerankNoDirigido(TestCase):
+    """Creación del grafo no dirigido"""
+
+    def setUp(self):
+        self.grafito = Grafo()
+
+        self.lista_vertices = ["A","B","C","D","BA","BB"]
+        # aristas no dirigidas
+        self.lista_aristas = [("A","B",1), ("A","C",1), ("A","D",1), ("B","BA",1), ("B","BB",1),("BB","C",0.1)]
+
+        for k in self.lista_vertices:
+            self.grafito.agregar_vertice(k)
+
+        for a,b,peso in self.lista_aristas:
+            self.grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
+
+    def test_pagerank_grafo_no_dirigido(self):
+        pagerank=self.grafito.pagerank()
+        pagerank_ok= ['B', 'A', 'C', 'BB', 'D', 'BA']
+        self.assertEqual(pagerank, pagerank_ok, f"Los pagerank coinciden")
+
 
 class TestRecorridosNoDirigidos(TestCase):
     """ Prueba recorridos sobre el siguiente grafo no dirigido:
