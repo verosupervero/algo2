@@ -339,6 +339,7 @@ class Grafo(object):
             y/=y.sum()
             y_array=np.squeeze(np.asarray(y))
             if(np.linalg.norm(x-y_array)<0.001):
+                x=y_array
                 break
             else:
                 x=y_array+(np.random.rand()/10)**k
