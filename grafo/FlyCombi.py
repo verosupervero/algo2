@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+"""TP 3"""
+
 from cmd import Cmd
 
 class MyPrompt(Cmd):
@@ -80,4 +83,24 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             print("Tipo de recorrido invalido. Use ayuda camino_mas")
 
 if __name__ == '__main__':
+    # Leo los CSV
+    import csv
+    from Grafo import Grafo
+    grafo_tiempo = Grafo()
+    grafo_precio = Grafo()
+    grafo_vuelos = Grafo()
+
+    # Agrego los vertices
+    with open('aeropuertos.csv', newline='') as csvfile:
+        aeropuertos = csv.reader(csvfile, delimiter=',')
+        for dato in aeropuertos:
+            grafo_tiempo.agregar_vertice(dato[1])
+            grafo_precio.agregar_vertice(dato[1])
+            grafo_vuelos.agregar_vertice(dato[1])
+
+    # Agrego las aristas
+
+
+
+    # Cargo el menu
     MyPrompt().cmdloop()
