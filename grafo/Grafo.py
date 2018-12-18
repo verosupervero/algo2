@@ -211,11 +211,15 @@ class Grafo(object):
         return [nombre for nombre,idx in self._indices.items() if idx in idx_hijos]
 
 
-    def bfs(self,origen=None):
+    def bfs(self,origen=None,dest=None):
         visitados=[]
         cola=deque([])
         cola.append(origen)
         while cola:
+
+            if dest is not None and dest in visitado:
+                break
+                
             # Desencolo un nodo y lo agrego a visitados
             origen=cola.popleft()
             visitados.append(origen)
@@ -325,24 +329,27 @@ class Grafo(object):
         #una matriz estocastica cuenta con esta caracteristica.
         M=self.mat_adyacencias().transpose()
         M/= M.sum(axis=0)
-        d=0.8 #duping factor, sino se queda oscilando entre links
-        M= d*M + (1-d)/len(self)
+        cant_vertices=len(self)
+        d=0.85 #duping factor, sino se queda oscilando entre links
+        M= d*M + (1-d)/cant_vertices
 
         #Me genero un vector aleatorio (o sea un vector que tiene valores entre 0 y 1)
-        x=np.random.rand(len(self))
+        x=np.random.rand(cant_vertices)
 
         #Sabemos que dado un vector v, lim n->oo A^k*v converge a sum lambda_i^k*v, con lambda_i cada ava.
         #Con lo cual convergera a los aves de la matriz A.
         #En este caso serán M y x nuestra matriz y vector.
+        p=0.3
         for k in range (0,cantidad_iteraciones):
             y=M@x
             y/=y.sum()
             y_array=np.squeeze(np.asarray(y))
-            if(np.linalg.norm(x-y_array)<0.001):
+            if(np.linalg.norm(x-y_array)<0.01):
                 x=y_array
                 break
             else:
-                x=y_array+(np.random.rand()/10)**k
+                r=(np.sign(np.random.rand()-p)+np.ones(cant_vertices))/2
+                x= x*r + y_array*(1-r)
         pagerank={}
         i=0
         for vertice in self:

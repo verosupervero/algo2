@@ -109,7 +109,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         # Dependiendo del tipo, llamo a cada funcion o devuelvo error
         if tipo == 'camino_escalas':
-            grafo_escalas.camino_minimo(ciudades_codigo[origen],ciudades_codigo[destino])
+            grafo_vuelos.bfs(ciudades_codigo[origen],ciudades_codigo[destino])
         else:
             print("Tipo de recorrido invalido. Use ayuda camino_escalas")
 
@@ -121,7 +121,6 @@ if __name__ == '__main__':
     grafo_tiempo = Grafo()
     grafo_precio = Grafo()
     grafo_vuelos = Grafo()
-    grafo_escalas= Grafo()
     ciudades_codigo={}
     # Agrego los vertices
     with open('aeropuertos.csv', newline='') as csvfile:
@@ -142,7 +141,6 @@ if __name__ == '__main__':
             grafo_tiempo.agregar_arista(dato[0],dato[1],dato[2])
             grafo_precio.agregar_arista(dato[0],dato[1],dato[3])
             grafo_vuelos.agregar_arista(dato[0],dato[1],dato[4])
-            grafo_escalas.agregar_arista(dato[0],dato[1])
 
 
     # Cargo el menu
