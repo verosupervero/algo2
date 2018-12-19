@@ -2,6 +2,7 @@
 """TP 3"""
 
 from cmd import Cmd
+import Strutil as st
 
 class MyPrompt(Cmd):
     prompt = 'FlyCombi> '
@@ -49,37 +50,6 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
 
     ######## COMANDOS DEL TP #########
-    def imprimir_camino(pila):
-        print("->".join(map(str,pila)))
-
-    def armar_camino(distancia,predecesores,pila, origen, dest=None):
-        if dest==origen:
-            pila.insert(0,dest)
-            return
-
-        if dest==None:
-            distancia_max=0
-            for vertice,distancia in distancia.items():
-                if distancia>distancia_max:
-                    distancia_max=distancia
-                    dest=vertice
-
-        pila.insert(0,dest)
-        return armar_camino(distancia,predecesores,pila, origen, predecesores[dest])
-
-    def obtener_camino_minimo_origen_destino(origen,destino,grafo,aeropuertos_por_ciudad):
-        camino_mas_barato=[]
-        costo=float("inf")
-        for aeropuerto_i in aeropuertos_por_ciudad[origen]:
-            for aeropuerto_j in aeropuertos_por_ciudad[destino]:
-                distancia, predecesores= grafo_precio.camino_minimo(aeropuerto_i,aeropuerto_j, True)
-                if distancia[aeropuerto_j]< costo:
-                    costo=distancia[aeropuerto_j]
-                    if pila:
-                        pila.clear()
-                        armar_camino(distancia,predecesores,pila,origen,dest)
-        imprimir_camino(pila)
-        return costo
 
     #### listar_operaciones: simplemente llama al comando interno "help"
     def help_listar_operaciones(self):
@@ -110,9 +80,9 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         # Dependiendo del tipo, llamo a cada funcion o devuelvo error
         if tipo == 'barato':
-             obtener_camino_minimo_origen_destino(origen,destino,grafo_precio,aeropuertos_por_ciudad)
+            st.obtener_camino_minimo_origen_destino(origen,destino,grafo_precio,aeropuertos_por_ciudad)
         elif tipo == 'rapido':
-            obtener_camino_minimo_origen_destino(origen,destino,grafo_precio,aeropuertos_por_ciudad)
+            st.obtener_camino_minimo_origen_destino(origen,destino,grafo_precio,aeropuertos_por_ciudad)
         else:
             print("Tipo de recorrido invalido. Use ayuda camino_mas")
 
@@ -179,7 +149,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         print('Use pagerank')
 
     def do_pagerank(self, inp=""):
-        """Obtengo la pagerank de un grafo"""
+        """Obtengo el pagerank de un grafo"""
 
         # Valido parametros y los parseo
         params = inp.split(' ')
@@ -199,27 +169,26 @@ if __name__ == '__main__':
     grafo_vuelos = Grafo()
     aeropuertos_por_ciudad={}
     # Agrego los vertices
-    with open('aeropuertos_inventados.csv', newline='') as csvfile:
+    with open('aeropuertos.csv', newline='') as csvfile:
         aeropuertos = csv.reader(csvfile, delimiter=',')
-        for nombre, aeropuerto_i,latitud,longitud in aeropuertos: #aca me devuelve dos cosas no entiendo la queja
+        for ciudad, aeropuerto,latitud,longitud in aeropuertos: #aca me devuelve dos cosas no entiendo la queja
             #Agrego la ciudad de nombre y valor el codigo
-            if not nombre in aeropuertos_por_ciudad:
-                aeropuertos_por_ciudad[nombre]=[]
-            aeropuertos_por_ciudad[nombre].append(aeropuerto_i)
+            if not ciudad in aeropuertos_por_ciudad:
+                aeropuertos_por_ciudad[ciudad]=[]
+            aeropuertos_por_ciudad[ciudad].append(aeropuerto)
 
             #Agrego los vertices al grafo, son los codigos
-            grafo_tiempo.agregar_vertice(aeropuerto_i)
-            grafo_precio.agregar_vertice(aeropuerto_i)
-            grafo_vuelos.agregar_vertice(aeropuerto_i)
+            grafo_tiempo.agregar_vertice(aeropuerto)
+            grafo_precio.agregar_vertice(aeropuerto)
+            grafo_vuelos.agregar_vertice(aeropuerto)
 
     # Agrego las aristas
-    with open('vuelos_inventados.csv', newline='') as csvfile:
+    with open('vuelos.csv', newline='') as csvfile:
         vuelos = csv.reader(csvfile, delimiter=',')
-        for dato in vuelos:
-            grafo_tiempo.agregar_arista(dato[0],dato[1],int(dato[2]),True)
-            grafo_precio.agregar_arista(dato[0],dato[1],int(dato[3]),True)
-            grafo_vuelos.agregar_arista(dato[0],dato[1],1/int(dato[4]),True)
-
+        for origen,destino, tiempo,precio,cant_vuelos_entre_aeropuertos in vuelos:
+            grafo_tiempo.agregar_arista(origen,destino,int(tiempo),True)
+            grafo_precio.agregar_arista(origen,destino,int(precio),True)
+            grafo_vuelos.agregar_arista(origen,destino,1/int(cant_vuelos_entre_aeropuertos),True)
 
     # Cargo el menu
     MyPrompt().cmdloop()
