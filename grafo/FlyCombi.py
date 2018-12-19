@@ -67,23 +67,23 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         # Valido parametros y los parseo
         params = inp.split(',')
-        if not inp or not len(params)==3:
+        if not len(params)==3:
             print("Cantidad de parametros invalida. Use ayuda camino_mas")
             return
         tipo = params[0]
         origen = params[1]
         destino = params[2]
 
-        if ciudades_codigo.has_key(origen)==False or ciudades_codigo.has_key(destino)==False:
+        if not origen in ciudades_codigo or not destino in ciudades_codigo:
             print("Origen y/o destino inválidos")
             return
 
         # Dependiendo del tipo, llamo a cada funcion o devuelvo error
         if tipo == 'barato':
-            grafo_precio.camino_minimo(ciudades_codigo[origen],ciudades_codigo[destino])
+            grafo_precio.camino_minimo(ciudades_codigo[origen],ciudades_codigo[destino], True)
 
         elif tipo == 'rapido':
-            grafo_tiempo.camino_minimo(ciudades_codigo[origen],ciudades_codigo[destino])
+            grafo_tiempo.camino_minimo(ciudades_codigo[origen],ciudades_codigo[destino],True)
         else:
             print("Tipo de recorrido invalido. Use ayuda camino_mas")
 
@@ -96,23 +96,70 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         # Valido parametros y los parseo
         params = inp.split(',')
-        if not inp or not len(params)==3:
+        if not inp or not len(params)==2:
             print("Cantidad de parametros invalida. Use ayuda camino_escalas")
             return
-        tipo = params[0]
-        origen = params[1]
-        destino = params[2]
+        origen = params[0]
+        destino = params[1]
 
-        if ciudades_codigo.has_key(origen)==False or ciudades_codigo.has_key(destino)==False:
+        if not origen in ciudades_codigo or not destino in ciudades_codigo:
             print("Origen y/o destino inválidos")
             return
 
-        # Dependiendo del tipo, llamo a cada funcion o devuelvo error
-        if tipo == 'camino_escalas':
-            grafo_vuelos.bfs(ciudades_codigo[origen],ciudades_codigo[destino])
-        else:
-            print("Tipo de recorrido invalido. Use ayuda camino_escalas")
+        grafo_vuelos.bfs(ciudades_codigo[origen],ciudades_codigo[destino],True)
 
+    #### camino_mas
+    def help_centralidad(self):
+        print('Use centralidad')
+
+    def do_centralidad(self, inp=""):
+        """Obtengo la centralidad de un grafo"""
+
+        # Valido parametros y los parseo
+        params = inp.split(' ')
+        if not len(params)==1:
+            print("Cantidad de parametros invalida. Use ayuda centralidad")
+            return
+        n= int(params[0])
+
+        grafo_vuelos.centralidad(n)
+
+    #### camino_mas
+    def help_camino_escalas(self):
+        print('Use "camino con menos escalas"')
+
+    def do_camino_escalas(self, inp=""):
+        """Obtengo el camino con menos escalas entre dos aeropuertos."""
+
+        # Valido parametros y los parseo
+        params = inp.split(',')
+        if not inp or not len(params)==2:
+            print("Cantidad de parametros invalida. Use ayuda camino_escalas")
+            return
+        origen = params[0]
+        destino = params[1]
+
+        if not origen in ciudades_codigo or not destino in ciudades_codigo:
+            print("Origen y/o destino inválidos")
+            return
+
+        grafo_vuelos.bfs(ciudades_codigo[origen],ciudades_codigo[destino],True)
+
+    #### camino_mas
+    def help_pagerank(self):
+        print('Use pagerank')
+
+    def do_pagerank(self, inp=""):
+        """Obtengo la pagerank de un grafo"""
+
+        # Valido parametros y los parseo
+        params = inp.split(' ')
+        if not len(params)==1:
+            print("Cantidad de parametros invalida. Use ayuda pagerank")
+            return
+        n= int(params[0])
+
+        grafo_vuelos.pagerank(n,True)
 
 if __name__ == '__main__':
     # Leo los CSV
@@ -127,7 +174,7 @@ if __name__ == '__main__':
         aeropuertos = csv.reader(csvfile, delimiter=',')
         for dato in aeropuertos:
             #Agrego la ciudad de nombre y valor el codigo
-            diccionario_ciudades_codigo[dato[0]]=dato[1]
+            ciudades_codigo[dato[0]]=dato[1]
 
             #Agrego los vertices al grafo, son los codigos
             grafo_tiempo.agregar_vertice(dato[1])
@@ -138,9 +185,9 @@ if __name__ == '__main__':
     with open('vuelos.csv', newline='') as csvfile:
         vuelos = csv.reader(csvfile, delimiter=',')
         for dato in vuelos:
-            grafo_tiempo.agregar_arista(dato[0],dato[1],dato[2])
-            grafo_precio.agregar_arista(dato[0],dato[1],dato[3])
-            grafo_vuelos.agregar_arista(dato[0],dato[1],dato[4])
+            grafo_tiempo.agregar_arista(dato[0],dato[1],int(dato[2]))
+            grafo_precio.agregar_arista(dato[0],dato[1],int(dato[3]))
+            grafo_vuelos.agregar_arista(dato[0],dato[1],1/int(dato[4]))
 
 
     # Cargo el menu

@@ -11,11 +11,11 @@ from collections import deque
 
 import heapq
 
-def imprimir_camino_minimo(distancia,predecesores,origen, dest=None):
+def imprimir_camino(distancia,predecesores,origen, dest=None):
     pila=[]
-    _imprimir_camino_minimo(distancia,predecesores,pila, origen, dest)
+    _imprimir_camino(distancia,predecesores,pila, origen, dest)
 
-def _imprimir_camino_minimo(distancia,predecesores,pila, origen, dest=None):
+def _imprimir_camino(distancia,predecesores,pila, origen, dest=None):
 
     if dest==origen:
         pila.insert(0,dest)
@@ -31,7 +31,7 @@ def _imprimir_camino_minimo(distancia,predecesores,pila, origen, dest=None):
                 dest=vertice
 
     pila.insert(0,dest)
-    _imprimir_camino_minimo(distancia,predecesores,pila, origen, predecesores[dest])
+    _imprimir_camino(distancia,predecesores,pila, origen, predecesores[dest])
 
 class nodo_max_heap(object):
     def __init__(self,dato):
@@ -211,15 +211,24 @@ class Grafo(object):
         return [nombre for nombre,idx in self._indices.items() if idx in idx_hijos]
 
 
-    def bfs(self,origen=None,dest=None):
+    def bfs(self,origen=None,dest=None, imprimir=False):
         visitados=[]
+        predecesores={}
+        distancia_al_origen={}
+
+        for vertice in self.lista_vertices():
+            distancia_al_origen[vertice]= float("inf")
+            predecesores[vertice]=None
+
+        distancia_al_origen[origen]=0
+
         cola=deque([])
         cola.append(origen)
         while cola:
 
-            if dest is not None and dest in visitado:
+            if dest is not None and dest in visitados:
                 break
-                
+
             # Desencolo un nodo y lo agrego a visitados
             origen=cola.popleft()
             visitados.append(origen)
@@ -227,10 +236,16 @@ class Grafo(object):
 
             # Encolo todos sus hijos que no hayan sido visitados previamente
             adyacentes=self.obtener_adyacentes(origen)
-            for nodo in adyacentes:
-                if not (nodo in visitados or nodo in cola): #FIXME
-                    cola.append(nodo)
+            for w in adyacentes:
+                if not w in visitados or not w in cola: 
+                    cola.append(w)
+                    predecesores[w]=origen
+                    distancia_al_origen[w]=distancia_al_origen[origen]+1
                     #print("encolo: "+nodo)
+
+        if dest and imprimir:
+            imprimir_camino(distancia_al_origen,predecesores,origen,dest)
+
         return visitados
 
     def dfs (self,origen=None):
@@ -283,8 +298,9 @@ class Grafo(object):
                     distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
                     predecesores[w]=vertice
                     heapq.heappush(heap,(distancia[w],w))
+
         if dest and imprimir:
-            imprimir_camino_minimo(distancia,predecesores,origen,dest)
+            imprimir_camino(distancia,predecesores,origen,dest)
 
         return distancia,predecesores
 
