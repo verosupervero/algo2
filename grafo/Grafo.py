@@ -11,28 +11,6 @@ from collections import deque
 
 import heapq
 
-def imprimir_camino(distancia,predecesores,origen, dest=None):
-    pila=[]
-    _imprimir_camino(distancia,predecesores,pila, origen, dest)
-
-def _imprimir_camino(distancia,predecesores,pila, origen, dest=None):
-
-    if dest==origen:
-        pila.insert(0,dest)
-        print("->".join(map(str,pila)))
-        pila.clear()
-        return
-
-    if dest==None:
-        distancia_max=0
-        for vertice,distancia in distancia.items():
-            if distancia>distancia_max:
-                distancia_max=distancia
-                dest=vertice
-
-    pila.insert(0,dest)
-    _imprimir_camino(distancia,predecesores,pila, origen, predecesores[dest])
-
 class nodo_max_heap(object):
     def __init__(self,dato):
         self.dato = dato
@@ -243,10 +221,7 @@ class Grafo(object):
                     distancia_al_origen[w]=distancia_al_origen[origen]+1
                     #print("encolo: "+nodo)
 
-        if dest and imprimir:
-            imprimir_camino(distancia_al_origen,predecesores,origen,dest)
-
-        return visitados
+        return visitados,predecesores,distancia_al_origen
 
     def dfs (self,origen=None):
         visitados=[]
@@ -268,7 +243,7 @@ class Grafo(object):
         return visitados
 
 
-    def camino_minimo(self,origen,dest=None,imprimir=False):
+    def camino_minimo(self,origen,dest=None):
         """Calcula el camino minimo desde un origen dado a un vértice o
         a todo el grafo.
         Devuelve un diccionario con la distancia desde el orignen
@@ -298,9 +273,6 @@ class Grafo(object):
                     distancia[w]= distancia[vertice]+ self.peso_vertice(vertice,w)
                     predecesores[w]=vertice
                     heapq.heappush(heap,(distancia[w],w))
-
-        if dest and imprimir:
-            imprimir_camino(distancia,predecesores,origen,dest)
 
         return distancia,predecesores
 
