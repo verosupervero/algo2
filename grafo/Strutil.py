@@ -30,17 +30,16 @@ def armar_camino(distancia,predecesores,pila, origen, dest=None):
     pila.insert(0,dest)
     armar_camino(distancia,predecesores,pila, origen, predecesores[dest])
 
-def obtener_camino_minimo_origen_destino(origen,destino,grafo,aeropuertos_por_ciudad,imprimir=True):
+def obtener_camino_minimo_origen_destino(origen,dest,grafo,aeropuertos_por_ciudad,imprimir=True):
     camino=[]
     costo=float("inf")
     for aeropuerto_i in aeropuertos_por_ciudad[origen]:
-        for aeropuerto_j in aeropuertos_por_ciudad[destino]:
+        for aeropuerto_j in aeropuertos_por_ciudad[dest]:
             distancia, predecesores= grafo.camino_minimo(aeropuerto_i,aeropuerto_j)
             if distancia[aeropuerto_j]< costo:
                 costo=distancia[aeropuerto_j]
-                if camino:
-                    camino.clear()
-                    armar_camino(distancia,predecesores,camino,origen,dest)
+                camino.clear()
+                armar_camino(distancia,predecesores,camino,aeropuerto_i,aeropuerto_j)
     if imprimir:
         imprimir_camino(camino)
     return costo,camino
@@ -241,7 +240,6 @@ class TestObtenerCaminoMinimoOrigenDestino(TestCase):
     def test_distintos_origenes_no_dirigido_caminos_paralelos(self):
 
         """Armar Dijstra en no dirigido"""
-
         aeropuertos_por_ciudad={}
         aeropuertos_por_ciudad["Bs As"]=[]
         aeropuertos_por_ciudad["Bs As"].append("A")
@@ -261,7 +259,7 @@ class TestObtenerCaminoMinimoOrigenDestino(TestCase):
 
         costo_ok=3
         camino_ok=["B","C","E"]
-        costo,camino=obtener_camino_minimo_origen_destino("Bs As","Cordoba",grafito,aeropuertos_por_ciudad)
+        costo,camino=obtener_camino_minimo_origen_destino("Bs As","Cordoba",grafito,aeropuertos_por_ciudad,False)
         self.assertEqual(camino_ok, camino, "Los caminos no coinciden")
         self.assertEqual(costo_ok, costo, "Los costos no coinciden")
 

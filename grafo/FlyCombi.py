@@ -82,7 +82,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         if tipo == 'barato':
             st.obtener_camino_minimo_origen_destino(origen,destino,grafo_precio,aeropuertos_por_ciudad)
         elif tipo == 'rapido':
-            st.obtener_camino_minimo_origen_destino(origen,destino,grafo_precio,aeropuertos_por_ciudad)
+            st.obtener_camino_minimo_origen_destino(origen,destino,grafo_tiempo,aeropuertos_por_ciudad)
         else:
             print("Tipo de recorrido invalido. Use ayuda camino_mas")
 
