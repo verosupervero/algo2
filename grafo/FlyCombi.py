@@ -170,7 +170,7 @@ if __name__ == '__main__':
     grafo_vuelos = Grafo()
     ciudades_codigo={}
     # Agrego los vertices
-    with open('aeropuertos.csv', newline='') as csvfile:
+    with open('aeropuertos_inventados.csv', newline='') as csvfile:
         aeropuertos = csv.reader(csvfile, delimiter=',')
         for dato in aeropuertos:
             #Agrego la ciudad de nombre y valor el codigo
@@ -182,7 +182,7 @@ if __name__ == '__main__':
             grafo_vuelos.agregar_vertice(dato[1])
 
     # Agrego las aristas
-    with open('vuelos.csv', newline='') as csvfile:
+    with open('vuelos_inventados.csv', newline='') as csvfile:
         vuelos = csv.reader(csvfile, delimiter=',')
         for dato in vuelos:
             grafo_tiempo.agregar_arista(dato[0],dato[1],int(dato[2]))

@@ -124,7 +124,7 @@ class Grafo(object):
 
         # Asigno mis nuevos indices incrementalmente
         self._indices = {v:i for i,v in enumerate(vertices)}
-        print(self._indices)
+        #print(self._indices)
 
         # Asigno nueva matriz
         self._mat_ady = M_filtrada
@@ -237,7 +237,7 @@ class Grafo(object):
             # Encolo todos sus hijos que no hayan sido visitados previamente
             adyacentes=self.obtener_adyacentes(origen)
             for w in adyacentes:
-                if not w in visitados or not w in cola: 
+                if not w in visitados or not w in cola:
                     cola.append(w)
                     predecesores[w]=origen
                     distancia_al_origen[w]=distancia_al_origen[origen]+1
@@ -357,7 +357,7 @@ class Grafo(object):
         #En este caso serán M y x nuestra matriz y vector.
         p=0.3
         for k in range (0,cantidad_iteraciones):
-            y=M@x
+            y=d*M@x+(1-d)*x.sum()
             y/=y.sum()
             y_array=np.squeeze(np.asarray(y))
             if(np.linalg.norm(x-y_array)<0.01):
