@@ -6,8 +6,9 @@ import warnings
 
 import unittest
 from unittest import TestCase
-
 from collections import deque
+
+from graf_utils import *
 
 import heapq
 
@@ -203,25 +204,32 @@ class Grafo(object):
         cola=deque([])
         cola.append(origen)
         while cola:
-
             if dest is not None and dest in visitados:
                 break
 
             # Desencolo un nodo y lo agrego a visitados
             origen=cola.popleft()
             visitados.append(origen)
-            #print("levanto: "+origen)
+            #print(visitados)
+            #print("-----levanto: ", origen)
 
             # Encolo todos sus hijos que no hayan sido visitados previamente
             adyacentes=self.obtener_adyacentes(origen)
             for w in adyacentes:
-                if not w in visitados or not w in cola:
+                #print (w, "visitado:", w in visitados)
+                if not w in visitados and not w in cola:
                     cola.append(w)
                     predecesores[w]=origen
                     distancia_al_origen[w]=distancia_al_origen[origen]+1
-                    #print("encolo: "+nodo)
+                    #print("encolo: ", w)
 
-        return visitados,predecesores,distancia_al_origen
+        # esto es FEO pero no se me ocurre una mejor
+        if dest:
+            camino = armar_camino_de_predecesores(dest, predecesores)
+            distancia = distancia_al_origen[dest]
+            return camino, distancia
+        else:
+            return visitados, predecesores, distancia_al_origen
 
     def dfs (self,origen=None):
         visitados=[]
@@ -396,20 +404,30 @@ class TestRecorridosNoDirigidos(TestCase):
         for a,b in self.lista_aristas:
             self.grafito.agregar_arista(a,b,no_dirigido=True)
 
-    def test_recorridos(self):
-        algoritmos =[("BFS", self.grafito.bfs), ("DFS", self.grafito.dfs)]
-
+    def test_recorridos_dfs(self):
         for padre in self.lista_vertices:
-            for nombre,algoritmo in algoritmos:
-                # Corro el algoritmo arrancando por el vertice padre
-                recorrido = algoritmo(padre)
-                # Verifico que haya recorrido todos los vertices
-                faltantes = [n for n in self.lista_vertices if not n in recorrido]
-                error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
-                self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por {nombre}\n {error_help}")
+            # Corro el algoritmo arrancando por el vertice padre
+            recorrido = self.grafito.dfs(padre)
+            # Verifico que haya recorrido todos los vertices
+            faltantes = [n for n in self.lista_vertices if not n in recorrido]
+            error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
+            self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por DFS\n {error_help}")
 
-                # Verifico cardinalidad por duplicados
-                self.assertEqual(len(recorrido), len(self.lista_vertices), f"Sobran vertices al recorrer por {nombre}\n {error_help}")
+            # Verifico cardinalidad por duplicados
+            self.assertEqual(len(recorrido), len(self.lista_vertices), f"Sobran vertices al recorrer por DFS\n {error_help}")
+
+
+    def test_recorridos_bfs(self):
+        for padre in self.lista_vertices:
+            # Corro el algoritmo arrancando por el vertice padre
+            recorrido, p, d = self.grafito.bfs(padre)
+            # Verifico que haya recorrido todos los vertices
+            faltantes = [n for n in self.lista_vertices if not n in recorrido]
+            error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
+            self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por BFS\n {error_help}")
+
+            # Verifico cardinalidad por duplicados
+            self.assertEqual(len(recorrido), len(self.lista_vertices), f"Sobran vertices al recorrer por BFS\n {error_help}")
 
 class TestRecorridosDirigidos(TestCase):
     """ Prueba recorridos sobre el siguiente grafo dirigido:
@@ -436,8 +454,7 @@ class TestRecorridosDirigidos(TestCase):
         for a,b in self.lista_aristas:
             self.grafito.agregar_arista(a,b)
 
-    def test_recorridos(self):
-        algoritmos =[("BFS", self.grafito.bfs), ("DFS", self.grafito.dfs)]
+    def test_recorridos_dfs(self):
         tests = [ #(padre, lista de vertices alcanzables)
             ("A", {"A","B","C","D","E","F","G"}),
             ("B", {"B","D","F","E"}),
@@ -449,16 +466,37 @@ class TestRecorridosDirigidos(TestCase):
         ]
 
         for padre, alcanzables in tests:
-            for nombre,algoritmo in algoritmos:
-                # Corro el algoritmo arrancando por el vertice padre
-                recorrido = algoritmo(padre)
-                # Verifico que haya recorrido todos los vertices alcanzables
-                faltantes = [n for n in alcanzables if not n in recorrido]
-                error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
-                self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por {nombre}\n {error_help}")
+            # Corro el algoritmo arrancando por el vertice padre
+            recorrido = self.grafito.dfs(padre)
+            # Verifico que haya recorrido todos los vertices alcanzables
+            faltantes = [n for n in alcanzables if not n in recorrido]
+            error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
+            self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por DFS\n {error_help}")
 
-                # Verifico cardinalidad por duplicados
-                self.assertEqual(len(recorrido), len(alcanzables), f"Sobran vertices al recorrer por {nombre}\n {error_help}")
+            # Verifico cardinalidad por duplicados
+            self.assertEqual(len(recorrido), len(alcanzables), f"Sobran vertices al recorrer por DFS\n {error_help}")
+
+    def test_recorridos_bfs(self):
+        tests = [ #(padre, lista de vertices alcanzables)
+            ("A", {"A","B","C","D","E","F","G"}),
+            ("B", {"B","D","F","E"}),
+            ("D", {"D"}),
+            ("F", {"F","E"}),
+            ("C", {"C","G"}),
+            ("G", {"G"}),
+            ("E", {"E"})
+        ]
+
+        for padre, alcanzables in tests:
+            # Corro el algoritmo arrancando por el vertice padre
+            recorrido, p, d  = self.grafito.bfs(padre)
+            # Verifico que haya recorrido todos los vertices alcanzables
+            faltantes = [n for n in alcanzables if not n in recorrido]
+            error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
+            self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por BFS\n {error_help}")
+
+            # Verifico cardinalidad por duplicados
+            self.assertEqual(len(recorrido), len(alcanzables), f"Sobran vertices al recorrer por BFS\n {error_help}")
 
 class TestGrafo(TestCase):
     def setUp(self):
