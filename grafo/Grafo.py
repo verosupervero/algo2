@@ -114,7 +114,11 @@ class Grafo(object):
 
 
     def obtener_arista(self, padre=None, hijo=None):
-        return self.grafo[padre][hijo]
+        if padre in self.grafo:
+            if hijo in self.grafo[padre]:
+                return self.grafo[padre][hijo]
+
+        return 0
 
     def son_adyacentes(self, padre=None, hijo=None, no_dirigido=False):
         """Devuelve si el vertice padre posee una arista hacia el vertice hijo.
@@ -419,28 +423,28 @@ class Grafo(object):
     #         print(','.join(map(str,sorted(pagerank, key=pagerank.get, reverse=True))))
     #     return sorted(pagerank, key=pagerank.get, reverse=True)
 
-# class TestPagerankNoDirigido(TestCase):
-#     """Creación del grafo no dirigido"""
-#
-#     def setUp(self):
-#         self.grafito = Grafo()
-#
-#         self.lista_vertices = ["A","B","C","D","BA","BB"]
-#         # aristas no dirigidas
-#         self.lista_aristas = [("A","B",1), ("A","C",1), ("A","D",1), ("B","BA",1), ("B","BB",1),("BB","C",0.1)]
-#
-#         for k in self.lista_vertices:
-#             self.grafito.agregar_vertice(k)
-#
-#         for a,b,peso in self.lista_aristas:
-#             self.grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
-#
-#     def test_pagerank_grafo_no_dirigido(self):
-#         pagerank=self.grafito.pagerank()
-#         pagerank_ok= ['B', 'A', 'C', 'BB', 'D', 'BA']
-#         self.assertEqual(pagerank, pagerank_ok, f"Los pagerank coinciden")
-#
-#
+class TestPagerankNoDirigido(TestCase):
+    """Creación del grafo no dirigido"""
+
+    def setUp(self):
+        self.grafito = Grafo()
+
+        self.lista_vertices = ["A","B","C","D","BA","BB"]
+        # aristas no dirigidas
+        self.lista_aristas = [("A","B",1), ("A","C",1), ("A","D",1), ("B","BA",1), ("B","BB",1),("BB","C",0.1)]
+
+        for k in self.lista_vertices:
+            self.grafito.agregar_vertice(k)
+
+        for a,b,peso in self.lista_aristas:
+            self.grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
+
+    def test_pagerank_grafo_no_dirigido(self):
+        pagerank=self.grafito.pagerank()
+        pagerank_ok= ['B', 'A', 'C', 'BB', 'D', 'BA']
+        self.assertEqual(pagerank, pagerank_ok, f"Los pagerank coinciden")
+
+
 class TestRecorridosNoDirigidos(TestCase):
     """ Prueba recorridos sobre el siguiente grafo no dirigido:
              A
@@ -587,8 +591,12 @@ class TestGrafo(TestCase):
             for b in self.obtener_vertices:
                 self.assertEqual(self.grafito.son_adyacentes(a,b), (a,b) in self.lista_aristas, "Error en parentezco ("+a+","+b+").")
 
-    def test_arista_peso_cero(self):
+    def test_valor_arista_inexistente(self):
         """Setear arista con peso cero provoca no adyacencia"""
+        self.assertEqual(self.grafito.obtener_arista("I","F"), 0, "La arista no existente I-F no devuelve 0")
+
+    def test_arista_no_definida(self):
+        """Dos nodos no vinculados tienen peso 0"""
         self.grafito.agregar_arista("A","B",0)
         self.assertFalse(self.grafito.son_adyacentes("A","B"))
 
