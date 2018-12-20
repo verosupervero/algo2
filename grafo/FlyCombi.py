@@ -124,6 +124,23 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         grafo_vuelos.centralidad(n)
 
     #### camino_mas
+    def help_vacaciones(self):
+        print('Use vacaciones')
+
+    def do_vacaciones(self, inp=""):
+        """Obtengo vacaciones"""
+
+        # Valido parametros y los parseo
+        params = inp.split(',')
+        if not len(params)==2:
+            print("Cantidad de parametros invalida. Use ayuda vacaciones")
+            return
+        origen=params[0]
+        n= int(params[1])
+
+        st.obtener_viaje_n_lugares(n,origen,grafo_vuelos,aeropuertos_por_ciudad,imprimir=True)
+
+    #### camino_mas
     def help_camino_escalas(self):
         print('Use "camino con menos escalas"')
 

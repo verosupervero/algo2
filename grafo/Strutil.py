@@ -44,6 +44,21 @@ def obtener_camino_minimo_origen_destino(origen,dest,grafo,aeropuertos_por_ciuda
         imprimir_camino(camino)
     return costo,camino
 
+def obtener_viaje_n_lugares(n,origen,grafo,aeropuertos_por_ciudad,imprimir=True):
+    ruta=[]
+    for aeropuerto_i in aeropuertos_por_ciudad[origen]:
+        for aeropuerto_j in aeropuertos_por_ciudad[origen]:
+            ruta=grafo.nlugares(n,aeropuerto_i,aeropuerto_j)
+            if ruta:
+                break
+    if not ruta:
+        print("No se encontro recorrido")
+    else:
+        if imprimir:
+            imprimir_camino(ruta)
+    return ruta
+
+
 class TestArmarCamino(TestCase):
     # WIP -- hacer
     def setUp(self):
