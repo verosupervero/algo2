@@ -104,8 +104,9 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         if not origen in aeropuertos_por_ciudad or not destino in aeropuertos_por_ciudad:
             print("Origen y/o destino inválidos")
             return
+        st.obtener_camino_minimo_origen_destino(origen,destino,grafo_vuelos,aeropuertos_por_ciudad)
 
-        grafo_vuelos.bfs(aeropuertos_por_ciudad[origen],aeropuertos_por_ciudad[destino],True)
+        #grafo_vuelos.bfs(aeropuertos_por_ciudad[origen],aeropuertos_por_ciudad[destino])
 
     #### camino_mas
     def help_centralidad(self):
@@ -139,27 +140,6 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         n= int(params[1])
 
         st.obtener_viaje_n_lugares(n,origen,grafo_vuelos,aeropuertos_por_ciudad,imprimir=True)
-
-    #### camino_mas
-    def help_camino_escalas(self):
-        print('Use "camino con menos escalas"')
-
-    def do_camino_escalas(self, inp=""):
-        """Obtengo el camino con menos escalas entre dos aeropuertos."""
-
-        # Valido parametros y los parseo
-        params = inp.split(',')
-        if not inp or not len(params)==2:
-            print("Cantidad de parametros invalida. Use ayuda camino_escalas")
-            return
-        origen = params[0]
-        destino = params[1]
-
-        if not origen in ciudades_codigo or not destino in ciudades_codigo:
-            print("Origen y/o destino inválidos")
-            return
-
-        grafo_vuelos.bfs(ciudades_codigo[origen],ciudades_codigo[destino],True)
 
     #### camino_mas
     def help_pagerank(self):

@@ -30,16 +30,21 @@ def armar_camino(distancia,predecesores,pila, origen, dest=None):
     pila.insert(0,dest)
     armar_camino(distancia,predecesores,pila, origen, predecesores[dest])
 
-def obtener_camino_minimo_origen_destino(origen,dest,grafo,aeropuertos_por_ciudad,imprimir=True):
+def obtener_camino_minimo_origen_destino(origen,dest,grafo,aeropuertos_por_ciudad,imprimir=True,pesado=True):
     camino=[]
     costo=float("inf")
     for aeropuerto_i in aeropuertos_por_ciudad[origen]:
         for aeropuerto_j in aeropuertos_por_ciudad[dest]:
-            distancia, predecesores= grafo.camino_minimo(aeropuerto_i,aeropuerto_j)
+            if pesado:
+                distancia, predecesores= grafo.camino_minimo(aeropuerto_i,aeropuerto_j)
+            else:
+                distancia, predecesores= grafo.bfs(aeropuerto_i,aeropuerto_j)
+
             if distancia[aeropuerto_j]< costo:
                 costo=distancia[aeropuerto_j]
                 camino.clear()
                 armar_camino(distancia,predecesores,camino,aeropuerto_i,aeropuerto_j)
+
     if imprimir:
         imprimir_camino(camino)
     return costo,camino

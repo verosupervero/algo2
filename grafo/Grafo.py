@@ -8,8 +8,6 @@ import unittest
 from unittest import TestCase
 from collections import deque
 
-from graf_utils import *
-
 import heapq
 
 class nodo_max_heap(object):
@@ -151,7 +149,7 @@ class Grafo(object):
     def vertice_en_grafo(self,vertice):
             return vertice in self.grafo.keys()
 
-    def bfs(self,origen=None,dest=None, imprimir=False):
+    def bfs(self,origen=None,dest=None):
         visitados=[]
         predecesores={}
         distancia_al_origen={}
@@ -183,14 +181,9 @@ class Grafo(object):
                     predecesores[w]=origen
                     distancia_al_origen[w]=distancia_al_origen[origen]+1
                     #print("encolo: ", w)
-
-        # esto es FEO pero no se me ocurre una mejor
-        if dest:
-            camino = armar_camino_de_predecesores(dest, predecesores)
-            distancia = distancia_al_origen[dest]
-            return camino, distancia
-        else:
-            return visitados, predecesores, distancia_al_origen
+            if dest!=None:
+                return predecesores, distancia_al_origen
+            return visitados,predecesores, distancia_al_origen
 
     def dfs (self,origen=None):
         visitados=[]
@@ -367,124 +360,124 @@ class Grafo(object):
 #         self.assertEqual(pagerank, pagerank_ok, f"Los pagerank coinciden")
 #
 #
-# class TestRecorridosNoDirigidos(TestCase):
-#     """ Prueba recorridos sobre el siguiente grafo no dirigido:
-#              A
-#              |
-#         -----------
-#        /     |      \
-#       B      C       E
-#     /  \     |       |
-#    D    F    G       |
-#         |____________|
-#     """
-#     def setUp(self):
-#         """Creación del grafo a utilizar en cada prueba de esta clase"""
-#         self.grafito = Grafo()
-#         self.lista_vertices = ["A","B","C","D","E","F","G"]
-#         self.lista_aristas = [("A","B"), ("B","D"), ("B","F"), ("F","E"), #
-#         ("A","C"),("C","G"), #
-#         ("A","E")]
-#
-#         for k in self.lista_vertices:
-#             self.grafito.agregar_vertice(k)
-#
-#         for a,b in self.lista_aristas:
-#             self.grafito.agregar_arista(a,b,no_dirigido=True)
-#
-#     def test_recorridos_dfs(self):
-#         for padre in self.lista_vertices:
-#             # Corro el algoritmo arrancando por el vertice padre
-#             recorrido = self.grafito.dfs(padre)
-#             # Verifico que haya recorrido todos los vertices
-#             faltantes = [n for n in self.lista_vertices if not n in recorrido]
-#             error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
-#             self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por DFS\n {error_help}")
-#
-#             # Verifico cardinalidad por duplicados
-#             self.assertEqual(len(recorrido), len(self.lista_vertices), f"Sobran vertices al recorrer por DFS\n {error_help}")
-#
-#
-#     def test_recorridos_bfs(self):
-#         for padre in self.lista_vertices:
-#             # Corro el algoritmo arrancando por el vertice padre
-#             recorrido, p, d = self.grafito.bfs(padre)
-#             # Verifico que haya recorrido todos los vertices
-#             faltantes = [n for n in self.lista_vertices if not n in recorrido]
-#             error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
-#             self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por BFS\n {error_help}")
-#
-#             # Verifico cardinalidad por duplicados
-#             self.assertEqual(len(recorrido), len(self.lista_vertices), f"Sobran vertices al recorrer por BFS\n {error_help}")
-#
-# class TestRecorridosDirigidos(TestCase):
-#     """ Prueba recorridos sobre el siguiente grafo dirigido:
-#              A
-#              v
-#         -----------
-#        v     v      v
-#       B      C       E
-#     v  v     v       ^
-#    D    F    G       |
-#         v____________|
-#     """
-#     def setUp(self):
-#         """Creación del grafo a utilizar en cada prueba de esta clase"""
-#         self.grafito = Grafo()
-#         self.lista_vertices = ["A","B","C","D","E","F","G"]
-#         self.lista_aristas = [("A","B"), ("B","D"), ("B","F"), ("F","E"), #
-#         ("A","C"),("C","G"), #
-#         ("A","E")]
-#
-#         for k in self.lista_vertices:
-#             self.grafito.agregar_vertice(k)
-#
-#         for a,b in self.lista_aristas:
-#             self.grafito.agregar_arista(a,b)
-#
-#     def test_recorridos_dfs(self):
-#         tests = [ #(padre, lista de vertices alcanzables)
-#             ("A", {"A","B","C","D","E","F","G"}),
-#             ("B", {"B","D","F","E"}),
-#             ("D", {"D"}),
-#             ("F", {"F","E"}),
-#             ("C", {"C","G"}),
-#             ("G", {"G"}),
-#             ("E", {"E"})
-#         ]
-#
-#         for padre, alcanzables in tests:
-#             # Corro el algoritmo arrancando por el vertice padre
-#             recorrido = self.grafito.dfs(padre)
-#             # Verifico que haya recorrido todos los vertices alcanzables
-#             faltantes = [n for n in alcanzables if not n in recorrido]
-#             error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
-#             self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por DFS\n {error_help}")
-#
-#             # Verifico cardinalidad por duplicados
-#             self.assertEqual(len(recorrido), len(alcanzables), f"Sobran vertices al recorrer por DFS\n {error_help}")
-#
-#     def test_recorridos_bfs(self):
-#         tests = [ #(padre, lista de vertices alcanzables)
-#             ("A", {"A","B","C","D","E","F","G"}),
-#             ("B", {"B","D","F","E"}),
-#             ("D", {"D"}),
-#             ("F", {"F","E"}),
-#             ("C", {"C","G"}),
-#             ("G", {"G"}),
-#             ("E", {"E"})
-#         ]
-#
-#         for padre, alcanzables in tests:
-#             # Corro el algoritmo arrancando por el vertice padre
-#             recorrido, p, d  = self.grafito.bfs(padre)
-#             # Verifico que haya recorrido todos los vertices alcanzables
-#             faltantes = [n for n in alcanzables if not n in recorrido]
-#             error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
-#             self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por BFS\n {error_help}")
-#
-#             # Verifico cardinalidad por duplicados
-#             self.assertEqual(len(recorrido), len(alcanzables), f"Sobran vertices al recorrer por BFS\n {error_help}")
+class TestRecorridosNoDirigidos(TestCase):
+    """ Prueba recorridos sobre el siguiente grafo no dirigido:
+             A
+             |
+        -----------
+       /     |      \
+      B      C       E
+    /  \     |       |
+   D    F    G       |
+        |____________|
+    """
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.lista_vertices = ["A","B","C","D","E","F","G"]
+        self.lista_aristas = [("A","B"), ("B","D"), ("B","F"), ("F","E"), #
+        ("A","C"),("C","G"), #
+        ("A","E")]
+
+        for k in self.lista_vertices:
+            self.grafito.agregar_vertice(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b,no_dirigido=True)
+
+    def test_recorridos_dfs(self):
+        for padre in self.lista_vertices:
+            # Corro el algoritmo arrancando por el vertice padre
+            recorrido = self.grafito.dfs(padre)
+            # Verifico que haya recorrido todos los vertices
+            faltantes = [n for n in self.lista_vertices if not n in recorrido]
+            error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
+            self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por DFS\n {error_help}")
+
+            # Verifico cardinalidad por duplicados
+            self.assertEqual(len(recorrido), len(self.lista_vertices), f"Sobran vertices al recorrer por DFS\n {error_help}")
+
+
+    def test_recorridos_bfs(self):
+        for padre in self.lista_vertices:
+            # Corro el algoritmo arrancando por el vertice padre
+            recorrido, p, d = self.grafito.bfs(padre)
+            # Verifico que haya recorrido todos los vertices
+            faltantes = [n for n in self.lista_vertices if not n in recorrido]
+            error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
+            self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por BFS\n {error_help}")
+
+            # Verifico cardinalidad por duplicados
+            self.assertEqual(len(recorrido), len(self.lista_vertices), f"Sobran vertices al recorrer por BFS\n {error_help}")
+
+class TestRecorridosDirigidos(TestCase):
+    """ Prueba recorridos sobre el siguiente grafo dirigido:
+             A
+             v
+        -----------
+       v     v      v
+      B      C       E
+    v  v     v       ^
+   D    F    G       |
+        v____________|
+    """
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.lista_vertices = ["A","B","C","D","E","F","G"]
+        self.lista_aristas = [("A","B"), ("B","D"), ("B","F"), ("F","E"), #
+        ("A","C"),("C","G"), #
+        ("A","E")]
+
+        for k in self.lista_vertices:
+            self.grafito.agregar_vertice(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b)
+
+    def test_recorridos_dfs(self):
+        tests = [ #(padre, lista de vertices alcanzables)
+            ("A", {"A","B","C","D","E","F","G"}),
+            ("B", {"B","D","F","E"}),
+            ("D", {"D"}),
+            ("F", {"F","E"}),
+            ("C", {"C","G"}),
+            ("G", {"G"}),
+            ("E", {"E"})
+        ]
+
+        for padre, alcanzables in tests:
+            # Corro el algoritmo arrancando por el vertice padre
+            recorrido = self.grafito.dfs(padre)
+            # Verifico que haya recorrido todos los vertices alcanzables
+            faltantes = [n for n in alcanzables if not n in recorrido]
+            error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
+            self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por DFS\n {error_help}")
+
+            # Verifico cardinalidad por duplicados
+            self.assertEqual(len(recorrido), len(alcanzables), f"Sobran vertices al recorrer por DFS\n {error_help}")
+
+    def test_recorridos_bfs(self):
+        tests = [ #(padre, lista de vertices alcanzables)
+            ("A", {"A","B","C","D","E","F","G"}),
+            ("B", {"B","D","F","E"}),
+            ("D", {"D"}),
+            ("F", {"F","E"}),
+            ("C", {"C","G"}),
+            ("G", {"G"}),
+            ("E", {"E"})
+        ]
+
+        for padre, alcanzables in tests:
+            # Corro el algoritmo arrancando por el vertice padre
+            recorrido, p, d  = self.grafito.bfs(padre)
+            # Verifico que haya recorrido todos los vertices alcanzables
+            faltantes = [n for n in alcanzables if not n in recorrido]
+            error_help = f"{self.__doc__}\n Raiz: {padre}\n Aclanzables: {self.lista_vertices}\n Recorrido: {recorrido}\n"
+            self.assertEqual(len(faltantes), 0, f"Falta recorrer vertices por BFS\n {error_help}")
+
+            # Verifico cardinalidad por duplicados
+            self.assertEqual(len(recorrido), len(alcanzables), f"Sobran vertices al recorrer por BFS\n {error_help}")
 
 class TestGrafo(TestCase):
     def setUp(self):
@@ -545,94 +538,94 @@ class TestGrafo(TestCase):
 
         self.assertEqual(len(self.grafito.obtener_vertices()), 0)
 
-# class TestGrafoNoDirigido(TestCase):
-#     def setUp(self):
-#         """Creación del grafo a utilizar en cada prueba de esta clase"""
-#         self.grafito = Grafo()
-#         self.obtener_vertices = ["A","B","C","I","F"]
-#         self.lista_aristas = [("A","B"), ("B","C"), ("C","A"), ("I","A"), ("C","F")]
-#
-#         for k in self.obtener_vertices:
-#             self.grafito.agregar_vertice(k)
-#
-#         for a,b in self.lista_aristas:
-#             self.grafito.agregar_arista(a,b, no_dirigido=True)
-#
-#     def test_aarmado(self):
-#         """Check aristas y vertices en grafo no dirigido"""
-#         vertices = self.grafito.obtener_vertices()
-#         for vertice in vertices:
-#             self.assertTrue(vertice in self.obtener_vertices, "vertice "+vertice+" no encontrado")
-#
-#         # Comparo cardinalidad
-#         self.assertEqual(len(vertices), len(self.obtener_vertices), "Cantidad de vertices invalida")
-#
-#         # Chequeo parentezco
-#         for a in self.obtener_vertices:
-#             for b in self.obtener_vertices:
-#                 unidos = ((a,b) in self.lista_aristas) or ((b,a) in self.lista_aristas)
-#                 self.assertEqual(self.grafito.son_adyacentes(a,b), unidos, "Error en parentezco ("+a+","+b+").")
+class TestGrafoNoDirigido(TestCase):
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.obtener_vertices = ["A","B","C","I","F"]
+        self.lista_aristas = [("A","B"), ("B","C"), ("C","A"), ("I","A"), ("C","F")]
 
-# class TestCaminoMinimo(TestCase):
-#     # WIP -- hacer
-#     def setUp(self):
-#         """Creación del grafo a utilizar en cada prueba de esta clase"""
-#         self.grafito = Grafo()
-#         self.obtener_vertices = ["A","B","C","I","F"]
-#         self.lista_aristas = [("A","B"), ("B","C"), ("C","A"), ("I","A"), ("C","F")]
-#
-#         for k in self.obtener_vertices:
-#             self.grafito.agregar_vertice(k)
-#
-#         for a,b in self.lista_aristas:
-#             self.grafito.agregar_arista(a,b, no_dirigido=True)
-#
-#     def test_nodirigido(self):
-#         """Dijstra en no dirigido"""
-#
-#         grafito = Grafo()
-#         obtener_vertices = ["A","B","C","D","F","H","I"]
-#         lista_aristas = [("A","B",5), ("B","F",1), ("C","A",7), ("D","F",6), ("A","F",8), ("C","D",8), ("H","I",1)]
-#
-#         for k in obtener_vertices:
-#             grafito.agregar_vertice(k)
-#
-#         for a,b,peso in lista_aristas:
-#             grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
-#
-#
-#         pesos, padres = grafito.camino_minimo(origen="A")
-#
-#         pesos_ok = {'A': 0, 'B': 5.0, 'C': 7.0, 'D': 12.0, 'F': 6.0, 'H': float("inf"), 'I': float("inf")}
-#         padres_ok = {'A': None, 'B': 'A', 'C': 'A', 'F': 'B', 'D': 'F'}
-#
-#         self.assertEqual(pesos, pesos_ok, "Los caminos minimos no coinciden")
-#         self.assertEqual(padres, padres_ok, "Los predecesores no coinciden")
-#
-#     def test_dirigido(self):
-#
-#         grafito = Grafo()
-#
-#         obtener_vertices = ["A","B","C","D","F","H","I"]
-#         # aristas no dirigidas
-#         lista_aristas = [("A","B",5), ("C","A",7), ("A","F",8), ("D","F",6), ("C","D",8), ("H","I",1)]
-#
-#         for k in obtener_vertices:
-#             grafito.agregar_vertice(k)
-#
-#         for a,b,peso in lista_aristas:
-#             grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
-#
-#         # arista dirigida
-#         grafito.agregar_arista("F", "B", peso=1)
-#
-#         pesos,padres= grafito.camino_minimo(origen="A")
-#
-#         pesos_ok = {'A': 0, 'B': 5.0, 'C': 7.0, 'D': 14.0, 'F': 8.0, 'H': float("inf"), 'I': float("inf")}
-#         padres_ok = {'A': None, 'B': 'A', 'C': 'A', 'F': 'A', 'D': 'F'}
-#
-#         self.assertEqual(pesos, pesos_ok, "Los caminos minimos no coinciden")
-#         self.assertEqual(padres, padres_ok, "Los predecesores no coinciden")
+        for k in self.obtener_vertices:
+            self.grafito.agregar_vertice(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b, no_dirigido=True)
+
+    def test_aarmado(self):
+        """Check aristas y vertices en grafo no dirigido"""
+        vertices = self.grafito.obtener_vertices()
+        for vertice in vertices:
+            self.assertTrue(vertice in self.obtener_vertices, "vertice "+vertice+" no encontrado")
+
+        # Comparo cardinalidad
+        self.assertEqual(len(vertices), len(self.obtener_vertices), "Cantidad de vertices invalida")
+
+        # Chequeo parentezco
+        for a in self.obtener_vertices:
+            for b in self.obtener_vertices:
+                unidos = ((a,b) in self.lista_aristas) or ((b,a) in self.lista_aristas)
+                self.assertEqual(self.grafito.son_adyacentes(a,b), unidos, "Error en parentezco ("+a+","+b+").")
+
+class TestCaminoMinimo(TestCase):
+    # WIP -- hacer
+    def setUp(self):
+        """Creación del grafo a utilizar en cada prueba de esta clase"""
+        self.grafito = Grafo()
+        self.obtener_vertices = ["A","B","C","I","F"]
+        self.lista_aristas = [("A","B"), ("B","C"), ("C","A"), ("I","A"), ("C","F")]
+
+        for k in self.obtener_vertices:
+            self.grafito.agregar_vertice(k)
+
+        for a,b in self.lista_aristas:
+            self.grafito.agregar_arista(a,b, no_dirigido=True)
+
+    def test_nodirigido(self):
+        """Dijstra en no dirigido"""
+
+        grafito = Grafo()
+        obtener_vertices = ["A","B","C","D","F","H","I"]
+        lista_aristas = [("A","B",5), ("B","F",1), ("C","A",7), ("D","F",6), ("A","F",8), ("C","D",8), ("H","I",1)]
+
+        for k in obtener_vertices:
+            grafito.agregar_vertice(k)
+
+        for a,b,peso in lista_aristas:
+            grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
+
+
+        pesos, padres = grafito.camino_minimo(origen="A")
+
+        pesos_ok = {'A': 0, 'B': 5.0, 'C': 7.0, 'D': 12.0, 'F': 6.0, 'H': float("inf"), 'I': float("inf")}
+        padres_ok = {'A': None, 'B': 'A', 'C': 'A', 'F': 'B', 'D': 'F'}
+
+        self.assertEqual(pesos, pesos_ok, "Los caminos minimos no coinciden")
+        self.assertEqual(padres, padres_ok, "Los predecesores no coinciden")
+
+    def test_dirigido(self):
+
+        grafito = Grafo()
+
+        obtener_vertices = ["A","B","C","D","F","H","I"]
+        # aristas no dirigidas
+        lista_aristas = [("A","B",5), ("C","A",7), ("A","F",8), ("D","F",6), ("C","D",8), ("H","I",1)]
+
+        for k in obtener_vertices:
+            grafito.agregar_vertice(k)
+
+        for a,b,peso in lista_aristas:
+            grafito.agregar_arista(a,b,peso=peso, no_dirigido=True)
+
+        # arista dirigida
+        grafito.agregar_arista("F", "B", peso=1)
+
+        pesos,padres= grafito.camino_minimo(origen="A")
+
+        pesos_ok = {'A': 0, 'B': 5.0, 'C': 7.0, 'D': 14.0, 'F': 8.0, 'H': float("inf"), 'I': float("inf")}
+        padres_ok = {'A': None, 'B': 'A', 'C': 'A', 'F': 'A', 'D': 'F'}
+
+        self.assertEqual(pesos, pesos_ok, "Los caminos minimos no coinciden")
+        self.assertEqual(padres, padres_ok, "Los predecesores no coinciden")
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
