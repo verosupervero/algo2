@@ -355,7 +355,7 @@ class Grafo(object):
     #     _nlugares(origen, destino, largo-1, ruta)
     #     return ruta
 
-    def pagerank (self,cantidad_iteraciones=100,imprimir=False):
+    def pagerank (self,n=10,imprimir=False):
     # armo un diccionario con el PR de cada nodo, seteado aleatorio ente 0 y 1
         PR={v: random() for v in self}
         dif=float("inf")
@@ -377,8 +377,8 @@ class Grafo(object):
         #endwhile
         #Imprimo el pagerank y lo devuelvo
         if imprimir:
-            print(','.join(map(str,sorted(PR, key=PR.get, reverse=True))))
-        return sorted(PR, key=pagerank.get, reverse=True)
+            print(','.join(map(str,sorted(PR, key=PR.get, reverse=True)[0:n])))
+        return sorted(PR, key=PR.get, reverse=True)
 
     # def pagerank(self,cantidad_iteraciones=100,imprimir=False):
     #     """"""
