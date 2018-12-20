@@ -49,11 +49,10 @@ def obtener_camino_minimo_origen_destino(origen,dest,grafo,aeropuertos_por_ciuda
         imprimir_camino(camino)
     return costo,camino
 
-def obtener_viaje_n_lugares(n,origen,grafo,aeropuertos_por_ciudad,imprimir=True):
+def obtener_viaje_n_lugares(grafo,n,origen,aeropuertos_por_ciudad,imprimir=True):
     ruta=[]
     for aeropuerto_i in aeropuertos_por_ciudad[origen]:
-        for aeropuerto_j in aeropuertos_por_ciudad[origen]:
-            ruta=grafo.nlugares(n,aeropuerto_i,aeropuerto_j)
+            ruta=grafo.nlugares(n,aeropuerto_i,aeropuerto_i)
             if ruta:
                 break
     if not ruta:

@@ -4,6 +4,7 @@ import numpy as np
 from scipy import sparse
 import warnings
 
+from random import *
 import unittest
 from unittest import TestCase
 from collections import deque
@@ -269,74 +270,154 @@ class Grafo(object):
         return centralidad
 
     def nlugares(self,largo,origen, destino= None):
-        ruta = []
-        if(destino==None):
-            destino=origen
+        lista={}
+        for i in range (0,largo+1):
+            lista[i]=[]
 
-        # declaro funcion wrappeada
-        def _nlugares(origen, destino, largo, ruta=[]):
-            ruta.append(origen)
-            if largo==0:
-                if origen==destino:
-                    return True
-                else:
-                    ruta.pop()
-                    return False
+        inicio=0
+        fin=largo
+        armar_lugares(self,lista,largo+1,origen,destino,inicio,fin)
+        visitar_lugares(self,lista,origen,0)
 
-            for v in self.obtener_adyacentes(origen):
-                if not v in ruta:
-                    if _nlugares(v, destino, largo-1, ruta):
-                        return True
+    def visitar_lugares(self,lista,origen,inicio,visitados=[]):
+        visitados.append(origen)
 
-            ruta.pop()
-            return False
+        for adyacente in self.obtener_adyacentes(lista[inicio]):
+            if adyacente in lista[inicio+1] and not adyacente in visitados:
+                if visitar_lugares(self,lista,inicio+1):
+                    return lista
 
-        # inicio recursion
-        _nlugares(origen, destino, largo, ruta)
-        return ruta
+        visitados.pop()
 
-    def pagerank(self,cantidad_iteraciones=100,imprimir=False):
-        """"""
-        #Para obtener el pagerank de cada pagina necesitamos:
+    def armar_lugares(self,lista, largo,origen,inicio,fin):
 
-        #La matriz de adyacencias tiene pesos, se que tan fuerte es la union entre nodos y como se conectan,
-        #lo que hago es transponer la matriz y luego llevar sus columnas a que tengan como suma probabilidad=1,
-        #dado que Pagerank(A)=sum Pagerank(i)/L(i) con L(i)= cantidad de links en las paginas.
-        # Debe ser una matriz estocastica por eso se piden estas condiciones,
-        #una matriz estocastica cuenta con esta caracteristica.
-        M=self.mat_adyacencias().transpose()
-        M/= M.sum(axis=0)
-        cant_vertices=len(self)
-        d=0.85 #duping factor, sino se queda oscilando entre links
-        M= d*M + (1-d)/cant_vertices
+        if largo%2 == 0:
+            if inicio== largo/2-1 and fin==largo/2:
+                if lista[inicio]==lista[fin]:
+                    return lista
 
-        #Me genero un vector aleatorio (o sea un vector que tiene valores entre 0 y 1)
-        x=np.random.rand(cant_vertices)
+        else:
+            if inicio==fin and inicio==largo/2:
+                if lista[inicio]==lista[inicio-1]:
+                    return lista
 
-        #Sabemos que dado un vector v, lim n->oo A^k*v converge a sum lambda_i^k*v, con lambda_i cada ava.
-        #Con lo cual convergera a los aves de la matriz A.
-        #En este caso serán M y x nuestra matriz y vector.
-        p=0.3
-        for k in range (0,cantidad_iteraciones):
-            y=d*M@x+(1-d)*x.sum()
-            y/=y.sum()
-            y_array=np.squeeze(np.asarray(y))
-            if(np.linalg.norm(x-y_array)<0.01):
-                x=y_array
-                break
-            else:
-                r=(np.sign(np.random.rand()-p)+np.ones(cant_vertices))/2
-                x= x*r + y_array*(1-r)
-        pagerank={}
-        i=0
-        for vertice in self:
-            pagerank[vertice]=x[i]
-            i=i+1
+        #enlisto el origen al ppio y al fin
+        lista[inicio].append(origen)
+        lista[fin].append(origen)
 
+        for adyacente in self.obtener_adyacentes(origen):
+            if adyacente not in lista[inicio+1]:
+                armar_lugares(self,largo,adyacente,inicio+1,fin-1)
+
+        return []
+
+
+    # def nlugares(self,largo,origen, destino= None):
+    #     ruta = {}
+    #     if(destino==None):
+    #         destino=origen
+    #     for i in range 0:largo+1:
+    #         ruta[i]=[]
+    #     ruta[0].append(origen)
+    #     ruta[largo].append(origen)
+    #
+    #     # declaro funcion wrappeada
+    #     def _nlugares(origen, destino, largo, ruta=[]):
+    #         if ruta[largo]:
+    #             for adyacente in self.obtener_adyacentes(origen):
+    #                 if not adyacente in ruta[largo]
+    #                     ruta[largo].append(adyacente)
+    #         else:
+    #             if origen in ruta[largo]=self.obtener_adyacentes(origen):
+    #                 return True
+    #             return False
+    #
+    #         if largo==0:
+    #             if origen==destino:
+    #                 return True
+    #             else:
+    #                 ruta.pop()
+    #                 return False
+    #
+    #         for v in self.obtener_adyacentes(origen):
+    #             if not v in ruta:
+    #                 if _nlugares(v, destino, largo-1, ruta):
+    #                     return True
+    #
+    #         ruta.pop()
+    #         return False
+    #
+    #     # inicio recursion
+    #     _nlugares(origen, destino, largo-1, ruta)
+    #     return ruta
+
+    def pagerank (self,cantidad_iteraciones=100,imprimir=False):
+    # armo un diccionario con el PR de cada nodo, seteado aleatorio ente 0 y 1
+        PR={v: random() for v in self}
+        dif=float("inf")
+
+        d=0.8
+        k=(1-d)/len(self)
+
+        while dif > 0.01**2:
+            # actualizo PR de todos los nodos
+            dif = 0 # norma² de la diferencia
+            for v in self:
+                old = PR[v]
+                PR[v] = k
+                for u in self:
+                    PR[v] += PR[u]*self.obtener_arista(u,v)
+                #endfor
+                dif += (old-PR[v])**2
+            #endfor
+        #endwhile
         #Imprimo el pagerank y lo devuelvo
         if imprimir:
-            print(','.join(map(str,sorted(pagerank, key=pagerank.get, reverse=True))))
-        return sorted(pagerank, key=pagerank.get, reverse=True)
+            print(','.join(map(str,sorted(PR, key=PR.get, reverse=True))))
+        return sorted(PR, key=pagerank.get, reverse=True)
+
+    # def pagerank(self,cantidad_iteraciones=100,imprimir=False):
+    #     """"""
+    #     #Para obtener el pagerank de cada pagina necesitamos:
+    #
+    #     #La matriz de adyacencias tiene pesos, se que tan fuerte es la union entre nodos y como se conectan,
+    #     #lo que hago es transponer la matriz y luego llevar sus columnas a que tengan como suma probabilidad=1,
+    #     #dado que Pagerank(A)=sum Pagerank(i)/L(i) con L(i)= cantidad de links en las paginas.
+    #     # Debe ser una matriz estocastica por eso se piden estas condiciones,
+    #     #una matriz estocastica cuenta con esta caracteristica.
+    #     M=self.mat_adyacencias().transpose()
+    #     M/= M.sum(axis=0)
+    #     cant_vertices=len(self)
+    #     d=0.85 #duping factor, sino se queda oscilando entre links
+    #     M= d*M + (1-d)/cant_vertices
+    #
+    #     #Me genero un vector aleatorio (o sea un vector que tiene valores entre 0 y 1)
+    #     x=np.random.rand(cant_vertices)
+    #
+    #     #Sabemos que dado un vector v, lim n->oo A^k*v converge a sum lambda_i^k*v, con lambda_i cada ava.
+    #     #Con lo cual convergera a los aves de la matriz A.
+    #     #En este caso serán M y x nuestra matriz y vector.
+    #     p=0.3
+    #     for k in range (0,cantidad_iteraciones):
+    #         y=d*M@x+(1-d)*x.sum()
+    #         y/=y.sum()
+    #         y_array=np.squeeze(np.asarray(y))
+    #         if(np.linalg.norm(x-y_array)<0.01):
+    #             x=y_array
+    #             break
+    #         else:
+    #             r=(np.sign(np.random.rand()-p)+np.ones(cant_vertices))/2
+    #             x= x*r + y_array*(1-r)
+    #     pagerank={}
+    #     i=0
+    #     for vertice in self:
+    #         pagerank[vertice]=x[i]
+    #         i=i+1
+    #
+    #     #Imprimo el pagerank y lo devuelvo
+    #     if imprimir:
+    #         print(','.join(map(str,sorted(pagerank, key=pagerank.get, reverse=True))))
+    #     return sorted(pagerank, key=pagerank.get, reverse=True)
 
 # class TestPagerankNoDirigido(TestCase):
 #     """Creación del grafo no dirigido"""
