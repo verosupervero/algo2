@@ -1,3 +1,3 @@
-flycombi: FlyCombi.py Grafo flycombi
+flycombi: FlyCombi.py
 	cp FlyCombi.py flycombi
 	chmod +x flycombi
