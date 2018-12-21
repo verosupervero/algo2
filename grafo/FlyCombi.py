@@ -109,7 +109,9 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         if not origen in aeropuertos_por_ciudad or not destino in aeropuertos_por_ciudad:
             print("Origen y/o destino inválidos")
             return
+        # Esta mal que la funcion imprima el resultado.
         st.obtener_camino_minimo_origen_destino(origen,destino,grafo_vuelos,aeropuertos_por_ciudad,True,False)
+        # Necesito guardar el camino en la variable global ultima_ruta, asi con todas las funciones que devuelven ruta
 
     #### camino_mas
     def help_centralidad(self):
@@ -175,14 +177,36 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         st.pagerank(grafo_vuelos,n,True)
 
+    ### exportar a KML
+    def do_exportar_kml(self, inp=""):
+        """Exporto un KML con la ultima ruta"""
+
+        # Valido parametros y los parseo
+        params = inp.split(' ')
+        if not len(params)==1:
+            print("Cantidad de parametros invalida. Use ayuda exportar_kml")
+            return
+        file = params[0]
+
+        if not ultima_ruta:
+            print("FALLO: No hay ruta para exportar.")
+            return
+
+        exportar_kml(ultima_ruta, coordenadas, ciudades_aerop, file=file)
+
 if __name__ == '__main__':
     # Leo los CSV
     import csv
     from Grafo import Grafo
+    from exportar_ruta import exportar_kml
+
     grafo_tiempo = Grafo()
     grafo_precio = Grafo()
     grafo_vuelos = Grafo()
     aeropuertos_por_ciudad={}
+    ciudades_aerop = {}
+    coordenadas = {}
+    ultima_ruta = None
     # Agrego los vertices
     with open('aeropuertos.csv', newline='') as csvfile:
         aeropuertos = csv.reader(csvfile, delimiter=',')
@@ -196,6 +220,11 @@ if __name__ == '__main__':
             grafo_tiempo.agregar_vertice(aeropuerto)
             grafo_precio.agregar_vertice(aeropuerto)
             grafo_vuelos.agregar_vertice(aeropuerto)
+
+            # agrego coordenadas
+            coordenadas[aeropuerto]=(float(longitud),float(latitud))
+            # agrego cuidades
+            ciudades_aerop[aeropuerto]=ciudad
 
     # Agrego las aristas
     with open('vuelos.csv', newline='') as csvfile:
