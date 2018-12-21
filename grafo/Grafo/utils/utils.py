@@ -1,11 +1,11 @@
 import Grafo.utils as utils
 
 def imprimir_camino(pila):
-    print("->".join(map(str,pila)))
+    print(" -> ".join(map(str,pila)))
 
 def formatear_camino(pila):
     """Convierte una lista de ciudades en un string separado por ->"""
-    return "->".join(map(str,pila))
+    return " -> ".join(map(str,pila))
 
 def armar_camino(distancia,predecesores,pila, origen, dest=None):
     """Reconstruye un camino desde un vertice teniendo sus predecesores"""
