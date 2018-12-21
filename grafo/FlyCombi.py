@@ -104,9 +104,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         if not origen in aeropuertos_por_ciudad or not destino in aeropuertos_por_ciudad:
             print("Origen y/o destino inválidos")
             return
-        st.obtener_camino_minimo_origen_destino(origen,destino,grafo_vuelos,aeropuertos_por_ciudad)
-
-        #grafo_vuelos.bfs(aeropuertos_por_ciudad[origen],aeropuertos_por_ciudad[destino])
+        st.obtener_camino_minimo_origen_destino(origen,destino,grafo_vuelos,aeropuertos_por_ciudad,True,False)
 
     #### camino_mas
     def help_centralidad(self):
@@ -122,7 +120,22 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         n= int(params[0])
 
-        grafo_vuelos.centralidad(n)
+        st.centralidad(grafo_vuelos,n)
+
+    #### camino_mas
+    def help_itinerario(self):
+        print('Use centralidad')
+
+    def do_itinerario(self, inp=","):
+        """Obtengo la centralidad de un grafo"""
+
+        # Valido parametros y los parseo
+        itinerario = inp.split(' ')
+        if not len(lugares)==1:
+            print("Cantidad de parametros invalida. Use ayuda centralidad")
+            return
+        lugares=st.armar_itinerario_cultural(itinerario)
+        st.obtener_itinerario_cultural(grafo_vuelos,lugares,aeropuertos_por_ciudad)
 
     #### camino_mas
     def help_vacaciones(self):
@@ -139,7 +152,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         origen=params[0]
         n= int(params[1])
 
-        st.obtener_viaje_n_lugares(n,origen,grafo_vuelos,aeropuertos_por_ciudad,imprimir=True)
+        st.obtener_viaje_n_lugares(grafo_vuelos,n,origen,aeropuertos_por_ciudad,imprimir=True)
 
     #### camino_mas
     def help_pagerank(self):
@@ -155,7 +168,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         n= int(params[0])
 
-        grafo_vuelos.pagerank(n,True)
+        st.pagerank(grafo_vuelos,n,True)
 
 if __name__ == '__main__':
     # Leo los CSV
