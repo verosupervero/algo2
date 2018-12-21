@@ -85,9 +85,9 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         # Dependiendo del tipo, llamo a cada funcion o devuelvo error
         if tipo == 'barato':
-            st.obtener_camino_minimo_origen_destino(origen,destino,grafo_precio,aeropuertos_por_ciudad)
+            camino_minimo.camino_minimo(origen,destino,grafo_precio,aeropuertos_por_ciudad)
         elif tipo == 'rapido':
-            st.obtener_camino_minimo_origen_destino(origen,destino,grafo_tiempo,aeropuertos_por_ciudad)
+            camino_minimo.camino_minimo(origen,destino,grafo_tiempo,aeropuertos_por_ciudad)
         else:
             print("Tipo de recorrido invalido. Use ayuda camino_mas")
 
@@ -110,7 +110,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             print("Origen y/o destino inválidos")
             return
         # Esta mal que la funcion imprima el resultado.
-        st.obtener_camino_minimo_origen_destino(origen,destino,grafo_vuelos,aeropuertos_por_ciudad,True,False)
+        camino_minimo.camino_minimo(origen,destino,grafo_vuelos,aeropuertos_por_ciudad,True,False)
         # Necesito guardar el camino en la variable global ultima_ruta, asi con todas las funciones que devuelven ruta
 
     #### camino_mas
@@ -127,7 +127,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         n= int(params[0])
 
-        st.centralidad(grafo_vuelos,n)
+        centralidad.centralidad(grafo_vuelos,n)
 
     #### camino_mas
     def help_itinerario(self):
@@ -141,8 +141,8 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         if not len(lugares)==1:
             print("Cantidad de parametros invalida. Use ayuda centralidad")
             return
-        lugares=st.armar_itinerario_cultural(itinerario)
-        st.obtener_itinerario_cultural(grafo_vuelos,lugares,aeropuertos_por_ciudad)
+        lugares=utils.armar_itinerario_cultural(itinerario)
+        utils.obtener_itinerario_cultural(grafo_vuelos,lugares,aeropuertos_por_ciudad)
 
     #### camino_mas
     def help_vacaciones(self):
@@ -159,7 +159,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         origen=params[0]
         n= int(params[1])
 
-        st.obtener_viaje_n_lugares(grafo_vuelos,n,origen,aeropuertos_por_ciudad,imprimir=True)
+        viaje_n_lugares.viaje_n_lugares(grafo_vuelos,n,origen,aeropuertos_por_ciudad,imprimir=True)
 
     #### camino_mas
     def help_pagerank(self):
@@ -175,7 +175,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         n= int(params[0])
 
-        st.pagerank(grafo_vuelos,n,True)
+        pagerank.pagerank(grafo_vuelos,n,True)
 
     ### exportar a KML
     def help_exportar_kml(self):
