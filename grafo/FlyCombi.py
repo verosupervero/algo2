@@ -3,7 +3,7 @@
 
 from cmd import Cmd
 from Grafo import Grafo
-from Grafo.utils import *
+import Grafo.utils as utils
 
 class MyPrompt(Cmd):
     prompt = ''
@@ -158,7 +158,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         origen=params[0]
         n= int(params[1])
-        ruta = viaje_n_lugares.viaje_n_lugares(grafo=grafo_tiempo,n=n,origen=origen,aeropuertos_por_ciudad=aeropuertos_por_ciudad)
+        ruta = utils.viaje_n_lugares(grafo=grafo_tiempo,n=n,origen=origen,aeropuertos_por_ciudad=aeropuertos_por_ciudad)
         if not ruta:
             print('No existe ningún recorrido')
         else:
@@ -167,19 +167,25 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
     #### camino_mas
     def help_pagerank(self):
-        print('Use pagerank')
+        print('Use pagerank <cantidad de nodos>')
 
     def do_pagerank(self, inp=""):
         """Obtengo el pagerank de un grafo"""
 
         # Valido parametros y los parseo
-        params = inp.split(' ')
-        if not len(params)==1:
-            print("Cantidad de parametros invalida. Use ayuda pagerank")
+        try:
+            params = inp.split(' ')
+            n= int(params[0])
+        except:
+            print("Parámetros inválidos. Use ayuda pagerank")
             return
-        n= int(params[0])
 
-        pagerank.pagerank(grafo_vuelos,n,True)
+        # calculo
+        PR = utils.pagerank(grafo_vuelos)
+
+        # devuelvo
+        print(','.join(map(str,PR[0:n])))
+
 
     ### exportar a KML
     def help_exportar_kml(self):
