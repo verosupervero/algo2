@@ -213,9 +213,17 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
 if __name__ == '__main__':
     # Leo los CSV
+    import sys
     import csv
     from Grafo import Grafo
     from exportar_ruta import exportar_kml
+
+    if not len(sys.argv) == 3:
+        print(f"Se requieren tres parametros: {sys.argv[0]} aeropuertos.csv vuelos.csv")
+        sys.exit(1)
+
+    path_aeropuertos = sys.argv[1]
+    path_vuelos = sys.argv[2]
 
     grafo_tiempo = Grafo()
     grafo_precio = Grafo()
@@ -224,7 +232,7 @@ if __name__ == '__main__':
     ciudades_aerop = {}
     coordenadas = {}
     # Agrego los vertices
-    with open('aeropuertos.csv', newline='') as csvfile:
+    with open(path_aeropuertos, newline='') as csvfile:
         aeropuertos = csv.reader(csvfile, delimiter=',')
         for ciudad, aeropuerto,latitud,longitud in aeropuertos: #aca me devuelve dos cosas no entiendo la queja
             #Agrego la ciudad de nombre y valor el codigo
@@ -243,7 +251,7 @@ if __name__ == '__main__':
             ciudades_aerop[aeropuerto]=ciudad
 
     # Agrego las aristas
-    with open('vuelos.csv', newline='') as csvfile:
+    with open(path_vuelos, newline='') as csvfile:
         vuelos = csv.reader(csvfile, delimiter=',')
         for origen,destino, tiempo,precio,cant_vuelos_entre_aeropuertos in vuelos:
             grafo_tiempo.agregar_arista(origen,destino,int(tiempo),True)
@@ -252,3 +260,6 @@ if __name__ == '__main__':
 
     # Cargo el menu
     MyPrompt().cmdloop()
+
+    # Termino
+    sys.exit(0)
