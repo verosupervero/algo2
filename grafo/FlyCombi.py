@@ -178,6 +178,9 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         st.pagerank(grafo_vuelos,n,True)
 
     ### exportar a KML
+    def help_exportar_kml(self):
+        print("Use exportar_kml nombre_archivo.kml para guardar el último camino obtenido en un kml.")
+
     def do_exportar_kml(self, inp=""):
         """Exporto un KML con la ultima ruta"""
 
@@ -188,11 +191,21 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         file = params[0]
 
-        if not ultima_ruta:
+        if not self.ultima_ruta:
             print("FALLO: No hay ruta para exportar.")
             return
 
-        exportar_kml(ultima_ruta, coordenadas, ciudades_aerop, file=file)
+        exportar_kml(self.ultima_ruta, coordenadas, ciudades_aerop, file=file)
+        print("OK")
+
+    def do_test_kml(self, inp=""):
+        # Simulo un resultado
+        caminito = ['JFK', 'ABY', 'BRD', 'DIK']
+        print (utils.formatear_camino(caminito))
+
+        # Seteo el resultado en la variable para exportar_kml
+        self.ultima_ruta = caminito
+        return
 
 if __name__ == '__main__':
     # Leo los CSV
@@ -206,7 +219,6 @@ if __name__ == '__main__':
     aeropuertos_por_ciudad={}
     ciudades_aerop = {}
     coordenadas = {}
-    ultima_ruta = None
     # Agrego los vertices
     with open('aeropuertos.csv', newline='') as csvfile:
         aeropuertos = csv.reader(csvfile, delimiter=',')

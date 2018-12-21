@@ -1,3 +1,5 @@
+import simplekml
+
 def exportar_kml(ciudades, coordenadas, ciudades_aerop, file=None, kml=None):
     """Recibe una lista de cuidades y las agrega al kml pasado"""
 
