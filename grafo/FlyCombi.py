@@ -64,7 +64,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
     def do_listar_operaciones(self, inp):
         """Lista las operaciones disponibles"""
         # comandos que quiero evitar
-        excluir = ['do_EOF', 'do_exit', 'do_salir', 'do_ayuda', 'do_help', 'do_listar_operaciones', ]
+        excluir = ['do_EOF', 'do_exit', 'do_salir', 'do_ayuda', 'do_help', 'do_listar_operaciones', 'do_test_kml']
         ops = {x.split("do_")[1] for x in dir(self) if "do_" in x and x not in excluir}
         for x in ops:
             print(x)
@@ -155,10 +155,10 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         except:
             print("El parametro debe ser un número entero")
 
-        centralidad = utils.centralidad(grafo_vuelos,n)
+        centralidad = utils.centralidad(grafo_vuelos)
 
         # Filtro la cantidad pedida
-        print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:cantidad_aeropuertos])))
+        print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:n])))
 
     # #### itinerario
     # def help_itinerario(self):

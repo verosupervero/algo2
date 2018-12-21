@@ -10,7 +10,7 @@ def centralidad(grafo):
 
     for vertice in grafo:
         centralidad_auxiliar= {}
-        distancia,predecesor= utils.dijkstra.dijkstra(grafo,vertice)
+        distancia,predecesor= utils.dijkstra(grafo,vertice)
 
         for w in grafo:
             centralidad_auxiliar[w]=0
