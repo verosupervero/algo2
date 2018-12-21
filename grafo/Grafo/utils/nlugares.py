@@ -26,7 +26,7 @@ def nlugares(grafo,largo,origen, destino= None):
                 return False
 
         for v in grafo.obtener_adyacentes(origen):
-            if not v in ruta:
+            if not v in visitados:
                 if _nlugares(grafo=grafo, origen=v, destino=destino, largo=largo-1, ruta=ruta,visitados=visitados):
                     return True
 
