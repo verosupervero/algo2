@@ -158,7 +158,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         origen=params[0]
         n= int(params[1])
-        ruta = viaje_n_lugares.viaje_n_lugares(grafo=grafo_vuelos,n=n,origen=origen,aeropuertos_por_ciudad=aeropuertos_por_ciudad)
+        ruta = viaje_n_lugares.viaje_n_lugares(grafo=grafo_tiempo,n=n,origen=origen,aeropuertos_por_ciudad=aeropuertos_por_ciudad)
         if not ruta:
             print('No existe ningún recorrido')
         else:
