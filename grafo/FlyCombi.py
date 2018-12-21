@@ -142,7 +142,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         print('Use centralidad')
 
     def do_centralidad(self, inp=""):
-        #     print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:cantidad_aeropuertos])))
+        #
         """Obtengo la centralidad de un grafo"""
 
         # Valido parametros y los parseo
@@ -156,6 +156,9 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             print("El parametro debe ser un número entero")
 
         centralidad = utils.centralidad(grafo_vuelos,n)
+
+        # Filtro la cantidad pedida
+        print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:cantidad_aeropuertos])))
 
     # #### itinerario
     # def help_itinerario(self):
@@ -190,7 +193,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         if not ruta:
             print('No existe ningún recorrido')
         else:
-            print(utils.formatear_camino(ruta))
+            utils.imprimir_camino(ruta)
             self.ultima_ruta = ruta
 
     #### camino_mas
