@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 """TP 3"""
 
 # Agrego carpeta raiz a path, asi los modulos se ven
