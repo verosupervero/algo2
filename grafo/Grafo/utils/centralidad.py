@@ -10,7 +10,7 @@ def centralidad(grafo,cantidad_aeropuertos):
 
     for vertice in grafo:
         centralidad_auxiliar= {}
-        distancia,predecesor= utils.dijkstra(grafo,vertice)
+        distancia,predecesor= utils.dijkstra.dijkstra(grafo,vertice)
 
         for w in grafo:
             centralidad_auxiliar[w]=0

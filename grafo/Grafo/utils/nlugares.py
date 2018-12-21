@@ -1,4 +1,5 @@
 import Grafo.utils as utils
+from Grafo import Grafo
 
 def nlugares(grafo,largo,origen, destino= None):
     ruta = []

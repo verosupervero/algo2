@@ -129,20 +129,20 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         centralidad.centralidad(grafo_vuelos,n)
 
-    #### camino_mas
-    def help_itinerario(self):
-        print('No info here')
-
-    def do_itinerario(self, inp=","):
-        """Devuelvo un itinerario cultural"""
-
-        # Valido parametros y los parseo
-        itinerario = inp.split(' ')
-        if not len(lugares)==1:
-            print("Cantidad de parametros invalida. Use ayuda centralidad")
-            return
-        lugares=utils.armar_itinerario_cultural(itinerario)
-        utils.obtener_itinerario_cultural(grafo_vuelos,lugares,aeropuertos_por_ciudad)
+    # #### camino_mas
+    # def help_itinerario(self):
+    #     print('No info here')
+    #
+    # def do_itinerario(self, inp=","):
+    #     """Devuelvo un itinerario cultural"""
+    #
+    #     # Valido parametros y los parseo
+    #     itinerario = inp.split(' ')
+    #     if not len(lugares)==1:
+    #         print("Cantidad de parametros invalida. Use ayuda centralidad")
+    #         return
+    #     lugares=utils.armar_itinerario_cultural(itinerario)
+    #     utils.obtener_itinerario_cultural(grafo_vuelos,lugares,aeropuertos_por_ciudad)
 
     #### camino_mas
     def help_vacaciones(self):
