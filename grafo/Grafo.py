@@ -84,39 +84,10 @@ class Grafo(object):
         """Devuelve una lista de los vertices, ordenados según su aparición en la matriz de adyacencias"""
         return self.grafo.keys()
 
-    # def _compactar(self):
-    #     """Elimina las columnas extra en la matriz de adyacencias, correspondientes a vertices eliminados"""
-    #     # Lista de columnas válidas (no eliminadas)
-    #     indices = list(self._indices.values())
-    #
-    #     # Lista de vertices e indices validos, ordenados
-    #     indices = list(sorted(self._indices.values()))
-    #     vertices = sorted(self._indices, key=self._indices.__getitem__)
-    #
-    #     # Filtro solo las columnas usadas
-    #     M_filtrada = self._mat_ady[:,indices][indices,:]
-    #
-    #     # Asigno mis nuevos indices incrementalmente
-    #     self._indices = {v:i for i,v in enumerate(vertices)}
-    #     #print(self._indices)
-    #
-    #     # Asigno nueva matriz
-    #     self._mat_ady = M_filtrada
-
-    # def mat_adyacencias(self):
-    #     """Devuelve la matriz de adyacencias , la lista de vertices se obtiene con obtener_vertices()"""
-    #     # Compacto la matriz para eliminar filas y columnas que no representan vertices
-    #     self._compactar()
-    #
-    #     # Devuelvo la matriz densa
-    #     return self._mat_ady.copy()
-
-
     def obtener_arista(self, padre=None, hijo=None):
         if padre in self.grafo:
             if hijo in self.grafo[padre]:
                 return self.grafo[padre][hijo]
-
         return 0
 
     def son_adyacentes(self, padre=None, hijo=None, no_dirigido=False):
@@ -125,7 +96,6 @@ class Grafo(object):
         if no_dirigido:
             return hijo in self.grafo[padre] and padre in self.grafo[hijo]
         return hijo in self.grafo[padre]
-
 
     def eliminar_arista(self, padre=None, hijo=None, no_dirigido=False):
         """Elimina la arista desde el vertice padre al vertice hijo.
@@ -137,7 +107,6 @@ class Grafo(object):
 
     def eliminar_vertice(self, vertice=None,no_dirigido=False):
         """Elimina el vertice del grafo."""
-
         #Elimino los adyacentes que puedan tenerlo a el si es no_dirigido
         if no_dirigido:
             for w in self.obtener_adyacentes(vertice):
@@ -145,12 +114,12 @@ class Grafo(object):
 
         del self.grafo[vertice]
 
-
     def obtener_adyacentes(self, padre=None):
         """Devuelvo una lista con todos los nodos adyacentes del vertice padre"""
         return self.grafo[padre].keys()
 
     def vertice_en_grafo(self,vertice):
+        """Revisa si el vertice esta en el grafo"""
             return vertice in self.grafo.keys()
 
 

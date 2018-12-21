@@ -10,6 +10,7 @@ def imprimir_camino(pila):
     print("->".join(map(str,pila)))
 
 def armar_camino(distancia,predecesores,pila, origen, dest=None):
+    """Reconstruye un camino desde un vertice teniendo sus predecesores"""
     if dest==origen:
         pila.insert(0,dest)
         return
@@ -24,10 +25,10 @@ def armar_camino(distancia,predecesores,pila, origen, dest=None):
     pila.insert(0,dest)
     armar_camino(distancia,predecesores,pila, origen, predecesores[dest])
 
-
-def armar_itinerario_cultural(itinerario):
+def armar_itinerario_cultural(archivo):
+    """Arma un itinerario cultural desde un archivo dado"""
     grafo_orden_topo = Grafo()
-    with open(itinerario, newline='') as csvfile:
+    with open(archivo, newline='') as csvfile:
         lugares = csv.reader(csvfile, delimiter=',')
         for lugar in lugares:
             if not vertice in grafo_orden_topo:
@@ -39,13 +40,13 @@ def armar_itinerario_cultural(itinerario):
     grafo_orden_topo.ver_diccionario()
 
 def obtener_itinerario_cultural(grafo,lugares,aeropuertos_por_ciudad):
+    """Obtiene el itinerario cultural en pantalla luego de armarlo del archivo"""
     print(",".join(map(str,lugares)))
     for i in range (0,len(lugares)):
         obtener_camino_minimo_origen_destino(lugares[i],lugares[i+1],grafo,aeropuertos_por_ciudad,True,False)
 
-
-
 def obtener_camino_minimo_origen_destino(origen,dest,grafo,aeropuertos_por_ciudad,imprimir=True,pesado=True):
+    """Obtiene el camino minimo de un vertice a otro del grafo"""
     camino=[]
     costo=float("inf")
     for aeropuerto_i in aeropuertos_por_ciudad[origen]:
@@ -68,6 +69,7 @@ def obtener_camino_minimo_origen_destino(origen,dest,grafo,aeropuertos_por_ciuda
     return costo,camino
 
 def obtener_viaje_n_lugares(grafo,n,origen,aeropuertos_por_ciudad,imprimir=True):
+    """Obtener algún recorrido que comience en origen y que termine en origen también, de largo n."""
     ruta=[]
     for aeropuerto_i in aeropuertos_por_ciudad[origen]:
             ruta=nlugares(grafo,n,aeropuerto_i,aeropuerto_i)
@@ -81,6 +83,7 @@ def obtener_viaje_n_lugares(grafo,n,origen,aeropuertos_por_ciudad,imprimir=True)
     return ruta
 
 def bfs(grafo,origen=None,dest=None):
+    """Recorrido en anchura del grafo"""
     visitados=[]
     predecesores={}
     distancia_al_origen={}
@@ -117,6 +120,7 @@ def bfs(grafo,origen=None,dest=None):
     return visitados,predecesores, distancia_al_origen
 
 def dfs (grafo,origen=None):
+    """Recorrido en profundidad del grafo"""
     visitados=[]
     pila=[]
     pila.append(origen)
@@ -308,6 +312,8 @@ def nlugares(grafo,largo,origen, destino= None):
 #     return ruta
 
 def pagerank (grafo,n=10,imprimir=False):
+    """Obtiene el pagerank de un grafo y devuelve los n vertices mas importantes.
+    n es pasado por parametro"""
     # armo un diccionario con el PR de cada nodo, seteado aleatorio ente 0 y 1
     PR={v: random() for v in grafo}
     dif=float("inf")
@@ -331,49 +337,6 @@ def pagerank (grafo,n=10,imprimir=False):
     if imprimir:
         print(','.join(map(str,sorted(PR, key=PR.get, reverse=True)[0:n])))
     return sorted(PR, key=PR.get, reverse=True)
-
-# def pagerank(grafo,cantidad_iteraciones=100,imprimir=False):
-#     """"""
-#     #Para obtener el pagerank de cada pagina necesitamos:
-#
-#     #La matriz de adyacencias tiene pesos, se que tan fuerte es la union entre nodos y como se conectan,
-#     #lo que hago es transponer la matriz y luego llevar sus columnas a que tengan como suma probabilidad=1,
-#     #dado que Pagerank(A)=sum Pagerank(i)/L(i) con L(i)= cantidad de links en las paginas.
-#     # Debe ser una matriz estocastica por eso se piden estas condiciones,
-#     #una matriz estocastica cuenta con esta caracteristica.
-#     M=grafo.mat_adyacencias().transpose()
-#     M/= M.sum(axis=0)
-#     cant_vertices=len(grafo)
-#     d=0.85 #duping factor, sino se queda oscilando entre links
-#     M= d*M + (1-d)/cant_vertices
-#
-#     #Me genero un vector aleatorio (o sea un vector que tiene valores entre 0 y 1)
-#     x=np.random.rand(cant_vertices)
-#
-#     #Sabemos que dado un vector v, lim n->oo A^k*v converge a sum lambda_i^k*v, con lambda_i cada ava.
-#     #Con lo cual convergera a los aves de la matriz A.
-#     #En este caso serán M y x nuestra matriz y vector.
-#     p=0.3
-#     for k in range (0,cantidad_iteraciones):
-#         y=d*M@x+(1-d)*x.sum()
-#         y/=y.sum()
-#         y_array=np.squeeze(np.asarray(y))
-#         if(np.linalg.norm(x-y_array)<0.01):
-#             x=y_array
-#             break
-#         else:
-#             r=(np.sign(np.random.rand()-p)+np.ones(cant_vertices))/2
-#             x= x*r + y_array*(1-r)
-#     pagerank={}
-#     i=0
-#     for vertice in grafo:
-#         pagerank[vertice]=x[i]
-#         i=i+1
-#
-#     #Imprimo el pagerank y lo devuelvo
-#     if imprimir:
-#         print(','.join(map(str,sorted(pagerank, key=pagerank.get, reverse=True))))
-#     return sorted(pagerank, key=pagerank.get, reverse=True)
 
 class TestArmarCamino(TestCase):
 
