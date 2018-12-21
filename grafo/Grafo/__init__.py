@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 """Clase para representar y procesar grafos"""
 import warnings
 
