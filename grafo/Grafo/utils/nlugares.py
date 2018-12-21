@@ -2,19 +2,25 @@ import Grafo.utils as utils
 from Grafo import Grafo
 
 def nlugares(grafo,largo,origen, destino= None):
-    ruta = []
+    """Encuentra una ruta desde origen a destino de largo n en el grafo"""
+
     if(destino==None):
         destino=origen
 
-    # acá guardo lo que voy calculando
-    mem={}
+    # Declaraciones
+    ruta = []
+    mem = {} # acá guardo lo que voy calculando
 
     # declaro funcion wrappeada
     def _nlugares(grafo,origen, destino, largo, ruta=[]):
         #print(largo)
+        if origen in ruta:
+            return False
+
         ruta.append(origen)
-        if largo==0:
-            if origen==destino:
+        if largo==1:
+            if destino in grafo.obtener_adyacentes(origen):
+                ruta.append(destino)
                 return True
             else:
                 ruta.pop()

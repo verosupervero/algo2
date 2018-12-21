@@ -1,6 +1,6 @@
 import Grafo.utils as utils
 
-def centralidad(grafo,cantidad_aeropuertos):
+def centralidad(grafo):
     """Mediante Betweeness Centrality genera un vector con los vertices ordenados
     por importancia"""
 
@@ -26,5 +26,4 @@ def centralidad(grafo,cantidad_aeropuertos):
             if w==vertice: continue
             centralidad[w]+=centralidad_auxiliar[w]
 
-    print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:cantidad_aeropuertos])))
     return centralidad

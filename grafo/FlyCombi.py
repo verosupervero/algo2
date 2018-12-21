@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 """TP 3"""
 
+# Agrego carpeta raiz a path, asi los modulos se ven
+import sys
+sys.path.insert(1, '.')
+
+
 from cmd import Cmd
 from Grafo import Grafo
 import Grafo.utils as utils
+import FCombi
 
 class MyPrompt(Cmd):
     prompt = ''
@@ -58,17 +64,17 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
     def do_listar_operaciones(self, inp):
         """Lista las operaciones disponibles"""
         # comandos que quiero evitar
-        excluir = ['do_EOF', 'do_exit', 'do_salir', 'do_ayuda', 'do_help', 'do_listar_operaciones']
+        excluir = ['do_EOF', 'do_exit', 'do_salir', 'do_ayuda', 'do_help', 'do_listar_operaciones', ]
         ops = {x.split("do_")[1] for x in dir(self) if "do_" in x and x not in excluir}
         for x in ops:
             print(x)
 
     #### camino_mas
     def help_camino_mas(self):
-        print('Use "camino_mas rapido/barato,origen,destino"')
+        print('Use "camino_mas <rapido/barato>,<ciudad origen>,<ciudad destino>"')
 
     def do_camino_mas(self, inp=""):
-        """Obtengo el camino mas rapido o barato entre dos aeropuertos."""
+        """Obtengo el camino mas rapido o barato entre dos ciudades."""
 
         # Valido parametros y los parseo
         params = inp.split(',')
@@ -85,13 +91,20 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
         # Dependiendo del tipo, llamo a cada funcion o devuelvo error
         if tipo == 'barato':
-            camino_minimo.camino_minimo(origen,destino,grafo_precio,aeropuertos_por_ciudad)
+            costo, camino = FCombi.camino_minimo(origen,destino,grafo_precio,aeropuertos_por_ciudad)
         elif tipo == 'rapido':
-            camino_minimo.camino_minimo(origen,destino,grafo_tiempo,aeropuertos_por_ciudad)
+            costo, camino = FCombi.camino_minimo(origen,destino,grafo_tiempo,aeropuertos_por_ciudad)
         else:
             print("Tipo de recorrido invalido. Use ayuda camino_mas")
 
-    #### camino_mas
+
+        # Imprimo resultado
+        utils.imprimir_camino(camino)
+
+        # Guardo para exportar
+        self.ultima_ruta = camino
+
+    #### camino_escalas
     def help_camino_escalas(self):
         print('Use "camino con menos escalas"')
 
@@ -107,17 +120,29 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         destino = params[1]
 
         if not origen in aeropuertos_por_ciudad or not destino in aeropuertos_por_ciudad:
-            print("Origen y/o destino inválidos")
+            #print("Origen y/o destino inválidos") #no imprimir en error?
             return
-        # Esta mal que la funcion imprima el resultado.
-        camino_minimo.camino_minimo(origen,destino,grafo_vuelos,aeropuertos_por_ciudad,True,False)
-        # Necesito guardar el camino en la variable global ultima_ruta, asi con todas las funciones que devuelven ruta
 
-    #### camino_mas
+        # Calculo
+        costo,camino = FCombi.camino_minimo(origen,destino,grafo_vuelos,aeropuertos_por_ciudad,pesado=True)
+
+        # Si no estan conectados
+        if not camino:
+            print("No existe ninguna ruta.")
+
+        # Imprimo resultado
+        utils.imprimir_camino(camino)
+
+        # Guardo para exportar
+        self.ultima_ruta = camino
+
+
+    #### centralidad
     def help_centralidad(self):
         print('Use centralidad')
 
     def do_centralidad(self, inp=""):
+        #     print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:cantidad_aeropuertos])))
         """Obtengo la centralidad de un grafo"""
 
         # Valido parametros y los parseo
@@ -125,11 +150,14 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         if not len(params)==1:
             print("Cantidad de parametros invalida. Use ayuda centralidad")
             return
-        n= int(params[0])
+        try:
+            n= int(params[0])
+        except:
+            print("El parametro debe ser un número entero")
 
-        centralidad.centralidad(grafo_vuelos,n)
+        centralidad = utils.centralidad(grafo_vuelos,n)
 
-    # #### camino_mas
+    # #### itinerario
     # def help_itinerario(self):
     #     print('No info here')
     #
@@ -144,7 +172,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
     #     lugares=utils.armar_itinerario_cultural(itinerario)
     #     utils.obtener_itinerario_cultural(grafo_vuelos,lugares,aeropuertos_por_ciudad)
 
-    #### camino_mas
+    #### vacaciones
     def help_vacaciones(self):
         print('Use: vacaciones ciudad,<cantidad de escalas>')
 
@@ -158,7 +186,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         origen=params[0]
         n= int(params[1])
-        ruta = utils.viaje_n_lugares(grafo=grafo_tiempo,n=n,origen=origen,aeropuertos_por_ciudad=aeropuertos_por_ciudad)
+        ruta = FCombi.viaje_n_lugares(grafo=grafo_tiempo,n=n,origen=origen,aeropuertos_por_ciudad=aeropuertos_por_ciudad)
         if not ruta:
             print('No existe ningún recorrido')
         else:
@@ -189,7 +217,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
     ### exportar a KML
     def help_exportar_kml(self):
-        print("Use exportar_kml nombre_archivo.kml para guardar el último camino obtenido en un kml.")
+        print("Use exportar_kml <nombre_archivo.kml> para guardar el último camino obtenido en un kml.")
 
     def do_exportar_kml(self, inp=""):
         """Exporto un KML con la ultima ruta"""
@@ -202,10 +230,9 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         file = params[0]
 
         if not self.ultima_ruta:
-            print("FALLO: No hay ruta para exportar.")
             return
 
-        exportar_kml(self.ultima_ruta, coordenadas, ciudades_aerop, file=file)
+        FCombi.exportar_kml(self.ultima_ruta, coordenadas, ciudades_aerop, file=file)
         print("OK")
 
     def do_test_kml(self, inp=""):
@@ -222,7 +249,7 @@ if __name__ == '__main__':
     import sys
     import csv
     from Grafo import Grafo
-    from exportar_ruta import exportar_kml
+    import FCombi
 
     if not len(sys.argv) == 3:
         print(f"Se requieren tres parametros: {sys.argv[0]} aeropuertos.csv vuelos.csv")
