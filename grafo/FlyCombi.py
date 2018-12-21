@@ -146,7 +146,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
     #### camino_mas
     def help_vacaciones(self):
-        print('Use vacaciones')
+        print('Use: vacaciones ciudad,<cantidad de escalas>')
 
     def do_vacaciones(self, inp=""):
         """Obtengo vacaciones"""
