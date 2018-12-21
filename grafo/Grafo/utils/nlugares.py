@@ -12,9 +12,13 @@ def nlugares(grafo,largo,origen, destino= None):
     # declaro funcion wrappeada
     def _nlugares(grafo,origen, destino, largo, ruta=[]):
         #print(largo)
+        if origen in ruta:
+            return False
+
         ruta.append(origen)
-        if largo==0:
-            if origen==destino:
+        if largo==1:
+            if destino in grafo.obtener_adyacentes(origen):
+                ruta.append(destino)
                 return True
             else:
                 ruta.pop()
