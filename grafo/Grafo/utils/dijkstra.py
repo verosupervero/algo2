@@ -1,4 +1,3 @@
-import Grafo.utils as utils
 import heapq
 
 def dijkstra(grafo,origen,dest=None):

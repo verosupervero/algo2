@@ -1,4 +1,3 @@
-import Grafo.utils as utils
 from random import *
 
 def pagerank (grafo, d=0.8):

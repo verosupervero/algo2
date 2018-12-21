@@ -1,6 +1,3 @@
-import Grafo.utils as utils
-from Grafo import Grafo
-
 def nlugares(grafo,largo,origen, destino= None):
     """Encuentra una ruta desde origen a destino de largo n en el grafo"""
 

@@ -1,5 +1,3 @@
-import Grafo.utils as utils
-
 def dfs (grafo,origen=None):
     """Recorrido en profundidad del grafo"""
     visitados=[]

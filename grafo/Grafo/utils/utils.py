@@ -1,5 +1,3 @@
-import Grafo.utils as utils
-
 def imprimir_camino(pila):
     """Convierte una lista de ciudades en un string separado por ->"""
     print(formatear_camino(pila))
@@ -22,4 +20,4 @@ def armar_camino(distancia,predecesores,pila, origen, dest=None):
                 dest=vertice
 
     pila.insert(0,dest)
-    utils.utils.armar_camino(distancia,predecesores,pila, origen, predecesores[dest])
+    armar_camino(distancia,predecesores,pila, origen, predecesores[dest])

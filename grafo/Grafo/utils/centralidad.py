@@ -1,4 +1,4 @@
-import Grafo.utils as utils
+from . import dijkstra
 
 def centralidad(grafo):
     """Mediante Betweeness Centrality genera un vector con los vertices ordenados
@@ -10,7 +10,7 @@ def centralidad(grafo):
 
     for vertice in grafo:
         centralidad_auxiliar= {}
-        distancia,predecesor= utils.dijkstra(grafo,vertice)
+        distancia,predecesor= dijkstra.dijkstra(grafo,vertice)
 
         for w in grafo:
             centralidad_auxiliar[w]=0
