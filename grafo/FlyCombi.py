@@ -158,8 +158,12 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
             return
         origen=params[0]
         n= int(params[1])
-
-        viaje_n_lugares.viaje_n_lugares(grafo_vuelos,n,origen,aeropuertos_por_ciudad,imprimir=True)
+        ruta = viaje_n_lugares.viaje_n_lugares(grafo=grafo_vuelos,n=n,origen=origen,aeropuertos_por_ciudad=aeropuertos_por_ciudad)
+        if not ruta:
+            print('No existe ningún recorrido')
+        else:
+            print(utils.formatear_camino(ruta))
+            self.ultima_ruta = ruta
 
     #### camino_mas
     def help_pagerank(self):
