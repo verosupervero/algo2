@@ -120,7 +120,7 @@ class Grafo(object):
 
     def vertice_en_grafo(self,vertice):
         """Revisa si el vertice esta en el grafo"""
-            return vertice in self.grafo.keys()
+        return vertice in self.grafo.keys()
 
 
 class TestGrafo(TestCase):
