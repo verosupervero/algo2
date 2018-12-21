@@ -2,18 +2,18 @@
 """TP 3"""
 
 from cmd import Cmd
-import Strutil as st
+from Grafo import Grafo
+from Grafo.utils import *
 
 class MyPrompt(Cmd):
-    prompt = 'FlyCombi> '
-    intro = "Interfaz de comandos de FlyCombi. Escriba listar_operaciones para ver operaciones disponibles."
-    doc_header = "Lista de operaciones disponibles. Para ayuda, escriba help nombre_del_comando"
-    undoc_header = "Operaciones no documentadas"
-    misc_header = "Comandos generales del programa"
+    prompt = ''
+    intro = ""
+    doc_header = ""
+    undoc_header = ""
+    misc_header = ""
 
     def do_exit(self, inp):
         # Cualquier metodo de esta clase que haga return True termina el loop del menu
-        print("Al toke perro.")
         return True
 
     def help_exit(self):
@@ -56,7 +56,12 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         print("Muestra una lista con las operaciones validas y otros comandos.")
 
     def do_listar_operaciones(self, inp):
-        self.onecmd("help")
+        """Lista las operaciones disponibles"""
+        # comandos que quiero evitar
+        excluir = ['do_EOF', 'do_exit', 'do_salir', 'do_ayuda', 'do_help', 'do_listar_operaciones']
+        ops = {x.split("do_")[1] for x in dir(self) if "do_" in x and x not in excluir}
+        for x in ops:
+            print(x)
 
     #### camino_mas
     def help_camino_mas(self):
@@ -124,10 +129,10 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
 
     #### camino_mas
     def help_itinerario(self):
-        print('Use centralidad')
+        print('No info here')
 
     def do_itinerario(self, inp=","):
-        """Obtengo la centralidad de un grafo"""
+        """Devuelvo un itinerario cultural"""
 
         # Valido parametros y los parseo
         itinerario = inp.split(' ')

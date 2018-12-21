@@ -1,233 +1,20 @@
 from Grafo import Grafo
 import warnings
-from random import *
 import unittest
 from unittest import TestCase
 from collections import deque
 import heapq
 
-def imprimir_camino(pila):
-    print("->".join(map(str,pila)))
-
-def armar_camino(distancia,predecesores,pila, origen, dest=None):
-    """Reconstruye un camino desde un vertice teniendo sus predecesores"""
-    if dest==origen:
-        pila.insert(0,dest)
-        return
-
-    if dest==None:
-        distancia_max=0
-        for vertice,distancia in distancia.items():
-            if distancia>distancia_max:
-                distancia_max=distancia
-                dest=vertice
-
-    pila.insert(0,dest)
-    armar_camino(distancia,predecesores,pila, origen, predecesores[dest])
-
-def armar_itinerario_cultural(archivo):
-    """Arma un itinerario cultural desde un archivo dado"""
-    grafo_orden_topo = Grafo()
-    with open(archivo, newline='') as csvfile:
-        lugares = csv.reader(csvfile, delimiter=',')
-        for lugar in lugares:
-            if not vertice in grafo_orden_topo:
-                grafo_orden_topo.agregar_vertice(lugar)
-
-        for i in range(0,len(lugares)):
-            grafo_orden_topo.agregar_arista(lugar[i],lugar[i+1])
-
-    grafo_orden_topo.ver_diccionario()
-
-def obtener_itinerario_cultural(grafo,lugares,aeropuertos_por_ciudad):
-    """Obtiene el itinerario cultural en pantalla luego de armarlo del archivo"""
-    print(",".join(map(str,lugares)))
-    for i in range (0,len(lugares)):
-        obtener_camino_minimo_origen_destino(lugares[i],lugares[i+1],grafo,aeropuertos_por_ciudad,True,False)
-
-def obtener_camino_minimo_origen_destino(origen,dest,grafo,aeropuertos_por_ciudad,imprimir=True,pesado=True):
-    """Obtiene el camino minimo de un vertice a otro del grafo"""
-    camino=[]
-    costo=float("inf")
-    for aeropuerto_i in aeropuertos_por_ciudad[origen]:
-        for aeropuerto_j in aeropuertos_por_ciudad[dest]:
-            if pesado:
-                distancia, predecesores= dijkstra(grafo,aeropuerto_i,aeropuerto_j)
-            else:
-                predecesores, distancia= bfs(grafo,aeropuerto_i,aeropuerto_j)
-
-            if distancia[aeropuerto_j]< costo:
-                costo=distancia[aeropuerto_j]
-                camino.clear()
-                armar_camino(distancia,predecesores,camino,aeropuerto_i,aeropuerto_j)
-
-            distancia.clear()
-            predecesores.clear()
-
-    if imprimir:
-        imprimir_camino(camino)
-    return costo,camino
-
-def obtener_viaje_n_lugares(grafo,n,origen,aeropuertos_por_ciudad,imprimir=True):
-    """Obtener algún recorrido que comience en origen y que termine en origen también, de largo n."""
-    ruta=[]
-    for aeropuerto_i in aeropuertos_por_ciudad[origen]:
-            ruta=nlugares(grafo,n,aeropuerto_i,aeropuerto_i)
-            if ruta:
-                break
-    if not ruta:
-        print("No se encontro recorrido")
-    else:
-        if imprimir:
-            imprimir_camino(ruta)
-    return ruta
-
-def bfs(grafo,origen=None,dest=None):
-    """Recorrido en anchura del grafo"""
-    visitados=[]
-    predecesores={}
-    distancia_al_origen={}
-
-    for vertice in grafo.obtener_vertices():
-        distancia_al_origen[vertice]= float("inf")
-        predecesores[vertice]=None
-
-    distancia_al_origen[origen]=0
-
-    cola=deque([])
-    cola.append(origen)
-    while cola:
-        if dest is not None and dest in visitados:
-            break
-
-        # Desencolo un nodo y lo agrego a visitados
-        origen=cola.popleft()
-        visitados.append(origen)
-        #print(visitados)
-        #print("-----levanto: ", origen)
-
-        # Encolo todos sus hijos que no hayan sido visitados previamente
-        adyacentes=grafo.obtener_adyacentes(origen)
-        for w in adyacentes:
-            #print (w, "visitado:", w in visitados)
-            if not w in visitados and not w in cola:
-                cola.append(w)
-                predecesores[w]=origen
-                distancia_al_origen[w]=distancia_al_origen[origen]+1
-                #print("encolo: ", w)
-    if dest!=None:
-        return predecesores, distancia_al_origen
-    return visitados,predecesores, distancia_al_origen
-
-def dfs (grafo,origen=None):
-    """Recorrido en profundidad del grafo"""
-    visitados=[]
-    pila=[]
-    pila.append(origen)
-
-    while pila:
-        # Saco un nodo de la pila
-        origen = pila.pop(0)
-        #print("levanto: "+origen)
-        visitados.append(origen)
-
-        # Apilo todos sus hijos que no hayan sido visitados
-        adyacentes=grafo.obtener_adyacentes(origen)
-        for nodo in adyacentes:
-             if not (nodo in visitados or nodo in pila): #FIXME
-                 pila.insert(0,nodo)
-                 #print("inserto: "+nodo)
-    return visitados
 
 
-def dijkstra(grafo,origen,dest=None):
-    """Calcula el camino minimo desde un origen dado a un vértice o
-    a todo el grafo.
-    Devuelve un diccionario con la distancia desde el orignen
-    hacia cada vertice, y otro diccionario con el predecesor
-    en el recorrido minimo de cada vértice en cuestión."""
 
-    distancia={}
-    predecesores={}
 
-    for vertice in grafo:
-        distancia[vertice]=float("inf")
 
-    distancia[origen]=0
-    predecesores[origen]=None
 
-    heap=[]
-    heapq.heapify(heap)
-    heapq.heappush(heap,(distancia[origen],origen))
 
-    while heap:
-        [distancia_al_origen, vertice]= heapq.heappop(heap)
-        if vertice==dest:
-            break
 
-        for w in grafo.obtener_adyacentes(vertice):
-            if distancia[vertice]+ grafo.obtener_arista(vertice,w)< distancia[w]:
-                distancia[w]= distancia[vertice]+ grafo.obtener_arista(vertice,w)
-                predecesores[w]=vertice
-                heapq.heappush(heap,(distancia[w],w))
 
-    return distancia,predecesores
 
-def centralidad(grafo,cantidad_aeropuertos):
-    """Mediante Betweeness Centrality genera un vector con los vertices ordenados
-    por importancia"""
-
-    centralidad={}
-    for vertice in grafo:
-        centralidad[vertice]=0
-
-    for vertice in grafo:
-        centralidad_auxiliar= {}
-        distancia,predecesor= dijkstra(grafo,vertice)
-
-        for w in grafo:
-            centralidad_auxiliar[w]=0
-
-        distancias_filtradas= {k: v for k, v in distancia.items() if v<float("inf")}
-
-        for w in sorted(distancias_filtradas, key=distancias_filtradas.__getitem__,reverse=True):
-            if w==vertice: continue
-            centralidad_auxiliar[predecesor[w]]+=1
-            centralidad_auxiliar[predecesor[w]]+=centralidad_auxiliar[w]
-
-        for w in grafo:
-            if w==vertice: continue
-            centralidad[w]+=centralidad_auxiliar[w]
-
-    print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:cantidad_aeropuertos])))
-    return centralidad
-
-def nlugares(grafo,largo,origen, destino= None):
-    ruta = []
-    if(destino==None):
-        destino=origen
-
-    # declaro funcion wrappeada
-    def _nlugares(grafo,origen, destino, largo, ruta=[]):
-        ruta.append(origen)
-        if largo==1:
-            if origen==destino:
-                return True
-            else:
-                ruta.pop()
-                return False
-
-        for v in grafo.obtener_adyacentes(origen):
-            if not v in ruta:
-                if _nlugares(v, destino, largo-1, ruta):
-                    return True
-
-        ruta.pop()
-        return False
-
-     # inicio recursion
-    _nlugares(grafo,origen, destino, largo, ruta)
-    return ruta
 
 # def nlugares(grafo,largo,origen, destino= None):
 #     lista={}
@@ -311,32 +98,6 @@ def nlugares(grafo,largo,origen, destino= None):
 #     _nlugares(origen, destino, largo-1, ruta)
 #     return ruta
 
-def pagerank (grafo,n=10,imprimir=False):
-    """Obtiene el pagerank de un grafo y devuelve los n vertices mas importantes.
-    n es pasado por parametro"""
-    # armo un diccionario con el PR de cada nodo, seteado aleatorio ente 0 y 1
-    PR={v: random() for v in grafo}
-    dif=float("inf")
-
-    d=0.8
-    k=(1-d)/len(grafo)
-
-    while dif > 0.01**2:
-        # actualizo PR de todos los nodos
-        dif = 0 # norma² de la diferencia
-        for v in grafo:
-            old = PR[v]
-            PR[v] = k
-            for u in grafo.obtener_adyacentes(v):
-                PR[v] += d*PR[u]/len(grafo.obtener_adyacentes(u))
-            #endfor
-            dif += (old-PR[v])**2
-        #endfor
-    #endwhile
-    #Imprimo el pagerank y lo devuelvo
-    if imprimir:
-        print(','.join(map(str,sorted(PR, key=PR.get, reverse=True)[0:n])))
-    return sorted(PR, key=PR.get, reverse=True)
 
 class TestArmarCamino(TestCase):
 

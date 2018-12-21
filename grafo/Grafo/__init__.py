@@ -6,42 +6,6 @@ import warnings
 
 import unittest
 from unittest import TestCase
-from collections import deque
-
-import heapq
-
-class nodo_max_heap(object):
-    def __init__(self,dato):
-        self.dato = dato
-    def obtener_valor():
-        return dato
-    def __lt__(self, other):
-        return self.dato>other.dato
-    def __gt__(self, other):
-        return self.dato<other.dato
-    def __eq__(self, other):
-        return self.dato==other.dato
-    def __str__(self):
-        return str(self.dato)
-    def __repr__(self):
-        return str(self.dato)
-
-class nodo_min_heap(object):
-    def __init__(self,dato):
-        self.dato = dato
-    def obtener_valor():
-        return dato
-    def __lt__(self, other):
-        return self.dato<other.dato
-    def __gt__(self, other):
-        return self.dato>other.dato
-    def __eq__(self, other):
-        return self.dato==other.dato
-    def __str__(self):
-        return str(self.dato)
-    def __repr__(self):
-        return str(self.dato)
-
 
 class Grafo(object):
     """Voy a implementar un grafo como una matriz (sparse) de adyacencias y un diccionario de vertices"""
