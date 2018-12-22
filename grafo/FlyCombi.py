@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """TP 3"""
 
 # Agrego carpeta raiz a path, asi los modulos se ven
@@ -158,22 +158,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         centralidad = utils.centralidad(grafo_vuelos)
 
         # Filtro la cantidad pedida
-        print(','.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:n])))
-
-    # #### itinerario
-    # def help_itinerario(self):
-    #     print('No info here')
-    #
-    # def do_itinerario(self, inp=","):
-    #     """Devuelvo un itinerario cultural"""
-    #
-    #     # Valido parametros y los parseo
-    #     itinerario = inp.split(' ')
-    #     if not len(lugares)==1:
-    #         print("Cantidad de parametros invalida. Use ayuda centralidad")
-    #         return
-    #     lugares=utils.armar_itinerario_cultural(itinerario)
-    #     utils.obtener_itinerario_cultural(grafo_vuelos,lugares,aeropuertos_por_ciudad)
+        print(', '.join(map(str,sorted(centralidad, key=centralidad.get, reverse=True)[0:n])))
 
     #### vacaciones
     def help_vacaciones(self):
@@ -191,7 +176,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         n= int(params[1])
         ruta = FCombi.viaje_n_lugares(grafo=grafo_tiempo,n=n,origen=origen,aeropuertos_por_ciudad=aeropuertos_por_ciudad)
         if not ruta:
-            print('No existe ningún recorrido')
+            print('No se encontro recorrido')
         else:
             utils.imprimir_camino(ruta)
             self.ultima_ruta = ruta
@@ -215,7 +200,7 @@ Utilizando ayuda a secas, lista los comandos disponibles. Es equivalente al coma
         PR = utils.pagerank(grafo_vuelos)
 
         # devuelvo
-        print(','.join(map(str,PR[0:n])))
+        print(', '.join(map(str,PR[0:n])))
 
 
     ### exportar a KML
